@@ -1,0 +1,103 @@
+<%!-- ═══════════════════════════════════════════
+     STEP 6 — SUMMARY  (replace the existing step 6 block)
+     Changes:
+       • Removed AI "Generate Itinerary" button and all @generating / @itinerary / @error UI
+       • Added "Preview & Download Itinerary PDF" button
+       • PDF is generated server-side (Python/ReportLab) and pushed via JS download_pdf event
+════════════════════════════════════════════ --%>
+<%= if @step == 6 do %>
+  <% sel_hotel = hotel_by_id(@hotels, @hotel) %>
+  <% total = estimated_cost(@hotels, @hotel, @duration) %>
+  <% {low, high} = cost_range(total) %>
+
+  <div class="step-card">
+    <div class="step-icon">✨</div>
+    <h2 class="step-title">Your Tour Summary</h2>
+    <p class="step-sub">Review your curated Zambia experience</p>
+
+    <div class="summary-grid">
+      <div class="sum-item">
+        <div class="sum-label">Departure</div>
+        <div class="sum-val">📍 <%= if @city == "", do: "Lusaka", else: @city %></div>
+      </div>
+      <div class="sum-item">
+        <div class="sum-label">Duration</div>
+        <div class="sum-val">📅 <%= @duration %> Days</div>
+      </div>
+      <div class="sum-item">
+        <div class="sum-label">Transport</div>
+        <div class="sum-val">🚗 <%= String.capitalize(@transport) %></div>
+      </div>
+      <div class="sum-item">
+        <div class="sum-label">Ceremony</div>
+        <div class="sum-val">👑 Kuomboka</div>
+      </div>
+      <div class="sum-item">
+        <div class="sum-label">Sites</div>
+        <div class="sum-val">📍 <%= length(@active_pins) %> pinned</div>
+      </div>
+      <div class="sum-item">
+        <div class="sum-label">Accommodation</div>
+        <div class="sum-val">🏨 <%= if sel_hotel, do: sel_hotel.name, else: "Not selected" %></div>
+      </div>
+      <div class="sum-item">
+        <div class="sum-label">Foods</div>
+        <div class="sum-val">🍽️ <%= length(@selected_foods) %> dishes</div>
+      </div>
+      <div class="sum-item">
+        <div class="sum-label">Music</div>
+        <div class="sum-val">🎵 <%= length(@selected_music) %> tracks</div>
+      </div>
+    </div>
+
+    <%!-- Cost Box --%>
+    <div class="cost-box">
+      <div class="cost-label">Estimated Total Budget</div>
+      <div class="cost-num" id="cost-counter" phx-hook="CountUp" data-target={total}>
+        $<%= total |> :erlang.integer_to_binary() %>
+      </div>
+      <div class="cost-range">
+        Range: $<%= Number.Delimit.number_to_delimited(low, precision: 0) %> –
+               $<%= Number.Delimit.number_to_delimited(high, precision: 0) %>
+      </div>
+    </div>
+
+    <%!-- PDF error --%>
+    <%= if @pdf_error do %>
+      <div class="error-box">
+        ⚠️ <%= @pdf_error %>
+      </div>
+    <% end %>
+
+    <%!-- PDF success badge --%>
+    <%= if @pdf_ready do %>
+      <div class="pdf-ready-badge">
+        ✅ Your itinerary PDF has been downloaded!
+      </div>
+    <% end %>
+
+    <%!-- Generate / Download button --%>
+    <%= if @generating_pdf do %>
+      <div class="generating">
+        <div class="spinner"></div>
+        <p>📄 Building your personalized itinerary PDF…</p>
+      </div>
+    <% else %>
+      <button
+        type="button"
+        phx-click="generate_pdf"
+        class="btn-generate"
+        id="pdf-btn"
+        phx-hook="PDFDownload"
+      >
+        <%= if @pdf_ready, do: "🔄 Re-Download Itinerary PDF", else: "📥 Preview & Download Itinerary PDF" %>
+      </button>
+    <% end %>
+
+    <div style="height: 12px;"></div>
+    <div class="btn-row">
+      <button type="button" phx-click="back" class="btn-back">← Back</button>
+      <div></div>
+    </div>
+  </div>
+<% end %>

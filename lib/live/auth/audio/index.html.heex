@@ -1,0 +1,45 @@
+<%= if @current_track do %>
+  <audio id="audio-player">
+    <source src={@current_track.file_url} type="audio/mpeg">
+  </audio>
+
+  <section class="section section-dark audio-section">
+    <div class="container narrow text-center">
+
+      <span class="audio-icon-lg">♪</span>
+
+      <h2 class="section-title"><%= @current_track.title %></h2>
+
+      <p class="section-sub">
+        <%= @current_track.artist %>
+      </p>
+
+      <div class="player scroll-reveal" phx-hook="Player" id="player-hook">
+
+        <div class="player-controls">
+          <button class="ctrl-btn" id="skip-back">⏮</button>
+          <button class="ctrl-btn ctrl-play" id="play-btn">▶</button>
+          <button class="ctrl-btn" id="skip-fwd">⏭</button>
+        </div>
+
+        <div class="player-progress">
+          <span id="current-time" class="time-label">0:00</span>
+
+          <div class="progress-tracks" id="progress-tracks">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+
+          <span class="time-label"><%= @current_track.duration %></span>
+        </div>
+
+        <div class="player-volume">
+          <span>🔈</span>
+          <input type="range" min="0" max="100" value="70" id="volume-range"/>
+        </div>
+
+      </div>
+    </div>
+  </section>
+<% else %>
+  <p>No tracks uploaded yet.</p>
+<% end %>
