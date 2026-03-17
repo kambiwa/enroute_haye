@@ -4,6 +4,10 @@ defmodule EnrouteHayeWeb.Auth.Uploads.Audio do
   alias EnrouteHaye.Context.Media
 
   def mount(_params, _session, socket) do
+
+    upload_dir = Path.join([:code.priv_dir(:enroute_haye), "static/uploads/audio"])
+    File.mkdir_p!(upload_dir)
+
     tracks = Media.list_tracks()
 
     socket =
@@ -15,42 +19,68 @@ defmodule EnrouteHayeWeb.Auth.Uploads.Audio do
     {:ok, socket}
   end
 
+  # def handle_event("play", %{"url" => url}, socket) do
+  #   {:noreply, push_event(socket, "play_track", %{url: url})}
+  # end
+
   def handle_event("play", %{"url" => url}, socket) do
-    {:noreply, push_event(socket, "play_track", %{url: url})}
+    IO.inspect(socket, label: "")
+  {:noreply, assign(socket, current_track: url)}
   end
 
   def handle_event("save", params, socket) do
+  IO.inspect(socket.assigns.uploads.audio.entries, label: "UPLOAD ENTRIES")
+  # Guard: no entries uploaded
+  if socket.assigns.uploads.audio.entries == [] do
+    {:noreply, put_flash(socket, :error, "Please select an audio file.")}
+  else
     uploaded_files =
-      consume_uploaded_entries(socket, :audio, fn %{path: path}, entry ->
-        dest =
-          Path.join([
-            :code.priv_dir(:enroute_haye),
-            "static/uploads/audio",
-            entry.client_name
-          ])
+  consume_uploaded_entries(socket, :audio, fn %{path: path}, entry ->
+    dest =
+      Path.join([
+        :code.priv_dir(:enroute_haye),
+        "static/uploads/audio",
+        entry.client_name
+      ])
 
-        File.cp!(path, dest)
-        {:ok, "/uploads/audio/#{entry.client_name}"}
-      end)
+    case File.cp(path, dest) do
+      :ok ->
+        url = "/uploads/audio/#{entry.client_name}"
+        {:ok, url}   # ← MUST be the last thing returned
 
-    file_url = List.first(uploaded_files)
+      {:error, posix_error} ->
+        Logger.error("Failed to copy uploaded file: #{inspect(posix_error)}")
+        {:error, "Failed to save file on disk"}
+    end
+  end)
 
-    Media.create_track(%{
-      title: params["title"],
-      artist: params["artist"],
-      file_url: file_url
-    })
+    case uploaded_files do
+      [] ->
+        {:noreply, put_flash(socket, :error, "File upload failed. Please try again.")}
 
-    tracks = Media.list_tracks()
+      [file_url | _] ->
+        case Media.create_track(%{
+          title: params["title"],
+          artist: params["artist"],
+          file_url: file_url
+        }) do
+          {:ok, _track} ->
+            tracks = Media.list_tracks()
 
-    socket =
-      socket
-      |> assign(:tracks, tracks)
-      |> assign(:current_track, List.first(tracks))
-      |> put_flash(:info, "Track uploaded successfully.")
+            socket =
+              socket
+              |> assign(:tracks, tracks)
+              |> assign(:current_track, List.first(tracks))
+              |> put_flash(:info, "Track uploaded successfully.")
 
-    {:noreply, socket}
+            {:noreply, socket}
+
+          {:error, changeset} ->
+            {:noreply, put_flash(socket, :error, "Failed to save track: #{inspect(changeset.errors)}")}
+        end
+    end
   end
+end
 
   def handle_event("validate", _params, socket) do
     {:noreply, socket}
@@ -93,7 +123,7 @@ defmodule EnrouteHayeWeb.Auth.Uploads.Audio do
 
               <div class="field">
                 <label>Audio File</label>
-                <div class="drop-zone">
+                <div class="drop-zone" phx-drop-target={@uploads.audio.ref}>
                   <.live_file_input upload={@uploads.audio} />
                   <span class="drop-icon">♫</span>
                   <p class="drop-label">
@@ -104,14 +134,14 @@ defmodule EnrouteHayeWeb.Auth.Uploads.Audio do
 
                 <%= for entry <- @uploads.audio.entries do %>
                   <div class="entry-row">
-                    <span class="entry-name"><%= entry.client_name %></span>
+                    <progress value={entry.progress} max="100"></progress>
+                       <span><%= entry.progress %>%</span>
                     <button
                       type="button"
-                      class="entry-cancel"
                       phx-click="cancel-upload"
-                      phx-value-ref={entry.ref}
-                      aria-label="Cancel"
-                    >✕</button>
+                      phx-value-ref={entry.ref}>
+                      ✕
+                    </button>
                   </div>
                   <%= for err <- upload_errors(@uploads.audio, entry) do %>
                     <p class="entry-error"><%= error_to_string(err) %></p>
@@ -119,13 +149,14 @@ defmodule EnrouteHayeWeb.Auth.Uploads.Audio do
                 <% end %>
               </div>
 
-              <button
-                type="submit"
-                class="btn-upload"
-                disabled={@uploads.audio.entries == []}
-              >
-                Upload Track
-              </button>
+            <button
+              type="submit"
+              class="btn-upload"
+              phx-disable-with="Uploading..."
+              disabled={@uploads.audio.entries == []}
+            >
+              Upload Track
+            </button>
             </form>
           </div>
         </div>

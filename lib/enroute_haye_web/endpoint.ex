@@ -52,4 +52,10 @@ defmodule EnrouteHayeWeb.Endpoint do
   plug Plug.Head
   plug Plug.Session, @session_options
   plug EnrouteHayeWeb.Router
+
+  plug Plug.Static,
+  at: "/uploads",
+  from: {:enroute_haye, "priv/static/uploads"},
+  gzip: false
+  
 end

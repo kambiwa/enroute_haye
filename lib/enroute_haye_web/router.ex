@@ -20,6 +20,8 @@ defmodule EnrouteHayeWeb.Router do
     live "/", Unauth.Home, :index
     live "/journey", Unauth.Journey, :index
     live "/audio", Auth.Audio.Index, :index
+    live "/uploads", Auth.Uploads.Audio, :index
+
   end
 
   # Other scopes may use custom stacks.
