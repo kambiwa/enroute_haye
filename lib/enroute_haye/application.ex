@@ -15,6 +15,7 @@ defmodule EnrouteHaye.Application do
       # Start a worker by calling: EnrouteHaye.Worker.start_link(arg)
       # {EnrouteHaye.Worker, arg},
       # Start to serve requests, typically the last entry
+      EnrouteHaye.PDFStore,
       EnrouteHayeWeb.Endpoint
     ]
 
@@ -31,4 +32,22 @@ defmodule EnrouteHaye.Application do
     EnrouteHayeWeb.Endpoint.config_change(changed, removed)
     :ok
   end
+
+  # lib/enroute_haye/application.ex
+# Add EnrouteHaye.PDFStore to your children list:
+
+def start(_type, _args) do
+  children = [
+    # ... existing children (Repo, Telemetry, etc.) ...
+
+    # PDF token store — must start before the web endpoint
+    EnrouteHaye.PDFStore,
+
+    # ... web endpoint last ...
+    EnrouteHayeWeb.Endpoint
+  ]
+
+  opts = [strategy: :one_for_one, name: EnrouteHaye.Supervisor]
+  Supervisor.start_link(children, opts)
+end
 end

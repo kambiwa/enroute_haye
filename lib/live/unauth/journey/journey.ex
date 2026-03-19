@@ -4,12 +4,12 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
   @steps ~w(basics ceremony map food music stay summary)a
 
   @foods [
-    %{id: "ifisashi",   emoji: "🥜", name: "Ifisashi",        desc: "Peanut soup with leafy greens — a rich, earthy classic"},
-    %{id: "chikanda",   emoji: "🟤", name: "Chikanda",         desc: "Zambian \"polony\" from wild orchid tubers"},
-    %{id: "nshima",     emoji: "🍚", name: "Nshima & Relish",  desc: "The beloved national staple, every Zambian's comfort"},
-    %{id: "bream",      emoji: "🐟", name: "Kapenta Fish",     desc: "Sun-dried Zambezi river sardines, smoky & savory"},
-    %{id: "vitumbuwa",  emoji: "🧆", name: "Vitumbuwa",        desc: "Fried dough fritters, perfect street snack"},
-    %{id: "munkoyo",    emoji: "🥤", name: "Munkoyo Drink",    desc: "Traditional fermented root beverage, refreshing"}
+    %{id: "ifisashi",  emoji: "🥜", name: "Ifisashi",       desc: "Peanut soup with leafy greens — a rich, earthy classic"},
+    %{id: "chikanda",  emoji: "🟤", name: "Chikanda",        desc: "Zambian \"polony\" from wild orchid tubers"},
+    %{id: "nshima",    emoji: "🍚", name: "Nshima & Relish", desc: "The beloved national staple, every Zambian's comfort"},
+    %{id: "bream",     emoji: "🐟", name: "Kapenta Fish",    desc: "Sun-dried Zambezi river sardines, smoky & savory"},
+    %{id: "vitumbuwa", emoji: "🧆", name: "Vitumbuwa",       desc: "Fried dough fritters, perfect street snack"},
+    %{id: "munkoyo",   emoji: "🥤", name: "Munkoyo Drink",   desc: "Traditional fermented root beverage, refreshing"}
   ]
 
   @music [
@@ -38,7 +38,7 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
 
   @cities ~w(Lusaka Livingstone Kitwe Ndola Mongu Chipata Kabwe Solwezi)
 
-  # ── Mount ─────────────────────────────────────────────────────
+  # ── Mount ──────────────────────────────────────────────────────────────────
 
   def mount(_params, _session, socket) do
     {:ok,
@@ -61,13 +61,14 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
        selected_music: [],
        hotel: nil,
        # PDF state
+       traveller_name: "",
        generating_pdf: false,
        pdf_ready: false,
        pdf_error: nil
      )}
   end
 
-  # ── Navigation ────────────────────────────────────────────────
+  # ── Navigation ─────────────────────────────────────────────────────────────
 
   def handle_event("next", _params, %{assigns: %{step: step, steps: steps}} = socket)
       when step < length(steps) - 1 do
@@ -81,7 +82,7 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
   def handle_event("back", _params, socket), do: {:noreply, socket}
   def handle_event("next", _params, socket), do: {:noreply, socket}
 
-  # ── Step 0: Basics ────────────────────────────────────────────
+  # ── Step 0 · Basics ────────────────────────────────────────────────────────
 
   def handle_event("set_city", %{"city" => city}, socket),
     do: {:noreply, assign(socket, city: city)}
@@ -95,12 +96,12 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
   def handle_event("set_transport", %{"transport" => t}, socket),
     do: {:noreply, assign(socket, transport: t)}
 
-  # ── Step 1: Ceremony ──────────────────────────────────────────
+  # ── Step 1 · Ceremony ──────────────────────────────────────────────────────
 
   def handle_event("set_ceremony", %{"ceremony" => c}, socket),
     do: {:noreply, assign(socket, ceremony: c)}
 
-  # ── Step 2: Map ───────────────────────────────────────────────
+  # ── Step 2 · Map ───────────────────────────────────────────────────────────
 
   def handle_event("toggle_pin", %{"pin" => pin_id}, socket) do
     pins =
@@ -111,7 +112,7 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
     {:noreply, assign(socket, active_pins: pins)}
   end
 
-  # ── Step 3: Food ──────────────────────────────────────────────
+  # ── Step 3 · Food ──────────────────────────────────────────────────────────
 
   def handle_event("toggle_food", %{"food" => food_id}, socket) do
     foods =
@@ -122,7 +123,7 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
     {:noreply, assign(socket, selected_foods: foods)}
   end
 
-  # ── Step 4: Music ─────────────────────────────────────────────
+  # ── Step 4 · Music ─────────────────────────────────────────────────────────
 
   def handle_event("toggle_music", %{"music" => music_id}, socket) do
     music =
@@ -133,12 +134,17 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
     {:noreply, assign(socket, selected_music: music)}
   end
 
-  # ── Step 5: Hotel ─────────────────────────────────────────────
+  # ── Step 5 · Hotel ─────────────────────────────────────────────────────────
 
   def handle_event("set_hotel", %{"hotel" => hotel_id}, socket),
     do: {:noreply, assign(socket, hotel: hotel_id)}
 
-  # ── Step 6: Generate PDF ──────────────────────────────────────
+  # ── Step 6 · Traveller name ────────────────────────────────────────────────
+
+  def handle_event("set_traveller_name", %{"name" => name}, socket),
+    do: {:noreply, assign(socket, traveller_name: name)}
+
+  # ── Step 6 · Generate PDF (wkhtmltopdf) ────────────────────────────────────
 
   def handle_event("generate_pdf", _params, socket) do
     send(self(), :do_generate_pdf)
@@ -152,51 +158,44 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
     total = estimated_cost(assigns.hotels, assigns.hotel, assigns.duration)
 
     payload = %{
-      city: (if assigns.city == "", do: "Lusaka", else: assigns.city),
-      duration: assigns.duration,
-      transport: assigns.transport,
-      start_date: assigns.start_date,
-      ceremony: assigns.ceremony,
-      active_pins: assigns.active_pins,
-      selected_foods: assigns.selected_foods,
-      selected_music: assigns.selected_music,
-      hotel_name: if(hotel, do: hotel.name, else: nil),
-      hotel_price: if(hotel, do: hotel.price, else: 120),
-      total_cost: total,
-      foods_all: Enum.map(assigns.foods, &Map.take(&1, [:id, :name])),
-      music_all: Enum.map(assigns.music, &Map.take(&1, [:id, :name]))
+      city:            if(assigns.city == "", do: "Lusaka", else: assigns.city),
+      duration:        assigns.duration,
+      transport:       assigns.transport,
+      start_date:      assigns.start_date,
+      ceremony:        assigns.ceremony,
+      active_pins:     assigns.active_pins,
+      selected_foods:  assigns.selected_foods,
+      selected_music:  assigns.selected_music,
+      hotel_name:      if(hotel, do: hotel.name,  else: nil),
+      hotel_price:     if(hotel, do: hotel.price, else: 120),
+      total_cost:      total,
+      foods_all:       Enum.map(assigns.foods, &Map.take(&1, [:id, :name])),
+      music_all:       Enum.map(assigns.music,  &Map.take(&1, [:id, :name])),
+      traveller_name:  if(assigns.traveller_name == "", do: nil, else: assigns.traveller_name)
     }
 
-    case ItineraryPDF.generate(payload) do
-      {:ok, pdf_bytes} ->
-        # Store PDF bytes in socket private store so the download plug can serve them.
-        # We push an event to trigger a JS download via a data URI.
-        b64 = Base.encode64(pdf_bytes)
-        filename = "enroute_haye_itinerary_#{assigns.city || "lusaka"}.pdf"
-        {:noreply,
-         socket
-         |> assign(generating_pdf: false, pdf_ready: true, pdf_error: nil)
-         |> push_event("download_pdf", %{data: b64, filename: filename})}
+    token = EnrouteHaye.PDFStore.put(payload)
 
-      {:error, reason} ->
-        {:noreply, assign(socket, generating_pdf: false, pdf_ready: false, pdf_error: reason)}
-    end
+    {:noreply,
+     socket
+     |> assign(generating_pdf: false, pdf_ready: true)
+     |> push_redirect(to: "/pdf/itinerary/#{token}")}
   end
 
-  # ── Helpers ───────────────────────────────────────────────────
+  # ── Helpers ────────────────────────────────────────────────────────────────
 
   def step_label(step), do: step |> Atom.to_string() |> String.capitalize()
 
   def progress_pct(step, steps), do: round(step / (length(steps) - 1) * 100)
 
   def estimated_cost(hotels, hotel_id, duration) do
-    hotel = Enum.find(hotels, &(&1.id == hotel_id))
-    night = if hotel, do: hotel.price, else: 120
-    night * duration + 350
+    hotel     = Enum.find(hotels, &(&1.id == hotel_id))
+    per_night = if hotel, do: hotel.price, else: 120
+    per_night * duration + 350
   end
 
   def cost_range(base) do
-    low = round(base * 0.9)
+    low  = round(base * 0.9)
     high = round(base * 1.2 + 50)
     {low, high}
   end

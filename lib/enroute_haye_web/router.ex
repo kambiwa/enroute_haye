@@ -21,7 +21,7 @@ defmodule EnrouteHayeWeb.Router do
     live "/journey", Unauth.Journey, :index
     live "/audio", Auth.Audio.Index, :index
     live "/uploads", Auth.Uploads.Audio, :index
-
+    get "/pdf/itinerary/:token", PDFController, :show
   end
 
   # Other scopes may use custom stacks.

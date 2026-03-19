@@ -1,32 +1,36 @@
+<%!-- ══════════════════════════════════════════════════════
+     EnrouteHaye · Journey LiveView Template
+     PDF export: wkhtmltopdf via /pdf/itinerary/:token
+══════════════════════════════════════════════════════ --%>
+
 <div class="journey-root">
-  <%!-- ── Header ── --%>
+
+  <%!-- ── Header ──────────────────────────────────────────── --%>
   <header class="journey-header">
     <div class="journey-logo">ENROUTE <span>HAYE</span></div>
     <div class="journey-tagline">Digital Tour Guide · Zambia Cultural Journeys</div>
   </header>
 
-  <%!-- ── Progress Bar ── --%>
+  <%!-- ── Progress Bar ─────────────────────────────────────── --%>
   <div class="journey-progress">
     <div class="journey-steps">
       <%= for {step, idx} <- Enum.with_index(@steps) do %>
         <div class={[
           "prog-step",
           idx == @step && "prog-step--active",
-          idx < @step && "prog-step--done"
+          idx < @step  && "prog-step--done"
         ]}>
           <%= step_label(step) %>
         </div>
       <% end %>
     </div>
+
     <div class="progress-bar-bg">
-      <div
-        class="progress-bar-fill"
-        style={"width: #{progress_pct(@step, @steps)}%"}
-      ></div>
+      <div class="progress-bar-fill" style={"width: #{progress_pct(@step, @steps)}%"}></div>
     </div>
   </div>
 
-  <%!-- ── Step Container ── --%>
+  <%!-- ── Step Container ───────────────────────────────────── --%>
   <div class="step-container" id={"step-#{@step}"} phx-hook="StepSlide">
 
     <%!-- ═══════════════════════════════════════════
@@ -48,6 +52,7 @@
               <% end %>
             </select>
           </div>
+
           <div class="field">
             <label>Start Date</label>
             <input
@@ -69,9 +74,9 @@
             type="range"
             min="1" max="14"
             value={@duration}
-            phx-change="set_duration"
             name="duration"
             class="range-gold"
+            phx-change="set_duration"
           />
           <div class="range-labels">
             <span>1 day</span><span>14 days</span>
@@ -99,11 +104,11 @@
           <button type="button" phx-click="next" class="btn-next">Next →</button>
         </div>
       </div>
+    <% end %>
 
     <%!-- ═══════════════════════════════════════════
          STEP 1 — CEREMONY
     ═══════════════════════════════════════════ --%>
-    <% end %>
     <%= if @step == 1 do %>
       <div class="step-card">
         <div class="step-icon">🪘</div>
@@ -151,11 +156,11 @@
           <button type="button" phx-click="next" class="btn-next">Next →</button>
         </div>
       </div>
+    <% end %>
 
     <%!-- ═══════════════════════════════════════════
          STEP 2 — MAP
     ═══════════════════════════════════════════ --%>
-    <% end %>
     <%= if @step == 2 do %>
       <div class="step-card">
         <div class="step-icon">🗺️</div>
@@ -196,11 +201,11 @@
           <button type="button" phx-click="next" class="btn-next">Next →</button>
         </div>
       </div>
+    <% end %>
 
     <%!-- ═══════════════════════════════════════════
          STEP 3 — FOOD
     ═══════════════════════════════════════════ --%>
-    <% end %>
     <%= if @step == 3 do %>
       <div class="step-card">
         <div class="step-icon">🍲</div>
@@ -231,11 +236,11 @@
           <button type="button" phx-click="next" class="btn-next">Next →</button>
         </div>
       </div>
+    <% end %>
 
     <%!-- ═══════════════════════════════════════════
          STEP 4 — MUSIC
     ═══════════════════════════════════════════ --%>
-    <% end %>
     <%= if @step == 4 do %>
       <div class="step-card">
         <div class="step-icon">🎶</div>
@@ -266,11 +271,11 @@
           <button type="button" phx-click="next" class="btn-next">Next →</button>
         </div>
       </div>
+    <% end %>
 
     <%!-- ═══════════════════════════════════════════
          STEP 5 — STAY
     ═══════════════════════════════════════════ --%>
-    <% end %>
     <%= if @step == 5 do %>
       <div class="step-card">
         <div class="step-icon">🏨</div>
@@ -304,14 +309,15 @@
           <button type="button" phx-click="next" class="btn-next">Next →</button>
         </div>
       </div>
+    <% end %>
 
     <%!-- ═══════════════════════════════════════════
          STEP 6 — SUMMARY
+         PDF export via wkhtmltopdf → /pdf/itinerary/:token
     ═══════════════════════════════════════════ --%>
-    <% end %>
     <%= if @step == 6 do %>
       <% sel_hotel = hotel_by_id(@hotels, @hotel) %>
-      <% total = estimated_cost(@hotels, @hotel, @duration) %>
+      <% total     = estimated_cost(@hotels, @hotel, @duration) %>
       <% {low, high} = cost_range(total) %>
 
       <div class="step-card">
@@ -354,54 +360,67 @@
           </div>
         </div>
 
+        <%!-- Cost Box --%>
         <div class="cost-box">
           <div class="cost-label">Estimated Total Budget</div>
           <div class="cost-num" id="cost-counter" phx-hook="CountUp" data-target={total}>
-            $<%= total |> :erlang.integer_to_binary() %>
+            $<%= :erlang.integer_to_binary(total) %>
           </div>
           <div class="cost-range">
-            Range: $<%= Number.Delimit.number_to_delimited(low, precision: 0) %> – $<%= Number.Delimit.number_to_delimited(high, precision: 0) %>
+            Range: $<%= Number.Delimit.number_to_delimited(low,  precision: 0) %> –
+                   $<%= Number.Delimit.number_to_delimited(high, precision: 0) %>
           </div>
         </div>
 
-        <%!-- AI Itinerary ─────────────────────────────── --%>
-        <%= if @generating do %>
+        <%!-- Error notice --%>
+        <%= if @pdf_error do %>
+          <div class="error-box">⚠️ <%= @pdf_error %></div>
+        <% end %>
+
+        <%!-- Success badge --%>
+        <%= if @pdf_ready do %>
+          <div class="pdf-ready-badge">✅ Your itinerary PDF is ready!</div>
+        <% end %>
+
+        <%!-- ── Traveller name ───────────────────────────────────── --%>
+        <div class="traveller-name-field">
+          <label class="traveller-name-label">
+            ✍️ Enter your name for a personalised touch to your itinerary PDF
+            <span class="traveller-name-optional">[personalises the PDF]</span>
+          </label>
+          <input
+            type="text"
+            name="name"
+            value={@traveller_name}
+            placeholder="e.g. Mweembo Kambiwa"
+            maxlength="60"
+            class={["traveller-name-input", @traveller_name != "" && "traveller-name-input--filled"]}
+            phx-change="set_traveller_name"
+            phx-debounce="200"
+          />
+          <%= if @traveller_name != "" do %>
+            <div class="traveller-name-preview">
+              🎟️ Itinerary prepared for <strong><%= @traveller_name %></strong>
+            </div>
+          <% end %>
+        </div>
+
+        <%!-- PDF action — wkhtmltopdf renders /pdf/itinerary/:token server-side --%>
+        <%= if @generating_pdf do %>
           <div class="generating">
             <div class="spinner"></div>
-            <p>✨ Claude is crafting your personalized Zambia itinerary...</p>
+            <p>📄 Building your personalized itinerary PDF…</p>
           </div>
-        <% end %>
-
-        <%= if @error do %>
-          <div class="error-box">
-            ⚠️ <%= @error %>
-          </div>
-        <% end %>
-
-        <%= if @itinerary do %>
-          <div class="itinerary-wrap">
-            <div class="itinerary-label">📜 Your AI-Generated Itinerary</div>
-            <div class="itinerary-output" id="itinerary-text"><%= @itinerary %></div>
-            <button
-              type="button"
-              id="copy-btn"
-              phx-hook="CopyItinerary"
-              data-target="itinerary-text"
-              class="btn-copy"
-            >
-              📋 Copy Itinerary
-            </button>
-          </div>
-        <% end %>
-
-        <%= unless @generating do %>
+        <% else %>
           <button
             type="button"
-            phx-click="generate"
+            phx-click="generate_pdf"
             class="btn-generate"
-            disabled={@generating}
+            id="pdf-btn"
           >
-            <%= if @itinerary, do: "🔄 Regenerate Itinerary", else: "🎁 Generate My Tour Artifact with AI" %>
+            <%= if @pdf_ready,
+                  do:   "🔄 Re-Download Itinerary PDF",
+                  else: "📥 Preview & Download Itinerary PDF" %>
           </button>
         <% end %>
 
