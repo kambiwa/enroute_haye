@@ -2,24 +2,48 @@ defmodule EnrouteHaye.Repo.Migrations.CreateEnrouteHayeTables do
   use Ecto.Migration
 
   def change do
+    execute "CREATE EXTENSION IF NOT EXISTS citext", ""
 
-    # USERS
+    # ========================
+    # USERS 
+    # ========================
     create table(:users) do
-      add :name, :string
-      add :email, :string
+      # Auth fields
+      add :email, :citext, null: false
       add :hashed_password, :string
+      add :confirmed_at, :utc_datetime
+
+      # Profile fields
+      add :name, :string
       add :role, :string, default: "tourist"
       add :avatar, :string
       add :country, :string
       add :bio, :text
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
     create unique_index(:users, [:email])
 
+    # ========================
+    # USER TOKENS (AUTH)
+    # ========================
+    create table(:users_tokens) do
+      add :user_id, references(:users, on_delete: :delete_all), null: false
+      add :token, :binary, null: false
+      add :context, :string, null: false
+      add :sent_to, :string
+      add :authenticated_at, :utc_datetime
 
-    # TRIPS / ITINERARIES
+      timestamps(type: :utc_datetime, updated_at: false)
+    end
+
+    create index(:users_tokens, [:user_id])
+    create unique_index(:users_tokens, [:context, :token])
+
+    # ========================
+    # TRIPS
+    # ========================
     create table(:trips) do
       add :title, :string
       add :description, :text
@@ -30,11 +54,12 @@ defmodule EnrouteHaye.Repo.Migrations.CreateEnrouteHayeTables do
 
       add :user_id, references(:users, on_delete: :delete_all)
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
-
-    # DESTINATIONS / SITES
+    # ========================
+    # SITES
+    # ========================
     create table(:sites) do
       add :name, :string
       add :description, :text
@@ -44,11 +69,12 @@ defmodule EnrouteHaye.Repo.Migrations.CreateEnrouteHayeTables do
       add :category, :string
       add :image_url, :string
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
-
-    # TRIP STOPS (MAP PINS)
+    # ========================
+    # TRIP STOPS
+    # ========================
     create table(:trip_stops) do
       add :day_number, :integer
       add :order_index, :integer
@@ -57,11 +83,12 @@ defmodule EnrouteHaye.Repo.Migrations.CreateEnrouteHayeTables do
       add :trip_id, references(:trips, on_delete: :delete_all)
       add :site_id, references(:sites, on_delete: :delete_all)
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
-
-    # CULTURAL EVENTS
+    # ========================
+    # EVENTS
+    # ========================
     create table(:events) do
       add :title, :string
       add :description, :text
@@ -71,11 +98,12 @@ defmodule EnrouteHaye.Repo.Migrations.CreateEnrouteHayeTables do
       add :longitude, :float
       add :image_url, :string
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
-
-    # ACCOMMODATION
+    # ========================
+    # ACCOMMODATIONS
+    # ========================
     create table(:accommodations) do
       add :name, :string
       add :description, :text
@@ -88,11 +116,12 @@ defmodule EnrouteHaye.Repo.Migrations.CreateEnrouteHayeTables do
       add :contact_phone, :string
       add :image_url, :string
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
-
+    # ========================
     # BOOKINGS
+    # ========================
     create table(:bookings) do
       add :check_in, :date
       add :check_out, :date
@@ -102,22 +131,24 @@ defmodule EnrouteHaye.Repo.Migrations.CreateEnrouteHayeTables do
       add :user_id, references(:users, on_delete: :delete_all)
       add :accommodation_id, references(:accommodations, on_delete: :delete_all)
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
-
-    # LOCAL FOODS
+    # ========================
+    # FOODS
+    # ========================
     create table(:foods) do
       add :name, :string
       add :description, :text
       add :region, :string
       add :image_url, :string
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
-
-    # MUSIC LIBRARY
+    # ========================
+    # AUDIO
+    # ========================
     create table(:audio) do
       add :title, :string
       add :artist, :string
@@ -127,21 +158,23 @@ defmodule EnrouteHaye.Repo.Migrations.CreateEnrouteHayeTables do
       add :cover_image, :string
       add :category, :string
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
-
-    # MEDIA FILES
+    # ========================
+    # MEDIA
+    # ========================
     create table(:media) do
       add :file_url, :string
       add :type, :string
       add :description, :text
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
-
+    # ========================
     # REVIEWS
+    # ========================
     create table(:reviews) do
       add :rating, :integer
       add :comment, :text
@@ -149,17 +182,17 @@ defmodule EnrouteHaye.Repo.Migrations.CreateEnrouteHayeTables do
       add :user_id, references(:users, on_delete: :delete_all)
       add :accommodation_id, references(:accommodations, on_delete: :delete_all)
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
-
+    # ========================
     # FAVORITES
+    # ========================
     create table(:favorites) do
       add :user_id, references(:users, on_delete: :delete_all)
       add :site_id, references(:sites, on_delete: :delete_all)
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
-
   end
 end
