@@ -10,6 +10,8 @@ import { LiveSocket } from "phoenix_live_view"
 import { hooks as colocatedHooks } from "phoenix-colocated/enroute_haye"
 import topbar from "../vendor/topbar"
 import { CountUp, CopyItinerary, StepSlide } from "./hooks/journey"
+import BookingsChart from "./hooks/bookings_chart"
+
 
 let Hooks = { ...colocatedHooks }
 Hooks.Player = Player
@@ -20,6 +22,10 @@ Hooks.StepSlide = StepSlide
 let lv = new LiveSocket("/live", Socket, {
   hooks: Hooks,
   params: { _csrf_token: csrfToken },
+})
+
+let ls = new LiveSocket("/live", Socket, {
+  hooks: { BookingsChart, ...yourOtherHooks }
 })
 
 // ── Helpers ──────────────────────────────────────────────────
