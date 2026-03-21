@@ -12,22 +12,6 @@ import topbar from "../vendor/topbar"
 import { CountUp, CopyItinerary, StepSlide } from "./hooks/journey"
 import BookingsChart from "./hooks/bookings_chart"
 
-
-let Hooks = { ...colocatedHooks }
-Hooks.Player = Player
-Hooks.CountUp = CountUp
-Hooks.CopyItinerary = CopyItinerary
-Hooks.StepSlide = StepSlide
-
-let lv = new LiveSocket("/live", Socket, {
-  hooks: Hooks,
-  params: { _csrf_token: csrfToken },
-})
-
-let ls = new LiveSocket("/live", Socket, {
-  hooks: { BookingsChart, ...yourOtherHooks }
-})
-
 // ── Helpers ──────────────────────────────────────────────────
 function $(sel, ctx = document) { return ctx.querySelector(sel) }
 function $$(sel, ctx = document) { return [...ctx.querySelectorAll(sel)] }
@@ -35,7 +19,7 @@ function $$(sel, ctx = document) { return [...ctx.querySelectorAll(sel)] }
 // ── Hooks ─────────────────────────────────────────────────────
 
 /**
- * LoaderHook — hides the splash screen after assets load,
+ * LoaderHook — hides the splash screen once LiveView mounts,
  * then triggers hero reveal animations.
  * Attach with: phx-hook="LoaderHook" on the #loader element.
  */
@@ -44,16 +28,10 @@ const LoaderHook = {
     const loader = document.getElementById("loader")
     if (!loader) return
 
-    const hide = () => {
+    setTimeout(() => {
       loader.classList.add("hidden")
-      setTimeout(() => revealHero(), 200)
-    }
-
-    if (document.readyState === "complete") {
-      setTimeout(hide, 1200)
-    } else {
-      window.addEventListener("load", () => setTimeout(hide, 1200), { once: true })
-    }
+      revealHero()
+    }, 1200)
   }
 }
 
@@ -63,7 +41,7 @@ const LoaderHook = {
  */
 const Navbar = {
   mounted() {
-    const nav = document.getElementById("navbar")
+    const nav = document.getElementById("navbar-hook")
     if (!nav) return
 
     const THRESHOLD = window.innerHeight * 0.55
@@ -123,9 +101,9 @@ const Particles = {
         p.x += p.dx
         p.y += p.dy
 
-        if (p.y < -4)             { p.y = canvas.height + 4; p.x = Math.random() * canvas.width }
-        if (p.x < -4)               p.x = canvas.width + 4
-        if (p.x > canvas.width + 4) p.x = -4
+        if (p.y < -4)               { p.y = canvas.height + 4; p.x = Math.random() * canvas.width }
+        if (p.x < -4)                 p.x = canvas.width + 4
+        if (p.x > canvas.width + 4)   p.x = -4
       })
 
       animId = requestAnimationFrame(draw)
@@ -257,12 +235,16 @@ const liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
   params: { _csrf_token: csrfToken },
   hooks: {
-    ...colocatedHooks,   // phoenix-colocated hooks (generated per component)
+    ...colocatedHooks,
     LoaderHook,
     Navbar,
     Particles,
     Player,
     AudioPlayerHook,
+    CountUp,
+    CopyItinerary,
+    StepSlide,
+    BookingsChart,
   }
 })
 
@@ -298,17 +280,6 @@ if (process.env.NODE_ENV === "development") {
 
 // ── DOM ready ─────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", () => {
-  // Fallback loader hide for pages without a LV-mounted #loader element
-  const loader = document.getElementById("loader")
-  if (loader) {
-    window.addEventListener("load", () => {
-      setTimeout(() => {
-        loader.classList.add("hidden")
-        revealHero()
-      }, 1200)
-    }, { once: true })
-  }
-
   initScrollReveal()
   initSmoothScroll()
 })

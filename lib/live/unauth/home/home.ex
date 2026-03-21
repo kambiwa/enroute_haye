@@ -6,8 +6,9 @@ defmodule EnrouteHayeWeb.Unauth.Home do
     socket =
       socket
       |> assign(:page_title, "Kuomboka — The Royal Journey")
+      |> assign(:current_scope, nil)
       |> assign(:timeline_events, timeline_events())
-      |> assign(:barge_details , barge_details())
+      |> assign(:barge_details, barge_details())
       |> assign(:active_detail, "masthead")
       |> assign(:mobile_menu_open, false)
 
@@ -29,8 +30,7 @@ defmodule EnrouteHayeWeb.Unauth.Home do
     {:noreply, assign(socket, :mobile_menu_open, false)}
   end
 
-  # Barge detail content helper
-  def barge_details do
+  defp barge_details do
     [
       %{
         id: "masthead",
@@ -56,7 +56,7 @@ defmodule EnrouteHayeWeb.Unauth.Home do
     ]
   end
 
-  def timeline_events do
+  defp timeline_events do
     [
       %{
         time: "DAWN",

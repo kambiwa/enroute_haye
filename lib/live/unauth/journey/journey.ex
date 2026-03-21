@@ -4,28 +4,28 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
   @steps ~w(basics ceremony map food music stay summary)a
 
   @foods [
-    %{id: "ifisashi",  emoji: "🥜", name: "Ifisashi",       desc: "Peanut soup with leafy greens — a rich, earthy classic"},
-    %{id: "chikanda",  emoji: "🟤", name: "Chikanda",        desc: "Zambian \"polony\" from wild orchid tubers"},
-    %{id: "nshima",    emoji: "🍚", name: "Nshima & Relish", desc: "The beloved national staple, every Zambian's comfort"},
-    %{id: "bream",     emoji: "🐟", name: "Kapenta Fish",    desc: "Sun-dried Zambezi river sardines, smoky & savory"},
-    %{id: "vitumbuwa", emoji: "🧆", name: "Vitumbuwa",       desc: "Fried dough fritters, perfect street snack"},
-    %{id: "munkoyo",   emoji: "🥤", name: "Munkoyo Drink",   desc: "Traditional fermented root beverage, refreshing"}
+    %{id: "ifisashi",  emoji: "🥜", name: "Shombo",       desc: "Peanut soup with leafy greens — a rich, earthy classic"},
+    %{id: "chikanda",  emoji: "🟤", name: "Sindambi",        desc: "Zambian \"polony\" from wild orchid tubers"},
+    %{id: "nshima",    emoji: "🍚", name: "(Buhobe) ", desc: "The beloved national staple, every Zambian's comfort"},
+    %{id: "bream",     emoji: "🐟", name: "(Litapi) Fish",    desc: "Sun-dried Zambezi river sardines, smoky & savory"},
+    %{id: "vitumbuwa", emoji: "🧆", name: "Mubula",       desc: "Fried dough fritters, perfect street snack"},
+    %{id: "munkoyo",   emoji: "🥤", name: "(ilya - Mabisi) Drink",   desc: "Traditional fermented root beverage, refreshing"}
   ]
 
   @music [
-    %{id: "lwiindi",   emoji: "🥁", name: "Lwiindi Festival Beats", desc: "Tonga traditional rain ceremony drumming"},
+    %{id: "lwiindi",   emoji: "🥁", name: "Liwaye", desc: "Tonga traditional rain ceremony drumming"},
     %{id: "lozi",      emoji: "👑", name: "Lozi Royal Songs",       desc: "Sacred songs performed during Kuomboka procession"},
-    %{id: "folk",      emoji: "🎵", name: "Zambezi Folk Tunes",     desc: "Soulful acoustic melodies from the riverbanks"},
+    %{id: "folk",      emoji: "🎵", name: "Ngomalume",     desc: "Soulful acoustic melodies from the riverbanks"},
     %{id: "kalindula", emoji: "🎸", name: "Kalindula Rhythms",      desc: "Zambia's iconic 70s bass-heavy pop genre"},
     %{id: "ngoma",     emoji: "🪘", name: "Ngoma Drum Circle",      desc: "Ceremonial polyrhythmic percussion"},
     %{id: "chewa",     emoji: "🎺", name: "Chewa Gule Songs",       desc: "Mystical music from the masked Gule Wamkulu dance"}
   ]
 
   @hotels [
-    %{id: "royal",   emoji: "🏰", name: "Royal Livingstone Hotel",  stars: "★★★★★", price: 320, dist: "12km from ceremony", inc: "Breakfast · Pool · Spa"},
-    %{id: "kubu",    emoji: "🌿", name: "Kubu Cabins Mongu",        stars: "★★★★",  price: 145, dist: "3km from ceremony",  inc: "Breakfast · River View"},
+    %{id: "royal",   emoji: "🏰", name: "Country Lodge",  stars: "★★★★★", price: 320, dist: "12km from ceremony", inc: "Breakfast · Pool · Spa"},
+    %{id: "kubu",    emoji: "🌿", name: "Royal dreams",        stars: "★★★★",  price: 145, dist: "3km from ceremony",  inc: "Breakfast · River View"},
     %{id: "lealui",  emoji: "🛖", name: "Lealui Cultural Lodge",    stars: "★★★",   price: 85,  dist: "On-site Kuomboka",   inc: "Cultural Immersion · Meals"},
-    %{id: "barotse", emoji: "🌅", name: "Barotse Floodplains Camp", stars: "★★★★",  price: 210, dist: "8km from ceremony",  inc: "All-inclusive · Canoe"}
+    %{id: "barotse", emoji: "🌅", name: "Liseli Lodge", stars: "★★★★",  price: 210, dist: "8km from ceremony",  inc: "All-inclusive · Canoe"}
   ]
 
   @pins [

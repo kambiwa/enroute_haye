@@ -1,58 +1,16 @@
-<%!-- home.html.heex --%>
-
-<%!-- ============================
-  LOADING SCREEN
-============================= --%>
-<div id="loader" class="loader-screen" aria-hidden="true">
-  <div class="loader-inner">
-    <div class="loader-ring">
-      <div class="loader-spinner"></div>
-      <div class="loader-crown">
-        <.icon name="hero-star-solid" class="w-8 h-8 text-yellow-400" />
+  <Layouts.unauth_app flash={@flash} current_scope={@current_scope}>
+  <div id="loader" class="loader-screen" aria-hidden="true" phx-hook="LoaderHook">
+    <div class="loader-inner">
+      <div class="loader-ring">
+        <div class="loader-spinner"></div>
+        <div class="loader-crown">
+          <.icon name="hero-star-solid" class="w-8 h-8 text-yellow-400" />
+        </div>
       </div>
+      <p class="loader-title">KUOMBOKA</p>
+      <p class="loader-sub">THE ROYAL JOURNEY</p>
     </div>
-    <p class="loader-title">KUOMBOKA</p>
-    <p class="loader-sub">THE ROYAL JOURNEY</p>
   </div>
-</div>
-
-<%!-- ============================
-  NAVIGATION
-============================= --%>
-<nav id="navbar" class="navbar" phx-hook="Navbar" id="navbar-hook">
-  <div class="navbar-inner">
-    <div class="navbar-brand">
-      <span class="brand-crown">♛</span>
-      <span class="brand-name">KUOMBOKA</span>
-    </div>
-
-    <div class="navbar-links">
-      <a href="#journey" class="nav-link">The Journey</a>
-      <a href="#ceremony" class="nav-link">Ceremony</a>
-      <a href="#barge" class="nav-link">Nalikwanda</a>
-      <a href="#culture" class="nav-link">Culture</a>
-      <a href="/journey" class="btn-outline-gold">Start Tour</a>
-    </div>
-
-    <button
-      class="mobile-menu-btn"
-      phx-click="toggle_mobile_menu"
-      aria-label="Toggle menu"
-    >
-      <span class={"hamburger #{if @mobile_menu_open, do: "open"}"}>
-        <span></span><span></span><span></span>
-      </span>
-    </button>
-  </div>
-</nav>
-
-<%!-- Mobile Menu --%>
-<div class={"mobile-menu #{if @mobile_menu_open, do: "open"}"}>
-  <a href="#journey"  phx-click="close_mobile_menu" class="mobile-link">The Journey</a>
-  <a href="#ceremony" phx-click="close_mobile_menu" class="mobile-link">Ceremony</a>
-  <a href="#barge"    phx-click="close_mobile_menu" class="mobile-link">Nalikwanda</a>
-  <a href="#culture"  phx-click="close_mobile_menu" class="mobile-link">Culture</a>
-</div>
 
 <%!-- ============================
   HERO
@@ -63,8 +21,8 @@
   <div class="blob blob-2" aria-hidden="true"></div>
 
   <%!-- Particle canvas --%>
-  <canvas id="particles-canvas" class="particles-canvas" aria-hidden="true"
-    phx-hook="Particles" id="particles-hook"></canvas>
+  <canvas id="particles-hook" class="particles-canvas" aria-hidden="true"
+    phx-hook="Particles"></canvas>
 
   <%!-- Water waves --%>
   <div class="waves" aria-hidden="true">
@@ -96,7 +54,7 @@
       <a href="/journey" class="btn-primary">
         Begin Experience <span class="btn-arrow">→</span>
       </a>
-      <button class="btn-audio" id="ambient-btn" phx-hook="AudioPlayer" id="audio-hook">
+      <button class="btn-audio" id="audio-hook" phx-hook="AudioPlayer">
         <span class="audio-bars" aria-hidden="true">
           <span></span><span></span><span></span><span></span><span></span>
         </span>
@@ -377,7 +335,7 @@
       Listen to the traditional Maoma drums and Lozi songs that accompany the royal voyage
     </p>
 
-    <div class="player scroll-reveal" id="player" phx-hook="Player" id="player-hook">
+    <div class="player scroll-reveal" id="player-hook" phx-hook="Player">
       <div class="player-controls">
         <button class="ctrl-btn" id="skip-back" aria-label="Skip backward">⏮</button>
         <button class="ctrl-btn ctrl-play" id="play-btn" aria-label="Play/Pause">▶</button>
@@ -399,51 +357,4 @@
     </div>
   </div>
 </section>
-
-<%!-- ============================
-  FOOTER
-============================= --%>
-<footer class="footer">
-  <div class="container">
-    <div class="footer-grid">
-      <div class="footer-brand col-span-2">
-        <div class="footer-logo">
-          <span class="brand-crown">♛</span>
-          <span class="brand-name">KUOMBOKA</span>
-        </div>
-        <p class="footer-tagline">
-          Preserving and sharing the rich cultural heritage of the Lozi people
-          and the magnificent Kuomboka ceremony for future generations.
-        </p>
-        <div class="social-links">
-          <a href="#" class="social-btn" aria-label="Facebook">f</a>
-          <a href="#" class="social-btn" aria-label="Instagram">◎</a>
-          <a href="#" class="social-btn" aria-label="Twitter">✕</a>
-        </div>
-      </div>
-
-      <div class="footer-col">
-        <h4 class="footer-heading">Quick Links</h4>
-        <ul class="footer-links">
-          <li><a href="#">The Ceremony</a></li>
-          <li><a href="#">Royal History</a></li>
-          <li><a href="#">Visit Barotseland</a></li>
-          <li><a href="#">Cultural Guidelines</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-col">
-        <h4 class="footer-heading">Contact</h4>
-        <ul class="footer-contact">
-          <li>📍 Mongu, Western Zambia</li>
-          <li>✉ info@kuomboka.zm</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="footer-bottom">
-      <p>&copy; 2026 Kuomboka Digital Heritage. All rights reserved.</p>
-      <p class="footer-credit">Designed in honor of Lozi tradition</p>
-    </div>
-  </div>
-</footer>
+</Layouts.unauth_app>

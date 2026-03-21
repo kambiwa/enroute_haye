@@ -19,8 +19,8 @@ defmodule EnrouteHayeWeb.Layouts do
     <div class="min-h-screen flex flex-col kuomboka-bg">
 
       <%!-- ── NAVBAR ── --%>
-      <nav id="navbar" class="navbar fixed top-0 left-0 right-0 z-50 transition-all duration-300"
-           phx-hook="Navbar" id="navbar-hook">
+      <nav id="navbar-hook" class="navbar fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+           phx-hook="Navbar">
         <div class="navbar-inner max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex items-center justify-between h-16">
 
           <a href={~p"/"} class="navbar-brand flex items-center gap-2">
@@ -304,6 +304,8 @@ defmodule EnrouteHayeWeb.Layouts do
     """
   end
 
+
+
   # ───────────────────────────────────────────────
   #  HELPERS
   # ───────────────────────────────────────────────
@@ -315,6 +317,60 @@ defmodule EnrouteHayeWeb.Layouts do
   defp sidebar_link(false),
     do: "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-600 hover:text-[#8B1A1A] hover:bg-[#8B1A1A]/5 border-l-[3px] border-transparent pl-[calc(0.75rem-3px)] transition-all"
 
+# ───────────────────────────────────────────────
+  #  UNAUTHENTICATED LAYOUT — navbar only, no footer
+  #  Use for auth pages (login, register, reset)
+  # ───────────────────────────────────────────────
+  attr :flash, :map, required: true
+  attr :current_scope, :map, default: nil
+  slot :inner_block, required: true
+
+  def unauth_no_footer(assigns) do
+    ~H"""
+    <div class="min-h-screen flex flex-col kuomboka-bg">
+
+      <%!-- ── NAVBAR ── --%>
+      <nav id="navbar-hook" class="navbar fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+           phx-hook="Navbar">
+        <div class="navbar-inner max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex items-center justify-between h-16">
+
+          <a href={~p"/"} class="navbar-brand flex items-center gap-2">
+            <span class="brand-crown text-yellow-400 text-2xl">♛</span>
+            <span class="brand-name text-white font-bold tracking-widest text-sm uppercase">KUOMBOKA</span>
+          </a>
+
+          <%!-- Desktop links --%>
+          <div class="navbar-links hidden md:flex items-center gap-6">
+            <a href={~p"/#journey"}   class="nav-link text-white/80 hover:text-yellow-400 text-sm tracking-wide transition-colors">The Journey</a>
+            <a href={~p"/#ceremony"}  class="nav-link text-white/80 hover:text-yellow-400 text-sm tracking-wide transition-colors">Ceremony</a>
+            <a href={~p"/#barge"}     class="nav-link text-white/80 hover:text-yellow-400 text-sm tracking-wide transition-colors">Nalikwanda</a>
+            <a href={~p"/#culture"}   class="nav-link text-white/80 hover:text-yellow-400 text-sm tracking-wide transition-colors">Culture</a>
+            <a href={~p"/journey"}    class="btn-outline-gold border border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black px-4 py-1.5 rounded text-sm tracking-wide transition-all">Start Tour</a>
+            <a href={~p"/users/log-in"}   class="text-white/70 hover:text-white text-sm transition-colors">Sign in</a>
+            <a href={~p"/users/register"} class="bg-yellow-400 text-black font-semibold px-4 py-1.5 rounded text-sm hover:bg-yellow-300 transition-colors">Get Started</a>
+          </div>
+
+          <%!-- Mobile hamburger --%>
+          <button class="md:hidden text-white p-2"
+                  phx-click="toggle_mobile_menu"
+                  aria-label="Toggle menu">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+        </div>
+      </nav>
+
+      <%!-- ── MAIN ── --%>
+      <main class="flex-1 pt-16">
+        <.flash_group flash={@flash} />
+        {render_slot(@inner_block)}
+      </main>
+
+    </div>
+    """
+  end
   # ───────────────────────────────────────────────
   #  DEFAULT PHOENIX APP LAYOUT (keep for dev/errors)
   # ───────────────────────────────────────────────
@@ -344,8 +400,8 @@ defmodule EnrouteHayeWeb.Layouts do
         </ul>
       </div>
     </header>
-    <main class="px-4 py-20 sm:px-6 lg:px-8">
-      <div class="mx-auto max-w-2xl space-y-4">
+    <main >
+      <div >
         {render_slot(@inner_block)}
       </div>
     </main>
