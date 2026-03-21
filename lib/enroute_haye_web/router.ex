@@ -51,13 +51,20 @@ defmodule EnrouteHayeWeb.Router do
 
   ## Authentication routes
 
-  scope "/", EnrouteHayeWeb do
+  scope "/admin", EnrouteHayeWeb do
     pipe_through [:browser, :require_authenticated_user]
 
     live_session :require_authenticated_user,
       on_mount: [{EnrouteHayeWeb.UserAuth, :require_authenticated}] do
 
       live "/dashboard", Auth.Admin.Dashboard, :index
+
+
+      live "/accomodations", Auth.Accommodations.Index, :index
+      live "/accomodations/new", Auth.Accommodations.New, :new
+      live "/accomodations/:id/edit", Auth.Accommodations.Edit, :edit
+
+
       live "/trips", Auth.Trips.Index, :index
       live "/trips/new", Auth.Trips.New, :new
       live "/trips/:id/edit", Auth.Trips.Edit, :edit
