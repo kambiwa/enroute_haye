@@ -1,4 +1,4 @@
-defmodule EnrouteHayeWeb.Auth.AudioManager.Index do
+defmodule EnrouteHayeWeb.Auth.Trips.Index do
    use EnrouteHayeWeb, :live_view
 
 
@@ -7,7 +7,7 @@ defmodule EnrouteHayeWeb.Auth.AudioManager.Index do
 
     socket =
       socket
-      |> assign(:page_title, "Audio")
+      |> assign(:page_title, "Foods")
       # |> assign(:accommodations, EnrouteHaye.Accommodations.list_accommodations())
 
     {:ok, socket}
@@ -15,15 +15,15 @@ defmodule EnrouteHayeWeb.Auth.AudioManager.Index do
 
    def render(assigns) do
     ~H"""
-    <Layouts.admin_app flash={@flash} current_scope={@current_scope} current_page={:audio}>
+    <Layouts.admin_app flash={@flash} current_scope={@current_scope} current_page={:trips}>
         <%!-- <div class="container mx-auto px-4 py-8">
 
           <div class="bg-white shadow-md rounded-lg p-6">
-            <h1 class="text-2xl font-bold mb-4">Accommodations</h1>
+            <h1 class="text-2xl font-bold mb-4">Trips</h1>
 
             <div class="mb-4">
-              <.link navigate={~p"/accomodations/new"} class="btn btn-primary">
-                New Accommodation
+              <.link navigate={~p"/trips/new"} class="btn btn-primary">
+                New Trip
               </.link>
             </div>
 
