@@ -1,6 +1,6 @@
 defmodule EnrouteHayeWeb.PDFController do
   @moduledoc """
-  Renders the itinerary token into a PDF using wkhtmltopdf (temp-file strategy)
+  Renders the itinerary token into a PDF using ChromicPDF
   and streams the result back to the browser.
 
   Route (in router.ex):
@@ -8,18 +8,6 @@ defmodule EnrouteHayeWeb.PDFController do
   """
 
   use EnrouteHayeWeb, :controller
-
-  @wkhtmltopdf_args ~w(
-    --quiet
-    --enable-local-file-access
-    --page-size      A4
-    --margin-top     15mm
-    --margin-bottom  15mm
-    --margin-left    15mm
-    --margin-right   15mm
-    --print-media-type
-    --encoding       UTF-8
-  )
 
   # ── Action ────────────────────────────────────────────────────────────────
 
@@ -50,35 +38,29 @@ defmodule EnrouteHayeWeb.PDFController do
     end
   end
 
-  # ── Private: render via temp files ────────────────────────────────────────
+  # ── Private: render via ChromicPDF ────────────────────────────────────────
+    defp render_pdf(payload) do
+      html = build_html(payload)
 
-  defp render_pdf(payload) do
-    case System.find_executable("wkhtmltopdf") do
-      nil ->
-        {:error, "wkhtmltopdf is not installed on this server"}
-
-      wkhtmltopdf ->
-        uid       = Base.encode16(:crypto.strong_rand_bytes(8), case: :lower)
-        html_path = Path.join(System.tmp_dir!(), "itinerary_#{uid}.html")
-        pdf_path  = Path.join(System.tmp_dir!(), "itinerary_#{uid}.pdf")
-
-        try do
-          File.write!(html_path, build_html(payload))
-
-          args = @wkhtmltopdf_args ++ [html_path, pdf_path]
-
-          case System.cmd(wkhtmltopdf, args, stderr_to_stdout: true) do
-            {_output, 0}      -> {:ok, File.read!(pdf_path)}
-            {output, code}    -> {:error, "wkhtmltopdf exited #{code}: #{String.trim(output)}"}
-          end
-        after
-          File.rm(html_path)
-          File.rm(pdf_path)
-        end
+      case ChromicPDF.print_to_pdf(
+        {:html, html},
+        print_to_pdf: %{
+          paperWidth: 8.27,
+          paperHeight: 11.69,
+          marginTop: 0.59,
+          marginBottom: 0.59,
+          marginLeft: 0.59,
+          marginRight: 0.59,
+          printBackground: true
+        }
+      ) do
+        {:ok, base64_pdf} -> {:ok, Base.decode64!(base64_pdf)}
+        {:error, reason}  -> {:error, inspect(reason)}
+      end
     end
-  end
 
   # ── HTML template ─────────────────────────────────────────────────────────
+  # (unchanged — full template below)
 
   defp build_html(p) do
     foods  = names_for(p.foods_all, p.selected_foods)
@@ -104,19 +86,18 @@ defmodule EnrouteHayeWeb.PDFController do
       <meta charset="UTF-8" />
       <title>Kuomboka · Itinerary</title>
       <style>
-        /* ── Reset ── */
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        /* ── Base ── */
         body {
           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
           font-size: 13px;
           color: #0A0A0A;
           background: #FFFFFF;
           line-height: 1.6;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
         }
 
-        /* ── Cover ── */
         .cover {
           background: #0A0A0A;
           color: #FFFFFF;
@@ -126,7 +107,6 @@ defmodule EnrouteHayeWeb.PDFController do
           overflow: hidden;
         }
 
-        /* Diagonal red accent strip — mirrors the hero section */
         .cover::after {
           content: '';
           position: absolute;
@@ -164,22 +144,9 @@ defmodule EnrouteHayeWeb.PDFController do
           gap: 10px;
           margin: 14px 0;
         }
-        .cover-divider-line {
-          width: 48px;
-          height: 2px;
-          background: #CC0000;
-          display: inline-block;
-        }
-        .cover-divider-icon {
-          color: #CC0000;
-          font-size: 1rem;
-        }
-        .cover-divider-line-faint {
-          width: 48px;
-          height: 2px;
-          background: rgba(255,255,255,0.15);
-          display: inline-block;
-        }
+        .cover-divider-line { width: 48px; height: 2px; background: #CC0000; display: inline-block; }
+        .cover-divider-icon { color: #CC0000; font-size: 1rem; }
+        .cover-divider-line-faint { width: 48px; height: 2px; background: rgba(255,255,255,0.15); display: inline-block; }
 
         .cover-subtitle {
           font-size: 13px;
@@ -207,13 +174,8 @@ defmodule EnrouteHayeWeb.PDFController do
           margin-top: 4px;
         }
 
-        /* ── Red rule under cover ── */
-        .cover-rule {
-          height: 3px;
-          background: #CC0000;
-        }
+        .cover-rule { height: 3px; background: #CC0000; }
 
-        /* ── Sections ── */
         .section {
           padding: 22px 44px 16px;
           border-bottom: 1px solid #F0EFED;
@@ -231,7 +193,6 @@ defmodule EnrouteHayeWeb.PDFController do
           margin-bottom: 14px;
         }
 
-        /* ── Overview grid ── */
         .grid {
           display: grid;
           grid-template-columns: 1fr 1fr 1fr;
@@ -251,7 +212,6 @@ defmodule EnrouteHayeWeb.PDFController do
           color: #0A0A0A;
         }
 
-        /* ── Tags ── */
         .tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
         .tag {
           background: #F2F0EB;
@@ -263,7 +223,6 @@ defmodule EnrouteHayeWeb.PDFController do
         }
         .tag-empty { font-size: 11px; color: #B8B5AF; font-style: italic; }
 
-        /* ── Cost box ── */
         .cost-box {
           margin: 0 44px 24px;
           background: #0A0A0A;
@@ -294,7 +253,6 @@ defmodule EnrouteHayeWeb.PDFController do
           margin-top: 4px;
         }
 
-        /* ── Footer ── */
         .footer {
           margin-top: 20px;
           padding: 14px 44px;
@@ -313,10 +271,6 @@ defmodule EnrouteHayeWeb.PDFController do
           letter-spacing: 0.15em;
           text-transform: uppercase;
           font-size: 10px;
-        }
-
-        @media print {
-          body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
         }
       </style>
     </head>
@@ -347,53 +301,25 @@ defmodule EnrouteHayeWeb.PDFController do
       <div class="section">
         <div class="section-title">Journey Overview</div>
         <div class="grid">
-          <div class="grid-item">
-            <div class="label">Departure</div>
-            <div class="val">#{city}</div>
-          </div>
-          <div class="grid-item">
-            <div class="label">Start Date</div>
-            <div class="val">#{date}</div>
-          </div>
-          <div class="grid-item">
-            <div class="label">Duration</div>
-            <div class="val">#{p.duration} Days</div>
-          </div>
-          <div class="grid-item">
-            <div class="label">Transport</div>
-            <div class="val">#{String.capitalize(p.transport)}</div>
-          </div>
-          <div class="grid-item">
-            <div class="label">Ceremony</div>
-            <div class="val">Kuomboka</div>
-          </div>
-          <div class="grid-item">
-            <div class="label">Map Sites</div>
-            <div class="val">#{sites} Pinned</div>
-          </div>
-          <div class="grid-item">
-            <div class="label">Accommodation</div>
-            <div class="val">#{hotel}</div>
-          </div>
-          <div class="grid-item">
-            <div class="label">Nightly Rate</div>
-            <div class="val">$#{p.hotel_price} / night</div>
-          </div>
+          <div class="grid-item"><div class="label">Departure</div><div class="val">#{city}</div></div>
+          <div class="grid-item"><div class="label">Start Date</div><div class="val">#{date}</div></div>
+          <div class="grid-item"><div class="label">Duration</div><div class="val">#{p.duration} Days</div></div>
+          <div class="grid-item"><div class="label">Transport</div><div class="val">#{String.capitalize(p.transport)}</div></div>
+          <div class="grid-item"><div class="label">Ceremony</div><div class="val">Kuomboka</div></div>
+          <div class="grid-item"><div class="label">Map Sites</div><div class="val">#{sites} Pinned</div></div>
+          <div class="grid-item"><div class="label">Accommodation</div><div class="val">#{hotel}</div></div>
+          <div class="grid-item"><div class="label">Nightly Rate</div><div class="val">$#{p.hotel_price} / night</div></div>
         </div>
       </div>
 
       <div class="section">
         <div class="section-title">Local Foods to Savour</div>
-        <div class="tag-list">
-          #{tag_items(foods, "No foods selected")}
-        </div>
+        <div class="tag-list">#{tag_items(foods, "No foods selected")}</div>
       </div>
 
       <div class="section">
         <div class="section-title">Cultural Music Playlist</div>
-        <div class="tag-list">
-          #{tag_items(music, "No tracks selected")}
-        </div>
+        <div class="tag-list">#{tag_items(music, "No tracks selected")}</div>
       </div>
 
       <div class="cost-box">
@@ -422,12 +348,8 @@ defmodule EnrouteHayeWeb.PDFController do
     |> Enum.map(& &1.name)
   end
 
-  defp tag_items([], fallback),
-    do: ~s(<span class="tag-empty">#{fallback}</span>)
+  defp tag_items([], fallback), do: ~s(<span class="tag-empty">#{fallback}</span>)
+  defp tag_items(names, _), do: Enum.map_join(names, "\n", &~s(<span class="tag">#{&1}</span>))
 
-  defp tag_items(names, _fallback),
-    do: Enum.map_join(names, "\n", &~s(<span class="tag">#{&1}</span>))
-
-  defp slug(str),
-    do: str |> String.downcase() |> String.replace(~r/\s+/, "_")
+  defp slug(str), do: str |> String.downcase() |> String.replace(~r/\s+/, "_")
 end

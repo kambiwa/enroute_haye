@@ -1,6 +1,4 @@
 defmodule EnrouteHaye.Application do
-  # See https://hexdocs.pm/elixir/Application.html
-  # for more information on OTP Applications
   @moduledoc false
 
   use Application
@@ -12,42 +10,18 @@ defmodule EnrouteHaye.Application do
       EnrouteHaye.Repo,
       {DNSCluster, query: Application.get_env(:enroute_haye, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: EnrouteHaye.PubSub},
-      # Start a worker by calling: EnrouteHaye.Worker.start_link(arg)
-      # {EnrouteHaye.Worker, arg},
-      # Start to serve requests, typically the last entry
       EnrouteHaye.PDFStore,
+      ChromicPDF,
       EnrouteHayeWeb.Endpoint
     ]
 
-    # See https://hexdocs.pm/elixir/Supervisor.html
-    # for other strategies and supported options
     opts = [strategy: :one_for_one, name: EnrouteHaye.Supervisor]
     Supervisor.start_link(children, opts)
   end
 
-  # Tell Phoenix to update the endpoint configuration
-  # whenever the application is updated.
   @impl true
   def config_change(changed, _new, removed) do
     EnrouteHayeWeb.Endpoint.config_change(changed, removed)
     :ok
   end
-
-  # lib/enroute_haye/application.ex
-# Add EnrouteHaye.PDFStore to your children list:
-
-def start(_type, _args) do
-  children = [
-    # ... existing children (Repo, Telemetry, etc.) ...
-
-    # PDF token store — must start before the web endpoint
-    EnrouteHaye.PDFStore,
-
-    # ... web endpoint last ...
-    EnrouteHayeWeb.Endpoint
-  ]
-
-  opts = [strategy: :one_for_one, name: EnrouteHaye.Supervisor]
-  Supervisor.start_link(children, opts)
-end
 end

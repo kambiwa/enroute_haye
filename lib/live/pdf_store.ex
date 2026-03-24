@@ -1,40 +1,19 @@
 defmodule EnrouteHaye.PDFStore do
-  @moduledoc """
-  Temporary store for PDF payload tokens.
-
-  Tokens expire after @ttl_seconds (default 5 minutes).
-  The ETS table is owned by this GenServer so it survives
-  individual LiveView crashes.
-
-  Add to your supervision tree in application.ex:
-      children = [
-        ...
-        EnrouteHaye.PDFStore,
-        ...
-      ]
-  """
-
   use GenServer
+  require Logger
 
-  @table      :pdf_store
-  @ttl_seconds 300   # 5 minutes
-  @sweep_ms    60_000 # sweep expired tokens every 60 s
-
-  # ── Public API ────────────────────────────────────────────────────────────
+  @table       :pdf_store
+  @ttl_seconds 300
+  @sweep_ms    60_000
 
   def start_link(_opts \\ []) do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
-  @doc "Store a payload and return a URL-safe token."
   def put(payload) do
-    token = generate_token()
-    expires_at = System.system_time(:second) + @ttl_seconds
-    :ets.insert(@table, {token, payload, expires_at})
-    token
+    GenServer.call(__MODULE__, {:put, payload})
   end
 
-  @doc "Retrieve a payload by token. Returns nil if missing or expired."
   def get(token) do
     now = System.system_time(:second)
 
@@ -44,13 +23,25 @@ defmodule EnrouteHaye.PDFStore do
     end
   end
 
-  # ── GenServer callbacks ───────────────────────────────────────────────────
-
   @impl true
   def init(_) do
-    :ets.new(@table, [:named_table, :public, :set, read_concurrency: true])
+    if :ets.whereis(@table) == :undefined do
+      :ets.new(@table, [:named_table, :public, :set, read_concurrency: true])
+      Logger.info("[PDFStore] ETS table created")
+    else
+      Logger.info("[PDFStore] ETS table already exists, reusing")
+    end
+
     schedule_sweep()
     {:ok, %{}}
+  end
+
+  @impl true
+  def handle_call({:put, payload}, _from, state) do
+    token = generate_token()
+    expires_at = System.system_time(:second) + @ttl_seconds
+    :ets.insert(@table, {token, payload, expires_at})
+    {:reply, token, state}
   end
 
   @impl true
@@ -60,8 +51,6 @@ defmodule EnrouteHaye.PDFStore do
     schedule_sweep()
     {:noreply, state}
   end
-
-  # ── Private ───────────────────────────────────────────────────────────────
 
   defp generate_token do
     :crypto.strong_rand_bytes(16) |> Base.url_encode64(padding: false)
