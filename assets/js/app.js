@@ -191,6 +191,43 @@ const AudioPlayerHook = {
   }
 }
 
+/**
+ * TrackPlay — wires up each track's Play button in the Audio Manager.
+ * Reads src/title/artist/cover from data-* attributes (safe, no JS injection).
+ * Updates the persistent player bar at the bottom of the page.
+ * Attach with: phx-hook="TrackPlay" on each play button.
+ */
+const TrackPlay = {
+  mounted() {
+    this.el.addEventListener("click", () => {
+      const src    = this.el.dataset.src
+      const title  = this.el.dataset.title
+      const artist = this.el.dataset.artist
+      const cover  = this.el.dataset.cover
+
+      // Load and play audio
+      const audio = document.getElementById("native-audio")
+      audio.src = src
+      audio.play()
+
+      // Update player bar text
+      document.getElementById("player-title").textContent  = title  || "Unknown Track"
+      document.getElementById("player-artist").textContent = artist || "—"
+
+      // Update player bar cover art
+      const c = document.getElementById("player-cover")
+      if (cover) {
+        c.innerHTML = `<img src="${cover}" style="width:100%;height:100%;object-fit:cover;border-radius:0.4rem;" />`
+      } else {
+        c.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+          style="width:1rem;height:1rem;color:rgba(255,255,255,0.3);">
+          <path d="M12 3v10.55A4 4 0 1014 17V7h4V3h-6z"/>
+        </svg>`
+      }
+    })
+  }
+}
+
 // ── Page utilities ────────────────────────────────────────────
 
 /** Adds .visible to .scroll-reveal elements as they enter the viewport. */
@@ -245,6 +282,7 @@ const liveSocket = new LiveSocket("/live", Socket, {
     CopyItinerary,
     StepSlide,
     BookingsChart,
+    TrackPlay,       // ← Audio Manager track play buttons
   }
 })
 

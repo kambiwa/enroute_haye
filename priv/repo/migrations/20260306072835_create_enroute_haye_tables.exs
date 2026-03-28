@@ -5,7 +5,7 @@ defmodule EnrouteHaye.Repo.Migrations.CreateEnrouteHayeTables do
     execute "CREATE EXTENSION IF NOT EXISTS citext", ""
 
     # ========================
-    # USERS 
+    # USERS
     # ========================
     create table(:users) do
       # Auth fields
@@ -58,6 +58,18 @@ defmodule EnrouteHaye.Repo.Migrations.CreateEnrouteHayeTables do
     end
 
     # ========================
+    # Foods
+    # ========================
+    create table(:foods) do
+      add :name, :string
+      add :description, :text
+      add :price, :decimal
+      add :image_url, :string
+
+      timestamps(type: :utc_datetime)
+    end
+
+    # ========================
     # SITES
     # ========================
     create table(:sites) do
@@ -68,6 +80,7 @@ defmodule EnrouteHaye.Repo.Migrations.CreateEnrouteHayeTables do
       add :longitude, :float
       add :category, :string
       add :image_url, :string
+      add :status, :string, default: "active"
 
       timestamps(type: :utc_datetime)
     end
@@ -92,7 +105,8 @@ defmodule EnrouteHaye.Repo.Migrations.CreateEnrouteHayeTables do
     create table(:events) do
       add :title, :string
       add :description, :text
-      add :event_date, :date
+      add :start_date, :naive_datetime
+      add :end_date, :naive_datetime
       add :location, :string
       add :latitude, :float
       add :longitude, :float
@@ -134,17 +148,7 @@ defmodule EnrouteHaye.Repo.Migrations.CreateEnrouteHayeTables do
       timestamps(type: :utc_datetime)
     end
 
-    # ========================
-    # FOODS
-    # ========================
-    create table(:foods) do
-      add :name, :string
-      add :description, :text
-      add :region, :string
-      add :image_url, :string
 
-      timestamps(type: :utc_datetime)
-    end
 
     # ========================
     # AUDIO

@@ -78,6 +78,75 @@ defmodule EnrouteHayeWeb.CoreComponents do
     </div>
     """
   end
+  @doc """
+Renders a modal dialog.
+"""
+attr :id, :string, required: true
+attr :show, :boolean, default: false
+attr :on_cancel, JS, default: %JS{}
+slot :inner_block, required: true
+
+def modal(assigns) do
+  ~H"""
+  <div
+    id={@id}
+    phx-mounted={@show && show_modal(@id)}
+    phx-remove={hide_modal(@id)}
+    class="hidden relative z-50"
+  >
+    <%!-- Backdrop --%>
+    <div
+      id={"#{@id}-bg"}
+      class="fixed inset-0 bg-black/40 transition-opacity"
+      aria-hidden="true"
+    />
+    <div class="fixed inset-0 overflow-y-auto" role="dialog" aria-modal="true">
+      <div class="flex min-h-full items-center justify-center p-4">
+        <div
+          id={"#{@id}-container"}
+          style="background: #fff; border: 1px solid #E8E2D9; border-top: 3px solid #8B1A1A;
+                 border-radius: 0.75rem; padding: 1.5rem; width: 100%; max-width: 42rem;
+                 box-shadow: 0 20px 60px rgba(0,0,0,0.12);"
+          phx-click-away={@on_cancel}
+          phx-window-keydown={@on_cancel}
+          phx-key="escape"
+        >
+          <div style="display: flex; justify-content: flex-end; margin-bottom: 0.75rem;">
+            <button
+              phx-click={@on_cancel}
+              style="background: none; border: none; cursor: pointer; color: #9ca3af; padding: 0.25rem;"
+              onmouseover="this.style.color='#374151'"
+              onmouseout="this.style.color='#9ca3af'"
+              aria-label="Close"
+            >
+              <.icon name="hero-x-mark" class="size-5" />
+            </button>
+          </div>
+          {render_slot(@inner_block)}
+        </div>
+      </div>
+    </div>
+  </div>
+  """
+end
+
+defp show_modal(js \\ %JS{}, id) when is_binary(id) do
+  js
+  |> JS.show(to: "##{id}")
+  |> JS.show(to: "##{id}-bg", transition: {"transition-opacity ease-out duration-200", "opacity-0", "opacity-100"})
+  |> JS.show(to: "##{id}-container", transition: {"transition-all ease-out duration-200", "opacity-0 scale-95", "opacity-100 scale-100"})
+  |> JS.add_class("overflow-hidden", to: "body")
+  |> JS.focus_first(to: "##{id}-container")
+end
+
+defp hide_modal(js \\ %JS{}, id) do
+  js
+  |> JS.hide(to: "##{id}-bg", transition: {"transition-opacity ease-in duration-150", "opacity-100", "opacity-0"})
+  |> JS.hide(to: "##{id}-container", transition: {"transition-all ease-in duration-150", "opacity-100 scale-100", "opacity-0 scale-95"})
+  |> JS.hide(to: "##{id}", transition: {"block", "block", "block"})
+  |> JS.remove_class("overflow-hidden", to: "body")
+  |> JS.pop_focus()
+end
 
   @doc """
   Renders a button with navigation support.
@@ -467,6 +536,52 @@ defmodule EnrouteHayeWeb.CoreComponents do
          "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"}
     )
   end
+
+  # ── Status helpers (shared across views) ────────────────────────────
+
+@doc """
+Returns an inline style string for a status badge pill.
+Matches the dashboard's booking badge aesthetic.
+
+## Examples
+
+    <span style={status_badge_style(food.status)}>
+      {status_label(food.status)}
+    </span>
+"""
+def status_badge_style("active"),
+  do: "display: inline-flex; padding: 0.2rem 0.6rem; border-radius: 999px;
+       font-size: 0.72rem; font-weight: 600; background: #f0fdf4; color: #15803d;"
+
+def status_badge_style("confirmed"),
+  do: "display: inline-flex; padding: 0.2rem 0.6rem; border-radius: 999px;
+       font-size: 0.72rem; font-weight: 600; background: #f0fdf4; color: #15803d;"
+
+def status_badge_style("pending"),
+  do: "display: inline-flex; padding: 0.2rem 0.6rem; border-radius: 999px;
+       font-size: 0.72rem; font-weight: 600; background: #fffbeb; color: #b45309;"
+
+def status_badge_style("inactive"),
+  do: "display: inline-flex; padding: 0.2rem 0.6rem; border-radius: 999px;
+       font-size: 0.72rem; font-weight: 600; background: #fef2f2; color: #dc2626;"
+
+def status_badge_style("cancelled"),
+  do: "display: inline-flex; padding: 0.2rem 0.6rem; border-radius: 999px;
+       font-size: 0.72rem; font-weight: 600; background: #fef2f2; color: #dc2626;"
+
+def status_badge_style(_),
+  do: "display: inline-flex; padding: 0.2rem 0.6rem; border-radius: 999px;
+       font-size: 0.72rem; font-weight: 600; background: #f3f4f6; color: #6b7280;"
+
+@doc """
+Returns a human-readable label for a status value.
+"""
+def status_label("active"),    do: "Active"
+def status_label("inactive"),  do: "Inactive"
+def status_label("confirmed"), do: "Confirmed"
+def status_label("pending"),   do: "Pending"
+def status_label("cancelled"), do: "Cancelled"
+def status_label(other),       do: other || "—"
 
   @doc """
   Translates an error message using gettext.

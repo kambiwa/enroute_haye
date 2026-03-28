@@ -1,62 +1,294 @@
 defmodule EnrouteHayeWeb.Auth.Events.Index do
    use EnrouteHayeWeb, :live_view
 
+  alias EnrouteHayeWeb.Datatable.Table
+  alias EnrouteHaye.Schema.Event
+  alias EnrouteHaye.Context.CxtEvent
+  alias EnrouteHayeWeb.Pagination
+  alias EnrouteHayeWeb.PaginationComponent
+  alias EnrouteHayeWeb.Accounts
+  alias EnrouteHayeWeb.Repo
 
-
-   def mount(_params, _session, socket) do
-
+  @impl true
+  def mount(_params, _session, socket) do
     socket =
       socket
       |> assign(:page_title, "Events")
-      # |> assign(:accommodations, EnrouteHaye.Accommodations.list_accommodations())
+      |> assign(:data_loader, false)
+      |> assign(:data, [])
+      |> assign(:data_pagenations, [])
+      |> assign(filter_expanded: false)
+      |> assign(:status_filter, "")
+      |> assign(:search_filter, "")
+      |> assign(:event, %Event{})
+      |> Pagination.order_by_composer()
+      |> Pagination.i_search_composer()
 
     {:ok, socket}
-   end
+  end
 
-   def render(assigns) do
+  @impl true
+  def handle_params(params, _url, socket) do
+    {:noreply,
+     socket
+     |> assign(params: %{})
+     |> apply_action(socket.assigns.live_action, params)}
+  end
+
+  defp apply_action(socket, :edit, %{"id" => id}) do
+    socket
+    |> assign(:page_title, "Edit Event")
+    |> assign(:event, CxtEvent.get_event!(id))
+  end
+
+  defp apply_action(socket, :new, _params) do
+    socket
+    |> assign(:page_title, "New Event")
+    |> assign(:event, %Event{})
+  end
+
+  defp apply_action(socket, :index, _params) do
+    socket
+    |> assign(:page_title, "Events")
+    |> assign(:event, nil)
+    |> fetch_filtered_events()
+  end
+
+  @impl true
+  def handle_info(
+        {EnrouteHayeWeb.Events.FormComponent, {:saved, _event}},
+        socket
+      ) do
+    {:noreply, fetch_filtered_events(socket)}
+  end
+
+  @impl true
+  def handle_event("add_event", _params, socket) do
+    {:noreply,
+     socket
+     |> assign(:page_title, "New Event")
+     |> assign(:event, %Event{})
+     |> assign(:live_action, :new)}
+  end
+
+  def handle_event("edit", %{"id" => id}, socket) do
+    {:noreply,
+     socket
+     |> assign(:page_title, "Edit Event")
+     |> assign(:event, CxtEvent.get_event!(id))
+     |> assign(:live_action, :edit)}
+  end
+
+  @impl true
+  def handle_event("close", _params, socket) do
+    {:noreply, assign(socket, :live_action, :index)}
+  end
+
+  @impl true
+  def handle_event("toggle-filter", _, socket) do
+    {:noreply, assign(socket, filter_expanded: !socket.assigns.filter_expanded)}
+  end
+
+  @impl true
+  def handle_event("filter", %{"filter" => filters} = _params, socket) do
+    {:noreply,
+     socket
+     |> assign(:status_filter, filters["status_filter"])
+     |> assign(:search_filter, filters["search_filter"])
+     |> fetch_filtered_events()}
+  end
+
+  defp fetch_filtered_events(socket) do
+    filters = %{
+      search_filter: socket.assigns.search_filter,
+      status_filter: socket.assigns.status_filter
+    }
+
+    data =
+      CxtEvent.list_events(
+        Pagination.create_table_params(socket, socket.assigns.params),
+        filters
+      )
+
+    socket
+    |> assign(:data, data.entries)
+    |> assign(:data_pagenations, Map.drop(data, [:entries]))
+    |> assign(data_loader: false)
+  end
+
+
+  # ── Render ───────────────────────────────────────────────────────────
+
+  @impl true
+  def render(assigns) do
     ~H"""
     <Layouts.admin_app flash={@flash} current_scope={@current_scope} current_page={:events}>
-        <%!-- <div class="container mx-auto px-4 py-8">
+      <div style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem;">
 
-          <div class="bg-white shadow-md rounded-lg p-6">
-            <h1 class="text-2xl font-bold mb-4">Accommodations</h1>
-
-            <div class="mb-4">
-              <.link navigate={~p"/accomodations/new"} class="btn btn-primary">
-                New Accommodation
-              </.link>
-            </div>
-
-            <div class="overflow-x-auto">
-              <table class="min-w-full bg-white border border-gray-200">
-                <thead>
-                  <tr>
-                    <th class="py-2 px-4 border-b">Name</th>
-                    <th class="py-2 px-4 border-b">Location</th>
-                    <th class="py-2 px-4 border-b">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <%= for accommodation <- @accommodations do %>
-                    <tr>
-                      <td class="py-2 px-4 border-b"><%= accommodation.name %></td>
-                      <td class="py-2 px-4 border-b"><%= accommodation.location %></td>
-                      <td class="py-2 px-4 border-b">
-                        <.link navigate={~p"/accomodations/#{accommodation.id}/edit"} class="btn btn-sm btn-secondary">
-                          Edit
-                        </.link>
-                      </td>
-                    </tr>
-                  <% end %>
-                </tbody>
-              </table>
-            </div>
+        <%!-- ══ PAGE HEADER ══ --%>
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <div>
+            <h1 style="font-size: 1.1rem; font-weight: 700; color: #1a1a1a; margin-bottom: 0.2rem;">
+              Events
+            </h1>
+            <p style="font-size: 0.82rem; color: #9ca3af;">
+              Manage event listings and their details.
+            </p>
           </div>
-        </div> --%>
+
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <%!-- Filter toggle --%>
+            <button
+              phx-click="toggle-filter"
+              style="display: inline-flex; align-items: center; gap: 0.4rem;
+                     padding: 0.45rem 1rem; font-size: 0.82rem; font-weight: 500;
+                     color: #374151; background: #fff; border: 1px solid #E8E2D9;
+                     border-radius: 0.5rem; cursor: pointer; transition: background 0.15s;"
+              onmouseover="this.style.background='#FAF8F5'"
+              onmouseout="this.style.background='#fff'"
+            >
+              <.icon name="hero-funnel" class="size-4" /> Filter
+            </button>
+
+            <%!-- New event --%>
+            <button
+              phx-click="add_event"
+              style="display: inline-flex; align-items: center; gap: 0.4rem;
+                     padding: 0.45rem 1rem; font-size: 0.82rem; font-weight: 500;
+                     color: #fff; background: #8B1A1A; border: none;
+                     border-radius: 0.5rem; cursor: pointer; transition: opacity 0.15s;"
+              onmouseover="this.style.opacity='0.88'"
+              onmouseout="this.style.opacity='1'"
+            >
+              <.icon name="hero-plus" class="size-4" /> New Event
+            </button>
+          </div>
+        </div>
+
+        <%!-- ══ FILTER PANEL ══ --%>
+        <%= if @filter_expanded do %>
+          <div style="background: #fff; border: 1px solid #E8E2D9;
+                      border-top: 3px solid #8B1A1A; border-radius: 0.75rem; padding: 1.25rem;">
+            <p style="font-size: 0.75rem; font-weight: 600; color: #374151;
+                      text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1rem;">
+              Filters
+            </p>
+            <.form for={%{}} as={:filter} phx-change="filter">
+              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+
+                <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+                  <label style="font-size: 0.75rem; font-weight: 500; color: #374151;">Search</label>
+                  <.input
+                    name="filter[search_filter]"
+                    placeholder="Search events..."
+                    value={@search_filter}
+                  />
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+                  <label style="font-size: 0.75rem; font-weight: 500; color: #374151;">Status</label>
+                  <.input
+                    type="select"
+                    name="filter[status_filter]"
+                    prompt="All"
+                    options={[{"Active", "active"}, {"Inactive", "inactive"}]}
+                    value={@status_filter}
+                  />
+                </div>
+
+              </div>
+            </.form>
+          </div>
+        <% end %>
+
+        <%!-- ══ TABLE CARD ══ --%>
+        <div style="background: #fff; border: 1px solid #E8E2D9; border-radius: 0.75rem; overflow: hidden;">
+
+          <div style="padding: 1rem 1.25rem; border-bottom: 1px solid #E8E2D9;">
+            <h2 style="font-size: 0.85rem; font-weight: 600; color: #374151;">All Events</h2>
+          </div>
+
+          <Table.table id="tbl_events" rows={@data}>
+            <:col :let={event} label="Name">
+              <span style="color: #374151; font-weight: 500;">{event.title}</span>
+            </:col>
+            <:col :let={event} label="Description">
+              <span style="color: #6b7280;">{event.description}</span>
+            </:col>
+             <:col :let={event} label="Location">
+              <span style="color: #6b7280;">{event.location}</span>
+            </:col>
+            <:col :let={event} label="Start Date and Time">
+              <span style="color: #6b7280;">{event.start_date}</span>
+            </:col>
+            <:col :let={event} label="End Date and Time">
+              <span style="color: #6b7280;">{event.end_date}</span>
+            </:col>
+
+
+            <:action :let={event}>
+              <button
+                phx-click="edit"
+                phx-value-id={event.id}
+                style="display: inline-flex; align-items: center; gap: 0.3rem;
+                       padding: 0.25rem 0.65rem; font-size: 0.75rem; font-weight: 500;
+                       color: #8B1A1A; background: rgba(139,26,26,0.08);
+                       border: none; border-radius: 0.4rem; cursor: pointer; transition: background 0.15s;"
+                onmouseover="this.style.background='rgba(139,26,26,0.15)'"
+                onmouseout="this.style.background='rgba(139,26,26,0.08)'"
+              >
+                <.icon name="hero-pencil-square" class="size-3" /> Edit
+              </button>
+            </:action>
+          </Table.table>
+
+          <%!-- Loading spinner --%>
+          <%= if @data_loader do %>
+            <div style="padding: 2.5rem; text-align: center;">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                   style="width: 2rem; height: 2rem; color: #8B1A1A; animation: spin 1s linear infinite; margin: 0 auto;"
+                   fill="none" viewBox="0 0 24 24">
+                <circle style="opacity: 0.25;" cx="12" cy="12" r="10"
+                        stroke="currentColor" stroke-width="4"/>
+                <path style="opacity: 0.75;" fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962
+                         7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+              </svg>
+            </div>
+          <% end %>
+
+          <%!-- Pagination --%>
+          <div style="border-top: 1px solid #E8E2D9;">
+            <.live_component
+              module={EnrouteHayeWeb.PaginationComponent}
+              id="PaginationComponent"
+              params={@params}
+              pagination_data={@data_pagenations}
+            />
+          </div>
+
+        </div>
+
+        <%!-- ══ MODAL ══ --%>
+        <%= if @live_action in [:new, :edit] do %>
+          <.modal
+            id={"crud-event-modal-#{(@event && @event.id) || :new}"}
+            show
+            on_cancel={JS.push("close")}
+          >
+            <.live_component
+              module={EnrouteHayeWeb.Events.FormComponent}
+              id={(@event && @event.id) || :new}
+              title={@page_title}
+              action={@live_action}
+              event={@event}
+              patch={~p"/admin/events"}
+            />
+          </.modal>
+        <% end %>
+
+      </div>
     </Layouts.admin_app>
     """
-end
-
-
-
+  end
 end
