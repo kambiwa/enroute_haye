@@ -1,6 +1,8 @@
 /* See the Tailwind configuration guide for advanced usage
    https://tailwindcss.com/docs/configuration */
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@600;700;800&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@600;700;800&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@400;700&family=DM+Mono:wght@400;500&family=Syne:wght@600;700;800&display=swap');
+@import "./mize.css";
 @import "./journey.css";
 @import "tailwindcss" source(none);
 @source "../css";
@@ -131,6 +133,16 @@
   --gold-600:    var(--red-deep);
   --lozi-red:    var(--red);
   --cream:       var(--off-white);
+
+   --llm-forest:      #0f2410;
+  --llm-forest-mid:  #1a3d18;
+  --llm-forest-lit:  #2d6127;
+  --llm-earth:       #3b200a;
+  --llm-earth-mid:   #6b3a1f;
+  --llm-ochre:       #d4a017;
+  --llm-ochre-light: #e8bf5a;
+  --llm-bone:        #f0e6d0;
+  --llm-mask-red:    #9b2c2c;
 
   /* Typography */
   --font-display: Georgia, "Times New Roman", "Palatino Linotype", serif;

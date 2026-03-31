@@ -1,10 +1,4 @@
-<%!-- ═══════════════════════════════════════════
-     STEP 6 — SUMMARY  (replace the existing step 6 block)
-     Changes:
-       • Removed AI "Generate Itinerary" button and all @generating / @itinerary / @error UI
-       • Added "Preview & Download Itinerary PDF" button
-       • PDF is generated server-side (Python/ReportLab) and pushed via JS download_pdf event
-════════════════════════════════════════════ --%>
+
 <%= if @step == 6 do %>
   <% sel_hotel = hotel_by_id(@hotels, @hotel) %>
   <% total = estimated_cost(@hotels, @hotel, @duration) %>

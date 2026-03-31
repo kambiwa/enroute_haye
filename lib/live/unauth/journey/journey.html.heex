@@ -216,9 +216,11 @@
           <%= for food <- @foods do %>
             <% added = food.id in @selected_foods %>
             <div class={["item-card", added && "item-card--added"]}>
-              <div class="item-emoji"><%= food.emoji %></div>
+              <div class="item-emoji"><%= food.image_url %></div>
               <h4 class="item-name"><%= food.name %></h4>
-              <p class="item-desc"><%= food.desc %></p>
+              <p class="item-desc"><%= food.description %></p>
+              <p class="item-desc"><%= food.price %></p>
+
               <button
                 type="button"
                 phx-click="toggle_food"

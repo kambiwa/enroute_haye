@@ -1,0 +1,476 @@
+<Layouts.unauth_app flash={@flash} current_scope={@current_scope}>
+
+<%!-- ============================
+  LOADER
+============================= --%>
+<div id="loader" class="loader-screen llm-loader" aria-hidden="true" phx-hook="LoaderHook">
+  <div class="loader-inner">
+    <div class="loader-ring llm-loader-ring">
+      <div class="loader-spinner"></div>
+      <div class="loader-crown">
+        <.icon name="hero-eye-solid" class="w-8 h-8 text-llm-gold" />
+      </div>
+    </div>
+    <p class="loader-title llm-loader-title">LIKUMBI LYA MIZE</p>
+    <p class="loader-sub">THE MAKISHI AWAKENING</p>
+  </div>
+</div>
+
+<%!-- ============================
+  HERO
+============================= --%>
+<section class="hero llm-hero" id="hero">
+  <%!-- Ambient forest blobs --%>
+  <div class="blob llm-blob-1" aria-hidden="true"></div>
+  <div class="blob llm-blob-2" aria-hidden="true"></div>
+
+  <%!-- Particle canvas --%>
+  <canvas id="particles-hook" class="particles-canvas" aria-hidden="true"
+    phx-hook="Particles"></canvas>
+
+  <%!-- Ground mist waves --%>
+  <div class="llm-mist" aria-hidden="true">
+    <svg class="llm-mist-wave llm-mist-1" viewBox="0 0 1200 120" preserveAspectRatio="none">
+      <path d="M0,60 C200,90 400,30 600,60 C800,90 1000,30 1200,60 L1200,120 L0,120 Z"
+            fill="rgba(212,160,23,0.06)"/>
+    </svg>
+    <svg class="llm-mist-wave llm-mist-2" viewBox="0 0 1200 120" preserveAspectRatio="none">
+      <path d="M0,40 C150,70 350,10 600,40 C850,70 1050,10 1200,40 L1200,120 L0,120 Z"
+            fill="rgba(20,45,15,0.5)"/>
+    </svg>
+  </div>
+
+  <div class="hero-content" id="hero-content">
+    <p class="hero-eyebrow reveal llm-eyebrow">The Luvale Spirit Ceremony · Zambezi District</p>
+
+    <h1 class="hero-title reveal llm-hero-title" style="--delay: 0.2s">
+      LIKUMBI<br/>LYA MIZE
+    </h1>
+
+    <div class="hero-divider reveal" style="--delay: 0.4s" aria-hidden="true">
+      <span class="divider-line"></span>
+      <span class="divider-icon llm-divider-icon">◈</span>
+      <span class="divider-line"></span>
+    </div>
+
+    <p class="hero-desc reveal" style="--delay: 0.5s">
+      When the ancestral Makishi spirits emerge from the sacred forest of Mize,
+      the Luvale people of Northwestern Zambia are bound once more to their past,
+      their initiation rites, and the living pulse of their identity.
+    </p>
+
+    <div class="hero-cta reveal" style="--delay: 0.7s">
+      <a href="/journey" class="btn-primary llm-btn-primary">
+        Start your tour
+         <span class="btn-arrow">→</span>
+      </a>
+      <button class="btn-audio" id="audio-hook" phx-hook="AudioPlayer">
+        <span class="audio-bars" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span>
+        </span>
+        Ceremonial Drums
+      </button>
+    </div>
+  </div>
+
+  <div class="scroll-hint reveal" style="--delay: 1s" aria-label="Scroll to explore">
+    <span>Scroll to Explore</span>
+    <span class="scroll-chevron">↓</span>
+  </div>
+</section>
+
+<%!-- ============================
+  INTRODUCTION
+============================= --%>
+<section id="journey" class="section section-dark llm-section-forest">
+  <div class="container grid-2col">
+
+    <div class="intro-text scroll-reveal">
+      <div class="badge llm-badge">
+        <span class="badge-dot llm-badge-dot"></span>
+        Living Ancestral Heritage
+      </div>
+
+      <h2 class="section-title">
+        The Festival of the <em class="llm-gold">Spirits</em>
+      </h2>
+
+      <p class="body-text">
+        Likumbi Lya Mize, meaning "the day of Mize," is the grand annual ceremony
+        of the Luvale people held in Zambezi District, Northwestern Province. At its
+        heart are the Makishi — masked ancestral spirits who emerge from the forest
+        to guide, bless, and educate the community, culminating in the graduation
+        of young men from the sacred Mukanda initiation rite.
+      </p>
+
+      <div class="stats-row">
+        <div class="stat">
+          <span class="stat-num llm-stat-num">3</span>
+          <span class="stat-label">Days of Ceremony</span>
+        </div>
+        <div class="stat stat-border">
+          <span class="stat-num llm-stat-num">20+</span>
+          <span class="stat-label">Makishi Characters</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num llm-stat-num">Aug</span>
+          <span class="stat-label">Annual Gathering</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="intro-image scroll-reveal" style="--delay: 0.2s">
+      <div class="img-frame img-frame-tilt llm-img-frame">
+        <img src="/images/llm_hero_mask.jpg"
+             alt="Makishi masked spirit at Likumbi Lya Mize" loading="lazy" />
+        <div class="img-overlay">
+          <p class="img-label">THE MAKISHI SPIRITS</p>
+          <p class="img-caption">Mize Village, Zambezi District</p>
+        </div>
+      </div>
+
+      <div class="float-card float-card-tr scroll-reveal" style="--delay: 0.4s">
+        <span class="float-icon">📅</span>
+        <span class="float-meta">When</span>
+        <strong>August · Annually</strong>
+      </div>
+
+      <div class="float-card float-card-bl scroll-reveal" style="--delay: 0.6s">
+        <span class="float-icon">📍</span>
+        <span class="float-meta">Where</span>
+        <strong>Mize Village, Zambezi, NW Zambia</strong>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<%!-- ============================
+  TIMELINE / CEREMONY
+============================= --%>
+<section id="ceremony" class="section section-mid llm-section-earth">
+  <div class="container">
+    <div class="section-header scroll-reveal">
+      <h2 class="section-title text-center">
+        A Day in the <em class="llm-gold">Forest</em>
+      </h2>
+      <p class="section-sub">
+        Follow the sacred ceremony from the cool dawn drumbeats to the firelit celebrations of night
+      </p>
+    </div>
+
+    <div class="timeline">
+      <div class="timeline-spine llm-timeline-spine" aria-hidden="true"></div>
+
+      <%= for {event, idx} <- Enum.with_index(@timeline_events) do %>
+        <div class={["timeline-item",
+                     if(rem(idx, 2) == 0, do: "align-right", else: "align-left"),
+                     "scroll-reveal"]}
+             style={"--delay: #{idx * 0.15}s"}>
+
+          <div class="timeline-text">
+            <span class="timeline-time llm-timeline-time">
+              <span class="timeline-icon-sm llm-diamond">◈</span>
+              <%= event.time %>
+            </span>
+            <h3 class="timeline-title"><%= event.title %></h3>
+            <p class="timeline-desc"><%= event.description %></p>
+          </div>
+
+          <div class="timeline-card llm-timeline-card">
+            <div class="timeline-card-inner">
+              <img src={event.image} alt={event.image_alt}
+                   loading="lazy" class="timeline-img" />
+            </div>
+            <div class="timeline-dot llm-timeline-dot" aria-hidden="true"></div>
+          </div>
+
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>
+
+<%!-- ============================
+  MAKISHI SPIRITS (mirrors Nalikwanda Barge section)
+============================= --%>
+<section id="makishi" class="section section-dark llm-section-mask">
+  <div class="dot-grid llm-dot-grid" aria-hidden="true"></div>
+
+  <div class="container">
+    <div class="section-header scroll-reveal">
+      <h2 class="section-title text-center">
+        The <em class="llm-gold">Makishi</em>
+      </h2>
+      <p class="section-sub">
+        Ancestral spirits clothed in bark-cloth and vivid masks — the living bridge
+        between the Luvale people and those who came before
+      </p>
+    </div>
+
+    <div class="barge-grid llm-makishi-grid">
+
+      <%!-- Main mask image with hotspots --%>
+      <div class="barge-main scroll-reveal">
+        <div class="barge-img-wrap llm-mask-wrap">
+          <img src="/images/llm_makishi_main.jpg"
+               alt="Makishi masked spirits" loading="lazy" class="barge-img" />
+          <div class="barge-overlay llm-mask-vignette"></div>
+
+          <button class="hotspot llm-hotspot llm-hotspot-mwana"
+            phx-click="show_makishi" phx-value-type="mwana_pwo"
+            title="Mwana Pwo">
+            <span class="hotspot-pulse llm-hotspot-pulse"></span>
+            <span class="hotspot-label">Mwana Pwo</span>
+          </button>
+
+          <button class="hotspot llm-hotspot llm-hotspot-chihongo"
+            phx-click="show_makishi" phx-value-type="chihongo"
+            title="Chihongo">
+            <span class="hotspot-pulse llm-hotspot-pulse"></span>
+            <span class="hotspot-label">Chihongo</span>
+          </button>
+
+          <button class="hotspot llm-hotspot llm-hotspot-chikunza"
+            phx-click="show_makishi" phx-value-type="chikunza"
+            title="Chikunza">
+            <span class="hotspot-pulse llm-hotspot-pulse"></span>
+            <span class="hotspot-label">Chikunza</span>
+          </button>
+
+          <div class="barge-caption llm-mask-caption">
+            <h3>The Sacred Spirits</h3>
+            <p>Tap each spirit to learn their role in the ceremony</p>
+          </div>
+        </div>
+      </div>
+
+      <%!-- Detail panels --%>
+      <div class="barge-details scroll-reveal" style="--delay: 0.2s">
+        <%= for detail <- @makishi_details do %>
+          <div class={"detail-card llm-detail-card #{if @active_makishi == detail.id, do: "active"}"}>
+            <div class="detail-icon-wrap llm-detail-icon-wrap">
+              <span class="detail-icon llm-detail-icon">
+                <%= case detail.icon do
+                  "grace"    -> "◎"
+                  "power"    -> "◈"
+                  "ceremony" -> "⬡"
+                  _          -> "◆"
+                end %>
+              </span>
+            </div>
+            <div>
+              <h4 class="detail-title"><%= detail.title %></h4>
+              <p class="detail-desc"><%= detail.description %></p>
+            </div>
+          </div>
+        <% end %>
+
+        <div class="barge-specs llm-spirit-facts scroll-reveal" style="--delay: 0.4s">
+          <h4 class="specs-title">Spirit Facts</h4>
+          <ul class="specs-list">
+            <li><span>Origin</span><span class="llm-gold">Sacred Forest of Mize</span></li>
+            <li><span>Costume</span><span class="llm-gold">Bark-cloth &amp; carved mask</span></li>
+            <li><span>Purpose</span><span class="llm-gold">Ancestral guidance</span></li>
+            <li><span>Performers</span><span class="llm-gold">Male initiates only</span></li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<%!-- ============================
+  CULTURAL SIGNIFICANCE
+============================= --%>
+<section id="culture" class="section section-mid llm-section-culture">
+  <div class="container grid-2col">
+
+    <div class="culture-mosaic order-2 scroll-reveal">
+      <div class="mosaic-col mosaic-col-offset">
+        <div class="mosaic-img tall">
+          <img src="/images/llm_culture_1.jpg"
+               alt="Mukanda initiation ceremony" loading="lazy" />
+        </div>
+        <div class="mosaic-img medium">
+          <img src="/images/llm_culture_2.jpg"
+               alt="Luvale elders" loading="lazy" />
+        </div>
+      </div>
+      <div class="mosaic-col">
+        <div class="mosaic-img short">
+          <img src="/images/llm_culture_3.jpg"
+               alt="Ceremonial drums" loading="lazy" />
+        </div>
+        <div class="mosaic-img tall">
+          <img src="/images/llm_culture_4.jpg"
+               alt="Mask carving craft" loading="lazy" />
+        </div>
+      </div>
+    </div>
+
+    <div class="culture-text order-1 scroll-reveal" style="--delay: 0.2s">
+      <h2 class="section-title">
+        Living <em class="llm-gold">Heritage</em>
+      </h2>
+
+      <div class="culture-points">
+        <div class="culture-point">
+          <div class="point-icon llm-point-icon">◎</div>
+          <div>
+            <h3>Rite of Passage</h3>
+            <p>
+              The Mukanda initiation is the ceremony's sacred core — young men emerge
+              from seclusion as full members of Luvale society, shaped by the teachings
+              of the Makishi and the wisdom of the elders.
+            </p>
+          </div>
+        </div>
+
+        <div class="culture-point">
+          <div class="point-icon llm-point-icon">◈</div>
+          <div>
+            <h3>Ancestral Connection</h3>
+            <p>
+              The Makishi are not mere costumes — they are believed to be the physical
+              manifestation of ancestors returned. Their presence dissolves the boundary
+              between the living and those who came before.
+            </p>
+          </div>
+        </div>
+
+        <div class="culture-point">
+          <div class="point-icon llm-point-icon">⬡</div>
+          <div>
+            <h3>UNESCO Recognition</h3>
+            <p>
+              The Makishi masquerade was inscribed on UNESCO's Representative List of
+              the Intangible Cultural Heritage of Humanity, affirming its global
+              significance and the need for its careful preservation.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <a href="#" class="btn-outline-gold llm-btn-outline mt-8 inline-flex items-center gap-2">
+        Explore Full History <span>→</span>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<%!-- ============================
+  AUDIO EXPERIENCE
+============================= --%>
+<section class="section section-dark audio-section llm-audio-section">
+  <div class="container narrow text-center">
+    <span class="audio-icon-lg llm-audio-icon">♩</span>
+    <h2 class="section-title">The Drumbeat of the Ancestors</h2>
+    <p class="section-sub">
+      Listen to the traditional Luvale ceremonial drums and the call-and-response chants
+      that pulse through Mize village during the ceremony
+    </p>
+
+    <div class="player scroll-reveal llm-player" id="player-hook" phx-hook="Player">
+      <div class="player-controls">
+        <button class="ctrl-btn" id="skip-back" aria-label="Skip backward">⏮</button>
+        <button class="ctrl-btn ctrl-play llm-ctrl-play" id="play-btn" aria-label="Play/Pause">▶</button>
+        <button class="ctrl-btn" id="skip-fwd" aria-label="Skip forward">⏭</button>
+      </div>
+
+      <div class="player-progress">
+        <span id="current-time" class="time-label">0:00</span>
+        <div class="progress-track llm-progress-track" id="progress-track" role="progressbar">
+          <div class="progress-fill llm-progress-fill" id="progress-fill" style="width: 0%"></div>
+        </div>
+        <span class="time-label">4:12</span>
+      </div>
+
+      <div class="player-volume">
+        <span>🔈</span>
+        <input type="range" min="0" max="100" value="70" id="volume-range" aria-label="Volume" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<%!-- ============================
+  VISITOR GUIDE
+============================= --%>
+<section id="visit" class="section section-mid llm-section-visit">
+  <div class="container">
+    <div class="section-header scroll-reveal">
+      <h2 class="section-title text-center">
+        Plan Your <em class="llm-gold">Journey</em>
+      </h2>
+      <p class="section-sub">Everything you need to experience Likumbi Lya Mize</p>
+    </div>
+
+    <div class="llm-guide-grid scroll-reveal" style="--delay: 0.1s">
+
+      <div class="llm-guide-card">
+        <div class="llm-guide-icon">🗓</div>
+        <h3>When to Visit</h3>
+        <p>
+          The ceremony is held annually in August. Arrive a day early to witness village
+          preparations and secure a good vantage point at the ceremonial ground in Mize.
+        </p>
+      </div>
+
+      <div class="llm-guide-card">
+        <div class="llm-guide-icon">👗</div>
+        <h3>What to Wear</h3>
+        <p>
+          Dress modestly and respectfully. Earth tones and traditional chitenge fabric
+          are welcomed. Avoid bright colours that may clash with the ceremonial dress
+          of participants.
+        </p>
+      </div>
+
+      <div class="llm-guide-card">
+        <div class="llm-guide-icon">📷</div>
+        <h3>Photography</h3>
+        <p>
+          Always seek permission before photographing individuals, especially elders and
+          initiates. Some Makishi characters may not be photographed — respect any
+          restriction given by ceremony guides immediately.
+        </p>
+      </div>
+
+      <div class="llm-guide-card">
+        <div class="llm-guide-icon">🏕</div>
+        <h3>Accommodation</h3>
+        <p>
+          Zambezi Waterfront Lodge and local guesthouses fill quickly. Book at least
+          six weeks in advance. Eco-camping near the Zambezi River offers an immersive
+          option for budget travellers.
+        </p>
+      </div>
+
+      <div class="llm-guide-card">
+        <div class="llm-guide-icon">🍲</div>
+        <h3>Food &amp; Drink</h3>
+        <p>
+          Try nshima with dried Zambezi fish, chikanda (African polony), and ifisashi
+          groundnut stew from stalls at the market adjacent to the ceremonial ground
+          on ceremony days.
+        </p>
+      </div>
+
+      <div class="llm-guide-card">
+        <div class="llm-guide-icon">🤝</div>
+        <h3>Cultural Etiquette</h3>
+        <p>
+          Greet elders first and do not stand above a seated elder. If a Makishi
+          approaches you, remain still and composed — running or mocking is deeply
+          disrespectful and disrupts the sacred atmosphere.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+</Layouts.unauth_app>

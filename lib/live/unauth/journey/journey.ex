@@ -1,16 +1,9 @@
 defmodule EnrouteHayeWeb.Unauth.Journey do
   use EnrouteHayeWeb, :live_view
 
-  @steps ~w(basics ceremony map food music stay summary)a
+  alias EnrouteHaye.Context.CxtFood
 
-  @foods [
-    %{id: "ifisashi",  emoji: "🥜", name: "Shombo",       desc: "Peanut soup with leafy greens — a rich, earthy classic"},
-    %{id: "chikanda",  emoji: "🟤", name: "Sindambi",        desc: "Zambian \"polony\" from wild orchid tubers"},
-    %{id: "nshima",    emoji: "🍚", name: "(Buhobe) ", desc: "The beloved national staple, every Zambian's comfort"},
-    %{id: "bream",     emoji: "🐟", name: "(Litapi) Fish",    desc: "Sun-dried Zambezi river sardines, smoky & savory"},
-    %{id: "vitumbuwa", emoji: "🧆", name: "Mubula",       desc: "Fried dough fritters, perfect street snack"},
-    %{id: "munkoyo",   emoji: "🥤", name: "(ilya - Mabisi) Drink",   desc: "Traditional fermented root beverage, refreshing"}
-  ]
+  @steps ~w(basics ceremony map food music stay summary)a
 
   @music [
     %{id: "lwiindi",   emoji: "🥁", name: "Liwaye", desc: "Tonga traditional rain ceremony drumming"},
@@ -45,7 +38,7 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
      assign(socket,
        step: 0,
        steps: @steps,
-       foods: @foods,
+       foods: CxtFood.list_foods(%{"order_by" => %{"sort_field" => "name", "sort_direction" => "asc"}}),
        music: @music,
        hotels: @hotels,
        pins: @pins,
@@ -115,11 +108,11 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
   # ── Step 3 · Food ──────────────────────────────────────────────────────────
 
   def handle_event("toggle_food", %{"food" => food_id}, socket) do
+    food_id = String.to_integer(food_id)
     foods =
       if food_id in socket.assigns.selected_foods,
         do: List.delete(socket.assigns.selected_foods, food_id),
         else: [food_id | socket.assigns.selected_foods]
-
     {:noreply, assign(socket, selected_foods: foods)}
   end
 

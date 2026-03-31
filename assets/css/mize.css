@@ -1,0 +1,378 @@
+/* =============================================================
+   likumbi_lya_mize.css
+   Import in app.css:  @import "./likumbi_lya_mize.css";
+
+   Conventions match app.css:
+   • llm- prefix on every class → zero collision with Kuomboka
+   • Variables added to :root in app.css (see patch below)
+   • Fonts: Cinzel / Cinzel Decorative added to app.css @import
+   • Uses existing base classes (.section, .container, .grid-2col,
+     .timeline-*, .barge-*, .hotspot, .detail-card, .player, etc.)
+     and layers llm- modifiers on top of them
+   ============================================================= */
+
+/* ── Hero ── */
+.llm-hero {
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(45, 97, 39, 0.35) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 30%, rgba(155, 44, 44, 0.15) 0%, transparent 50%),
+    linear-gradient(160deg, var(--llm-forest) 0%, #0a1a08 60%, var(--llm-earth) 100%);
+}
+
+/* Override the diagonal red strip that app.css .hero::after adds */
+.llm-hero::after { display: none; }
+
+.llm-blob-1 {
+  background: radial-gradient(circle, rgba(45, 97, 39, 0.4) 0%, transparent 70%);
+  width: 600px; height: 600px;
+  top: -100px; left: -150px;
+  animation: llm-blob-drift 18s ease-in-out infinite alternate;
+}
+.llm-blob-2 {
+  background: radial-gradient(circle, rgba(212, 160, 23, 0.18) 0%, transparent 70%);
+  width: 500px; height: 500px;
+  bottom: -80px; right: -100px;
+  animation: llm-blob-drift 22s ease-in-out infinite alternate-reverse;
+}
+
+/* Ground mist */
+.llm-mist {
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+.llm-mist-wave {
+  position: absolute;
+  bottom: 0;
+  width: 100%; height: 120px;
+}
+.llm-mist-1 { animation: llm-wave-drift 14s ease-in-out infinite alternate; }
+.llm-mist-2 { animation: llm-wave-drift 10s ease-in-out infinite alternate-reverse; }
+
+/* Hero copy */
+.llm-eyebrow {
+  color: var(--llm-ochre-light);
+  letter-spacing: 0.2em;
+}
+.llm-hero-title {
+  font-family: 'Cinzel Decorative', 'Cinzel', serif;
+  font-size: clamp(3.5rem, 10vw, 8rem);
+  line-height: 0.92;
+  color: var(--llm-bone);
+  text-shadow:
+    0 0 80px rgba(212, 160, 23, 0.3),
+    0 4px 24px rgba(0, 0, 0, 0.6);
+}
+.llm-divider-icon { color: var(--llm-ochre); font-size: 1.4rem; }
+
+/* Loader */
+.llm-loader { background: var(--llm-forest); }
+.llm-loader .loader-spinner {
+  border-color: var(--llm-forest-lit) transparent var(--llm-ochre) transparent;
+}
+.llm-loader-title {
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.18em;
+  color: var(--llm-bone);
+}
+
+/* ── CTA — overrides the red btn-primary from app.css ── */
+.llm-hero .btn-primary,
+.llm-btn-primary {
+  background: linear-gradient(135deg, var(--llm-ochre), var(--llm-earth-mid));
+  color: var(--llm-forest);
+  border: none;
+  font-weight: 700;
+}
+.llm-hero .btn-primary:hover,
+.llm-btn-primary:hover {
+  background: linear-gradient(135deg, var(--llm-ochre-light), var(--llm-ochre));
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(212, 160, 23, 0.4);
+}
+
+/* Audio button bars — ochre instead of red */
+.llm-hero .audio-bars span,
+.llm-audio-section .audio-bars span { background: var(--llm-ochre); }
+
+/* ── Sections ── */
+.llm-section-forest  { background: linear-gradient(180deg, var(--llm-forest) 0%, #152912 100%); }
+.llm-section-earth   { background: linear-gradient(180deg, #152912 0%, #1e1008 100%); }
+.llm-section-culture { background: linear-gradient(180deg, var(--llm-forest) 0%, #152912 100%); }
+.llm-section-visit   { background: linear-gradient(180deg, #152912 0%, var(--llm-forest) 100%); }
+.llm-section-mask {
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(155, 44, 44, 0.12) 0%, transparent 60%),
+    linear-gradient(180deg, #1e1008 0%, var(--llm-forest) 100%);
+}
+.llm-audio-section { background: linear-gradient(180deg, #1e1008 0%, var(--llm-forest) 100%); }
+
+/* All dark LLM sections: bone text instead of white */
+.llm-section-forest .section-title,
+.llm-section-earth  .section-title,
+.llm-section-mask   .section-title,
+.llm-section-culture .section-title,
+.llm-section-visit  .section-title,
+.llm-audio-section  .section-title   { color: var(--llm-bone); }
+
+.llm-section-forest .body-text,
+.llm-section-earth  .body-text,
+.llm-section-mask   .body-text,
+.llm-section-culture .body-text      { color: rgba(240, 230, 208, 0.7); }
+
+.llm-section-forest .timeline-title,
+.llm-section-earth  .timeline-title  { color: var(--llm-bone); }
+
+.llm-section-forest .timeline-desc,
+.llm-section-earth  .timeline-desc   { color: rgba(240, 230, 208, 0.65); }
+
+/* ── Badge ── */
+.llm-badge {
+  background: rgba(45, 97, 39, 0.3);
+  border-color: rgba(212, 160, 23, 0.35);
+  color: var(--llm-ochre-light);
+}
+.llm-badge-dot { background: var(--llm-ochre); }
+
+/* ── Stats ── */
+.llm-stat-num { color: var(--llm-ochre); }
+
+/* Stats row on dark background */
+.llm-section-forest .stats-row { border-top-color: rgba(212, 160, 23, 0.25); }
+.llm-section-forest .stat-border { border-color: rgba(212, 160, 23, 0.2); }
+.llm-section-forest .stat-label { color: rgba(240, 230, 208, 0.5); }
+
+/* ── Image frame ── */
+.llm-img-frame img { filter: saturate(1.15) contrast(1.05); }
+.llm-img-frame {
+  position: relative; /* ensure ::before positions correctly */
+}
+.llm-img-frame::before {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border: 2px solid rgba(212, 160, 23, 0.3);
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Float card overrides */
+.llm-section-forest .float-card {
+  background: var(--llm-forest-mid);
+  border-color: rgba(212, 160, 23, 0.2);
+  border-left-color: var(--llm-ochre);
+}
+.llm-section-forest .float-card strong { color: var(--llm-bone); }
+.llm-section-forest .float-card .float-meta { color: rgba(240, 230, 208, 0.5); }
+
+/* ── Timeline ── */
+.llm-timeline-spine {
+  background: linear-gradient(
+    180deg,
+    transparent,
+    var(--llm-ochre) 15%,
+    var(--llm-forest-lit) 85%,
+    transparent
+  );
+}
+.llm-timeline-time {
+  color: var(--llm-ochre);
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.15em;
+}
+.llm-diamond { color: var(--llm-ochre); margin-right: 0.4em; }
+.llm-timeline-dot {
+  background: var(--llm-ochre);
+  border-color: var(--llm-forest);
+  box-shadow: 0 0 0 4px rgba(212, 160, 23, 0.25);
+}
+.llm-timeline-card .timeline-card-inner {
+  background: var(--llm-forest-mid);
+  border: 2px solid rgba(212, 160, 23, 0.2);
+  border-top: 2px solid rgba(212, 160, 23, 0.2); /* override red border-top */
+  border-radius: 12px;
+}
+.llm-timeline-card .timeline-card-inner:hover {
+  border-color: rgba(212, 160, 23, 0.5);
+  box-shadow: 0 8px 30px rgba(212, 160, 23, 0.15);
+}
+
+/* ── Makishi / Barge section ── */
+.llm-dot-grid {
+  background-image: radial-gradient(circle, rgba(212, 160, 23, 0.12) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 1; /* override the 0.04 from .dot-grid */
+}
+.llm-mask-wrap {
+  border: 1px solid rgba(212, 160, 23, 0.2);
+  border-radius: 16px;
+}
+.llm-mask-vignette {
+  background: linear-gradient(to bottom, transparent 40%, rgba(15, 36, 16, 0.85) 100%);
+}
+.llm-mask-caption h3 { color: var(--llm-ochre-light); }
+.llm-mask-caption p  { color: rgba(240, 230, 208, 0.6); }
+
+/* Hotspot positions */
+.llm-hotspot-mwana    { top: 28%; left: 32%; }
+.llm-hotspot-chihongo { top: 42%; left: 62%; }
+.llm-hotspot-chikunza { top: 65%; left: 45%; }
+
+/* Hotspot colour overrides */
+.llm-hotspot {
+  background: rgba(212, 160, 23, 0.15);
+  border: 1px solid rgba(212, 160, 23, 0.5);
+}
+.llm-hotspot:hover {
+  background: rgba(212, 160, 23, 0.3);
+  border-color: var(--llm-ochre);
+}
+.llm-hotspot-pulse { background: var(--llm-ochre); }
+.llm-hotspot .hotspot-label {
+  background: var(--llm-forest);
+  border-color: rgba(212, 160, 23, 0.2);
+  color: var(--llm-bone);
+}
+
+/* Detail cards */
+.llm-detail-card {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(212, 160, 23, 0.08);
+}
+.llm-detail-card.active {
+  border-left-color: var(--llm-ochre);
+  background: rgba(212, 160, 23, 0.07);
+}
+.llm-detail-card .detail-title { color: var(--llm-ochre-light); }
+.llm-detail-card .detail-desc  { color: rgba(240, 230, 208, 0.65); }
+.llm-detail-icon-wrap {
+  background: rgba(212, 160, 23, 0.15);
+  border: 1px solid rgba(212, 160, 23, 0.3);
+}
+.llm-detail-icon { color: var(--llm-ochre); font-size: 1.25rem; }
+
+/* Spirit facts panel */
+.llm-spirit-facts {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(212, 160, 23, 0.15);
+  border-top: 3px solid var(--llm-ochre);
+}
+.llm-spirit-facts .specs-title { color: var(--llm-ochre-light); }
+.llm-spirit-facts .specs-list li {
+  color: rgba(240, 230, 208, 0.65);
+  border-bottom-color: rgba(212, 160, 23, 0.1);
+}
+
+/* ── Gold utility (em inside section-title) ── */
+.llm-gold { color: var(--llm-ochre); }
+
+/* ── Culture section ── */
+.llm-point-icon {
+  color: var(--llm-ochre);
+  font-size: 1.4rem;
+  background: rgba(212, 160, 23, 0.1);
+}
+.llm-section-culture .culture-point h3 { color: var(--llm-bone); }
+.llm-section-culture .culture-point p  { color: rgba(240, 230, 208, 0.65); }
+
+.llm-btn-outline {
+  border: 1.5px solid var(--llm-ochre);
+  color: var(--llm-ochre);
+  background: transparent;
+  padding: 0.65rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: background 0.25s, color 0.25s;
+}
+.llm-btn-outline:hover {
+  background: var(--llm-ochre);
+  color: var(--llm-forest);
+}
+
+/* ── Audio player ── */
+.llm-audio-section .audio-section { border-top-color: rgba(212, 160, 23, 0.2); }
+.llm-audio-section .section-sub { color: rgba(240, 230, 208, 0.55); }
+.llm-audio-icon {
+  color: var(--llm-ochre);
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.llm-player {
+  border: 1px solid rgba(212, 160, 23, 0.2);
+  border-top: 3px solid var(--llm-ochre);
+  background: rgba(255, 255, 255, 0.03);
+}
+.llm-ctrl-play {
+  background: linear-gradient(135deg, var(--llm-ochre), var(--llm-earth-mid));
+  color: var(--llm-forest);
+  border: none;
+  box-shadow: 0 4px 20px rgba(212, 160, 23, 0.3);
+}
+.llm-ctrl-play:hover {
+  background: var(--llm-ochre-light);
+  transform: scale(1.08);
+  box-shadow: 0 8px 32px rgba(212, 160, 23, 0.4);
+}
+.llm-progress-track { background: rgba(212, 160, 23, 0.15); }
+.llm-progress-fill  { background: var(--llm-ochre); }
+.llm-player .time-label { color: rgba(240, 230, 208, 0.5); }
+.llm-player input[type=range] { accent-color: var(--llm-ochre); }
+
+/* ── Visitor guide grid ── */
+.llm-guide-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+.llm-guide-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(212, 160, 23, 0.15);
+  border-radius: 14px;
+  padding: 1.75rem;
+  transition: border-color 0.3s var(--ease-out),
+              transform    0.3s var(--ease-out),
+              box-shadow   0.3s var(--ease-out);
+}
+.llm-guide-card:hover {
+  border-color: rgba(212, 160, 23, 0.45);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+.llm-guide-icon { font-size: 2rem; margin-bottom: 0.75rem; display: block; }
+.llm-guide-card h3 {
+  font-family: 'Cinzel', serif;
+  color: var(--llm-ochre-light);
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+}
+.llm-guide-card p {
+  color: rgba(240, 230, 208, 0.7);
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+/* ── Animations (llm- namespaced to avoid conflicts) ── */
+@keyframes llm-blob-drift {
+  0%   { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(30px, -20px) scale(1.05); }
+}
+@keyframes llm-wave-drift {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-40px); }
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .llm-hero-title {
+    font-size: clamp(2.8rem, 14vw, 5rem);
+    line-height: 1;
+  }
+  .llm-guide-grid { grid-template-columns: 1fr; }
+}

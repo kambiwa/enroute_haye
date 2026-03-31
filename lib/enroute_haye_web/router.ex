@@ -21,6 +21,7 @@ defmodule EnrouteHayeWeb.Router do
     pipe_through :browser
 
     live "/", Unauth.Home, :index
+    live "/mize", Unauth.LikumbiLyaMize, :index
     live "/journey", Unauth.Journey, :index
     live "/audio", Auth.Audio.Index, :index
     live "/uploads", Auth.Uploads.Audio, :index
