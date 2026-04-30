@@ -1,4 +1,4 @@
-defmodule EnrouteHayeWeb.Unauth.Home do
+defmodule EnrouteHayeWeb.Unauth.Kuomboka do
   use EnrouteHayeWeb, :live_view
 
   @impl true

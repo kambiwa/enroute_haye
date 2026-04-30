@@ -1,10 +1,4 @@
-<%!-- ══════════════════════════════════════════════════════
-     EnrouteHaye · Journey LiveView Template
-     PDF export: wkhtmltopdf via /pdf/itinerary/:token
-══════════════════════════════════════════════════════ --%>
-
 <div class="journey-root">
-
   <%!-- ── Header ──────────────────────────────────────────── --%>
   <header class="journey-header">
     <div class="journey-logo">ENROUTE <span>HAYE</span></div>
@@ -176,15 +170,17 @@
               <button
                 type="button"
                 class={["map-pin", pin.id in @active_pins && "map-pin--active"]}
-                style={"top: #{pin.top}; left: #{pin.left};"}
                 phx-click="toggle_pin"
                 phx-value-pin={pin.id}
                 title={pin.label}
               >
                 <div class="pin-dot" style={"background: #{pin.color};"}>
-                  <span><%= pin.emoji %></span>
+                  <span><%= pin.image_url %></span>
                 </div>
-                <div class="pin-label"><%= pin.label %></div>
+                <div class="pin-label"><%= pin.description %></div>
+                <div class="pin-dot" style={"background: #{pin.color};"}>
+                  <span><%= pin.location %></span>
+                </div>
               </button>
             <% end %>
           </div>

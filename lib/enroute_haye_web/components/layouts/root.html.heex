@@ -4,21 +4,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content={get_csrf_token()} />
-    <.live_title default="Kuomboka" suffix=" · The Royal Journey">
+    <.live_title default="Enroute" suffix=" · EnrouteHome">
       {assigns[:page_title]}
     </.live_title>
-
-    <%!-- Fonts --%>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
-
-    <%!-- Assets --%>
     <link phx-track-static rel="stylesheet" href={~p"/assets/css/app.css"} />
     <script defer phx-track-static type="text/javascript" src={~p"/assets/js/app.js"}>
     </script>
-
-    <%!-- Theme initialiser — runs before paint to avoid flash --%>
     <script>
       (() => {
         const setTheme = (theme) => {

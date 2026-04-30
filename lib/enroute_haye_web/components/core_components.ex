@@ -397,6 +397,47 @@ end
     """
   end
 
+    # attr :href, :string, required: true
+    # attr :class, :string, default: ""
+    # attr :rest, :global
+    # slot :inner_block, required: true
+    # slot :items, required: true
+
+    # def drop_down(assigns) do
+    #   ~H"""
+    #   <div class="relative group">
+    #       href={@href}
+    #       class={["flex items-center gap-1", @class]}
+    #       {@rest}
+    #     >
+    #       {render_slot(@inner_block)}
+    #       <svg
+    #         class="w-3 h-3 mt-0.5 transition-transform duration-200 group-hover:rotate-180"
+    #         fill="none"
+    #         stroke="currentColor"
+    #         viewBox="0 0 24 24"
+    #       >
+    #         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+    #       </svg>
+
+
+    #     <div class="
+    #       absolute top-full left-1/2 -translate-x-1/2
+    #       mt-2 w-44
+    #       bg-gray-900 border border-white/10 rounded
+    #       opacity-0 invisible
+    #       group-hover:opacity-100 group-hover:visible
+    #       transition-all duration-200
+    #       shadow-lg z-50
+    #     ">
+    #       <div class="py-1">
+    #         {render_slot(@items)}
+    #       </div>
+    #     </div>
+    #   </div>
+    #   """
+    # end
+
   @doc """
   Renders a table with generic styling.
 

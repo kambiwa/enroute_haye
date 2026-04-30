@@ -2,6 +2,7 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
   use EnrouteHayeWeb, :live_view
 
   alias EnrouteHaye.Context.CxtFood
+  alias EnrouteHaye.Context.CxtSite
 
   @steps ~w(basics ceremony map food music stay summary)a
 
@@ -21,13 +22,13 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
     %{id: "barotse", emoji: "🌅", name: "Liseli Lodge", stars: "★★★★",  price: 210, dist: "8km from ceremony",  inc: "All-inclusive · Canoe"}
   ]
 
-  @pins [
-    %{id: "kuomboka", top: "38%", left: "22%", color: "#C9A84C", emoji: "👑", label: "Kuomboka Site"},
-    %{id: "market",   top: "55%", left: "55%", color: "#C05020", emoji: "🛒", label: "Mongu Market"},
-    %{id: "craft",    top: "28%", left: "65%", color: "#1E4035", emoji: "🎨", label: "Craft Village"},
-    %{id: "scenic",   top: "65%", left: "32%", color: "#6B1E2E", emoji: "🌅", label: "Zambezi Viewpoint"},
-    %{id: "lodge",    top: "45%", left: "78%", color: "#4A3020", emoji: "🏕️", label: "Safari Lodge"}
-  ]
+  # @pins [
+  #   %{id: "kuomboka", top: "38%", left: "22%", color: "#C9A84C", emoji: "👑", label: "Kuomboka Site"},
+  #   %{id: "market",   top: "55%", left: "55%", color: "#C05020", emoji: "🛒", label: "Mongu Market"},
+  #   %{id: "craft",    top: "28%", left: "65%", color: "#1E4035", emoji: "🎨", label: "Craft Village"},
+  #   %{id: "scenic",   top: "65%", left: "32%", color: "#6B1E2E", emoji: "🌅", label: "Zambezi Viewpoint"},
+  #   %{id: "lodge",    top: "45%", left: "78%", color: "#4A3020", emoji: "🏕️", label: "Safari Lodge"}
+  # ]
 
   @cities ~w(Lusaka Livingstone Kitwe Ndola Mongu Chipata Kabwe Solwezi)
 
@@ -41,7 +42,7 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
        foods: CxtFood.list_foods(%{"order_by" => %{"sort_field" => "name", "sort_direction" => "asc"}}),
        music: @music,
        hotels: @hotels,
-       pins: @pins,
+       pins:  CxtSite.list_sites(%{"order_by" => %{"sort_field" => "name", "sort_direction" => "asc"}}),
        cities: @cities,
        # Form state
        city: "",

@@ -8,9 +8,49 @@ defmodule EnrouteHayeWeb.Layouts do
   embed_templates "layouts/*"
 
   # ───────────────────────────────────────────────
+  #  DROP DOWN NAV COMPONENT
+  # ───────────────────────────────────────────────
+  attr :href,  :string, required: true
+  attr :class, :string, default: ""
+  attr :rest,  :global
+  slot :inner_block, required: true
+  slot :items,       required: true
+
+  defp drop_down(assigns) do
+    ~H"""
+    <div class="relative group">
+      <a href={@href} class={["flex items-center gap-1", @class]} {@rest}>
+        {render_slot(@inner_block)}
+        <svg
+          class="w-3 h-3 mt-0.5 transition-transform duration-200 group-hover:rotate-180"
+          fill="none" stroke="currentColor" viewBox="0 0 24 24"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </a>
+
+      <div class="
+        absolute top-full left-1/2 -translate-x-1/2
+        mt-8 w-48
+        text-sm text-black
+        bg-white border border-white/10 rounded
+        opacity-0 invisible
+        group-hover:opacity-100 group-hover:visible
+        transition-all duration-200
+        shadow-lg z-50
+      ">
+        <div class="py-1">
+          {render_slot(@items)}
+        </div>
+      </div>
+    </div>
+    """
+  end
+
+  # ───────────────────────────────────────────────
   #  PUBLIC / UNAUTHENTICATED LAYOUT
   # ───────────────────────────────────────────────
-  attr :flash, :map, required: true
+  attr :flash,         :map, required: true
   attr :current_scope, :map, default: nil
   slot :inner_block, required: true
 
@@ -18,29 +58,67 @@ defmodule EnrouteHayeWeb.Layouts do
     ~H"""
     <div class="min-h-screen flex flex-col kuomboka-bg">
 
-      <nav id="navbar-hook" class="navbar fixed top-0 left-0 right-0 z-50 transition-all duration-300"
-           phx-hook="Navbar">
-        <div class="navbar-inner max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex items-center justify-between h-16">
-          <a href={~p"/"} class="navbar-brand flex items-center gap-2">
-            <span class="brand-crown text-yellow-400 text-2xl">♛</span>
-            <span class="brand-name text-white font-bold tracking-widest text-sm uppercase">KUOMBOKA</span>
-          </a>
-          <div class="navbar-links hidden md:flex items-center gap-6">
-            <a href={~p"/#journey"}   class="nav-link text-white/80 hover:text-yellow-400 text-sm tracking-wide transition-colors">The Journey</a>
-            <a href={~p"/#ceremony"}  class="nav-link text-white/80 hover:text-yellow-400 text-sm tracking-wide transition-colors">Ceremony</a>
-            <a href={~p"/#barge"}     class="nav-link text-white/80 hover:text-yellow-400 text-sm tracking-wide transition-colors">Nalikwanda</a>
-            <a href={~p"/#culture"}   class="nav-link text-white/80 hover:text-yellow-400 text-sm tracking-wide transition-colors">Culture</a>
-            <a href={~p"/journey"}    class="btn-outline-gold border border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black px-4 py-1.5 rounded text-sm tracking-wide transition-all">Start Tour</a>
-            <a href={~p"/users/log-in"}   class="text-white/70 hover:text-white text-sm transition-colors">Sign in</a>
-            <a href={~p"/users/register"} class="bg-yellow-400 text-black font-semibold px-4 py-1.5 rounded text-sm hover:bg-yellow-300 transition-colors">Get Started</a>
+
+       <%!-- ═══════════════════════════════════════════
+            NAV
+        ════════════════════════════════════════════════ --%>
+        <nav style="background: rgba(28,43,26,.88); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,255,255,.1);"
+          class="fixed top-0 left-0 right-0 z-50">
+          <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white"
+                style="background: linear-gradient(135deg, #E8B94A, #2D6A2D);">EH</div>
+              <span class="text-white font-semibold tracking-wide text-sm leading-tight">
+                ENROUTE<br><span style="color: #E8B94A;">HAYE</span>
+              </span>
+            </div>
+
+            <div class="hidden md:flex items-center gap-8 text-sm" style="color: rgba(255,255,255,.8);">
+              <a href={~p"/#barge"} class="hover:text-amber-400 transition-colors" style="transition: color .2s;">Destinations</a>
+              <.drop_down href={~p"/#ceremony"} class="nav-link text-white/80 hover:text-yellow-400 text-sm tracking-wide transition-colors">
+              Ceremony
+              <:items>
+                <a href={~p"/mize"} class="block px-4 py-2 text-sm text-white/80 hover:text-yellow-400 hover:bg-gray-800 transition-colors">
+                  Mize
+                </a>
+                <a href={~p"/kuomboka"} class="block px-4 py-2 text-sm text-white/80 hover:text-yellow-400 hover:bg-gray-800 transition-colors">
+                  Kuomboka
+                </a>
+              </:items>
+            </.drop_down>
+              <a href={~p"/journey"} class="btn-outline-gold border border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black px-4 py-1.5 rounded text-sm tracking-wide transition-all">
+              Start Tour
+            </a>
+            <a href={~p"/users/log-in"} class="text-white/70 hover:text-white text-sm transition-colors">
+              Sign in
+            </a>
+            <a href={~p"/users/register"} class="bg-yellow-400 text-black font-semibold px-4 py-1.5 rounded text-sm hover:bg-yellow-300 transition-colors">
+              Get Started
+            </a>
+              <a href="#" class="hover:text-amber-400 transition-colors" style="transition: color .2s;">Experiences</a>
+              <a href="#" class="hover:text-amber-400 transition-colors" style="transition: color .2s;">Plan Your Trip</a>
+              <a href="#" class="hover:text-amber-400 transition-colors" style="transition: color .2s;">Events & Ceremonies</a>
+              <a href="#" class="hover:text-amber-400 transition-colors" style="transition: color .2s;">Discover Zambia</a>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <button style="color: rgba(255,255,255,.8);" class="hover:text-white transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+              </button>
+              <button style="color: rgba(255,255,255,.8);" class="hover:text-white transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+              </button>
+              <button
+                style="background: linear-gradient(110deg,#C9A84C 0%,#E8B94A 40%,#fff8e0 50%,#E8B94A 60%,#C9A84C 100%); background-size: 200% auto; color: #1a1a00; font-weight: 700; font-size: .875rem; padding: .5rem 1.25rem; border-radius: 9999px; border: none; cursor: pointer; transition: box-shadow .3s, background-position .6s;">
+                Plan Trip
+              </button>
+            </div>
           </div>
-          <button class="md:hidden text-white p-2" phx-click="toggle_mobile_menu" aria-label="Toggle menu">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-            </svg>
-          </button>
-        </div>
-      </nav>
+        </nav>
 
       <main class="flex-1 pt-16">
         <.flash_group flash={@flash} />
@@ -50,21 +128,32 @@ defmodule EnrouteHayeWeb.Layouts do
       <footer class="footer bg-gray-950 border-t border-yellow-400/20 text-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+
             <div class="md:col-span-2">
               <div class="flex items-center gap-2 mb-4">
                 <span class="text-yellow-400 text-2xl">♛</span>
-                <span class="font-bold tracking-widest text-sm uppercase">KUOMBOKA</span>
+                <span class="font-bold tracking-widest text-sm uppercase">Enroute Home</span>
               </div>
               <p class="text-white/60 text-sm leading-relaxed">
                 Preserving and sharing the rich cultural heritage of the Lozi people
                 and the magnificent Kuomboka ceremony for future generations.
               </p>
               <div class="flex gap-3 mt-4">
-                <a href="#" class="w-8 h-8 border border-white/20 rounded-full flex items-center justify-center text-white/60 hover:border-yellow-400 hover:text-yellow-400 transition-all text-xs" aria-label="Facebook">f</a>
-                <a href="#" class="w-8 h-8 border border-white/20 rounded-full flex items-center justify-center text-white/60 hover:border-yellow-400 hover:text-yellow-400 transition-all text-xs" aria-label="Instagram">◎</a>
-                <a href="#" class="w-8 h-8 border border-white/20 rounded-full flex items-center justify-center text-white/60 hover:border-yellow-400 hover:text-yellow-400 transition-all text-xs" aria-label="Twitter">✕</a>
+                <a href="#" aria-label="Facebook"
+                   class="w-8 h-8 border border-white/20 rounded-full flex items-center justify-center text-white/60 hover:border-yellow-400 hover:text-yellow-400 transition-all text-xs">
+                  f
+                </a>
+                <a href="#" aria-label="Instagram"
+                   class="w-8 h-8 border border-white/20 rounded-full flex items-center justify-center text-white/60 hover:border-yellow-400 hover:text-yellow-400 transition-all text-xs">
+                  ◎
+                </a>
+                <a href="#" aria-label="Twitter"
+                   class="w-8 h-8 border border-white/20 rounded-full flex items-center justify-center text-white/60 hover:border-yellow-400 hover:text-yellow-400 transition-all text-xs">
+                  ✕
+                </a>
               </div>
             </div>
+
             <div>
               <h4 class="text-yellow-400 text-xs font-semibold tracking-widest uppercase mb-4">Quick Links</h4>
               <ul class="space-y-2 text-sm text-white/60">
@@ -74,16 +163,19 @@ defmodule EnrouteHayeWeb.Layouts do
                 <li><a href="#"              class="hover:text-yellow-400 transition-colors">Cultural Guidelines</a></li>
               </ul>
             </div>
+
             <div>
               <h4 class="text-yellow-400 text-xs font-semibold tracking-widest uppercase mb-4">Contact</h4>
               <ul class="space-y-2 text-sm text-white/60">
-                <li>📍 Mongu, Western Zambia</li>
-                <li>✉ <a href="mailto:info@kuomboka.zm" class="hover:text-yellow-400 transition-colors">info@kuomboka.zm</a></li>
+                <li>📍 Zambia</li>
+                <li>✉ <a href="mailto:info@enroutehome.zm" class="hover:text-yellow-400 transition-colors">info@enroutehome.zm</a></li>
               </ul>
             </div>
+
           </div>
+
           <div class="border-t border-white/10 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-2 text-xs text-white/40">
-            <p>© {Date.utc_today().year} Kuomboka Digital Heritage. All rights reserved.</p>
+            <p>© {Date.utc_today().year} Enroute Home Digital Heritage. All rights reserved.</p>
             <div class="flex gap-4">
               <a href="#" class="hover:text-white/70 transition-colors">Privacy</a>
               <a href="#" class="hover:text-white/70 transition-colors">Terms</a>
@@ -93,6 +185,55 @@ defmodule EnrouteHayeWeb.Layouts do
           </div>
         </div>
       </footer>
+
+    </div>
+    """
+  end
+
+  # ───────────────────────────────────────────────
+  #  UNAUTHENTICATED LAYOUT — navbar only, no footer
+  # ───────────────────────────────────────────────
+  attr :flash,         :map, required: true
+  attr :current_scope, :map, default: nil
+  slot :inner_block, required: true
+
+  def unauth_no_footer(assigns) do
+    ~H"""
+    <div class="min-h-screen flex flex-col kuomboka-bg">
+
+      <nav id="navbar-hook"
+           class="navbar visible fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+           phx-hook="Navbar">
+        <div class="navbar-inner max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex items-center justify-between h-16">
+
+          <a href={~p"/"} class="navbar-brand flex items-center gap-2">
+            <span class="brand-crown text-yellow-400 text-2xl">♛</span>
+            <span class="brand-name text-white font-bold tracking-widest text-sm uppercase">Enroute Home</span>
+          </a>
+
+          <div class="navbar-links hidden md:flex items-center gap-6">
+            <a href={~p"/#journey"}  class="nav-link text-white/80 hover:text-yellow-400 text-sm tracking-wide transition-colors">The Journey</a>
+            <a href={~p"/#ceremony"} class="nav-link text-white/80 hover:text-yellow-400 text-sm tracking-wide transition-colors">Ceremony</a>
+            <a href={~p"/#barge"}    class="nav-link text-white/80 hover:text-yellow-400 text-sm tracking-wide transition-colors">Nalikwanda</a>
+            <a href={~p"/#culture"}  class="nav-link text-white/80 hover:text-yellow-400 text-sm tracking-wide transition-colors">Culture</a>
+            <a href={~p"/journey"}   class="btn-outline-gold border border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black px-4 py-1.5 rounded text-sm tracking-wide transition-all">Start Tour</a>
+            <a href={~p"/users/log-in"} class="text-white/70 hover:text-white text-sm transition-colors">Sign in</a>
+          </div>
+
+          <button class="md:hidden text-white p-2" phx-click="toggle_mobile_menu" aria-label="Toggle menu">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+
+        </div>
+      </nav>
+
+      <main class="flex-1 pt-16">
+        <.flash_group flash={@flash} />
+        {render_slot(@inner_block)}
+      </main>
+
     </div>
     """
   end
@@ -100,10 +241,10 @@ defmodule EnrouteHayeWeb.Layouts do
   # ───────────────────────────────────────────────
   #  ADMIN / BACKOFFICE LAYOUT
   # ───────────────────────────────────────────────
-  attr :flash, :map, required: true
-  attr :page_title, :string, default: "Dashboard"
-  attr :current_page, :atom, default: :dashboard
-  attr :current_scope, :map, default: nil
+  attr :flash,        :map,    required: true
+  attr :page_title,   :string, default: "Dashboard"
+  attr :current_page, :atom,   default: :dashboard
+  attr :current_scope, :map,   default: nil
   slot :inner_block, required: true
 
   def admin_app(assigns) do
@@ -113,13 +254,11 @@ defmodule EnrouteHayeWeb.Layouts do
 
       <div class="drawer-content flex flex-col">
 
-        <%!-- ══ TOP NAV ══ --%>
         <header style="position: sticky; top: 0; z-index: 30; display: flex; align-items: center;
                        height: 64px; padding: 0 1.5rem; background: #ffffff;
                        border-bottom: 1px solid #E8E2D9;
                        box-shadow: 0 1px 4px rgba(0,0,0,0.06);">
 
-          <%!-- Mobile hamburger --%>
           <label for="admin-sidebar" class="lg:hidden" aria-label="Open sidebar"
                  style="display: flex; align-items: center; justify-content: center;
                         width: 36px; height: 36px; margin-right: 0.75rem;
@@ -128,17 +267,14 @@ defmodule EnrouteHayeWeb.Layouts do
             <.icon name="hero-bars-3" class="size-5" />
           </label>
 
-          <%!-- Page title --%>
           <div style="flex: 1;">
             <h1 style="font-size: 0.95rem; font-weight: 600; color: #1a1a1a; letter-spacing: 0.01em;">
               {@page_title}
             </h1>
           </div>
 
-          <%!-- Right side --%>
           <div style="display: flex; align-items: center; gap: 0.5rem;">
 
-            <%!-- Bell --%>
             <button aria-label="Notifications"
                     style="width: 36px; height: 36px; border-radius: 0.5rem; border: none;
                            background: transparent; color: #9ca3af; cursor: pointer;
@@ -149,10 +285,8 @@ defmodule EnrouteHayeWeb.Layouts do
               <.icon name="hero-bell" class="size-5" />
             </button>
 
-            <%!-- Divider --%>
             <div style="width: 1px; height: 24px; background: #E8E2D9; margin: 0 0.25rem;"></div>
 
-            <%!-- Profile --%>
             <div class="dropdown dropdown-end">
               <label tabindex="0"
                      style="display: flex; align-items: center; gap: 0.6rem; cursor: pointer;
@@ -160,14 +294,12 @@ defmodule EnrouteHayeWeb.Layouts do
                             transition: background 0.15s;"
                      onmouseover="this.style.background='#F9F7F4'"
                      onmouseout="this.style.background='transparent'">
-                <%!-- Avatar --%>
                 <div style="width: 32px; height: 32px; border-radius: 50%;
                             background: #8B1A1A; color: #fff;
                             display: flex; align-items: center; justify-content: center;
                             font-size: 0.75rem; font-weight: 700; flex-shrink: 0;">
                   A
                 </div>
-                <%!-- Name + role — hidden on small screens --%>
                 <div class="hidden sm:block" style="text-align: left; line-height: 1.3;">
                   <p style="font-size: 0.82rem; font-weight: 600; color: #1a1a1a;">Admin</p>
                   <p style="font-size: 0.68rem; color: #9ca3af;">Administrator</p>
@@ -175,8 +307,7 @@ defmodule EnrouteHayeWeb.Layouts do
                 <.icon name="hero-chevron-down" class="size-3.5 hidden sm:block" style="color: #9ca3af;" />
               </label>
 
-              <ul tabindex="0"
-                  class="dropdown-content"
+              <ul tabindex="0" class="dropdown-content"
                   style="z-index: 50; margin-top: 0.5rem; width: 224px;
                          background: #fff; border-radius: 0.75rem;
                          box-shadow: 0 8px 24px rgba(0,0,0,0.1);
@@ -184,7 +315,7 @@ defmodule EnrouteHayeWeb.Layouts do
                          font-size: 0.85rem; list-style: none;">
                 <li style="padding: 0.6rem 0.75rem; border-bottom: 1px solid #E8E2D9; margin-bottom: 0.25rem;">
                   <p style="font-weight: 600; color: #1a1a1a; font-size: 0.85rem;">Admin User</p>
-                  <p style="color: #9ca3af; font-size: 0.72rem; margin-top: 0.15rem;">admin@kuomboka.zm</p>
+                  <p style="color: #9ca3af; font-size: 0.72rem; margin-top: 0.15rem;">admin@enroutehome.zm</p>
                 </li>
                 <li>
                   <a href={~p"/admin/profile"}
@@ -222,14 +353,13 @@ defmodule EnrouteHayeWeb.Layouts do
           </div>
         </header>
 
-        <%!-- ── MAIN CONTENT ── --%>
         <main style="flex: 1; background: #F4F2EF;">
           <.flash_group flash={@flash} />
           {render_slot(@inner_block)}
         </main>
+
       </div>
 
-      <%!-- ══ SIDEBAR ══ --%>
       <div class="drawer-side" style="z-index: 40;">
         <label for="admin-sidebar" aria-label="close sidebar" class="drawer-overlay"></label>
 
@@ -237,7 +367,6 @@ defmodule EnrouteHayeWeb.Layouts do
                       border-right: 1px solid #E8E2D9;
                       display: flex; flex-direction: column;">
 
-          <%!-- Brand --%>
           <div style="height: 64px; padding: 0 1.25rem; display: flex; align-items: center;
                       gap: 0.75rem; border-bottom: 1px solid #E8E2D9; flex-shrink: 0;">
             <div style="width: 32px; height: 32px; border-radius: 0.5rem;
@@ -248,42 +377,36 @@ defmodule EnrouteHayeWeb.Layouts do
             <div>
               <p style="color: #8B1A1A; font-weight: 700; font-size: 0.82rem;
                         letter-spacing: 0.12em; text-transform: uppercase; line-height: 1.2;">
-                Kuomboka
+                Enroute Home
               </p>
-              <p style="color: #9ca3af; font-size: 0.65rem; letter-spacing: 0.06em;">
-                Admin Portal
-              </p>
+              <p style="color: #9ca3af; font-size: 0.65rem; letter-spacing: 0.06em;">Admin Portal</p>
             </div>
           </div>
 
-          <%!-- Nav --%>
           <nav style="flex: 1; padding: 1.25rem 0.75rem; overflow-y: auto;">
-
             <.nav_group label="Overview" />
-            <.nav_link href={~p"/admin/dashboard"} icon="hero-squares-2x2" label="Dashboard" active={@current_page == :dashboard} />
+            <.nav_link href={~p"/admin/dashboard"} icon="hero-squares-2x2"       label="Dashboard"      active={@current_page == :dashboard} />
 
             <.nav_group label="Content" />
-            <.nav_link href={~p"/admin/sites"}  icon="hero-map-pin"        label="Sites"    active={@current_page == :sites} />
-            <.nav_link href={~p"/admin/events"} icon="hero-calendar-days"  label="Events"   active={@current_page == :events} />
-            <.nav_link href={~p"/admin/foods"}  icon="hero-cake"           label="Foods"    active={@current_page == :foods} />
-            <.nav_link href={~p"/admin/audio"}  icon="hero-musical-note"   label="Audio"    active={@current_page == :audio} />
-            <.nav_link href={~p"/admin/media"}  icon="hero-photo"          label="Media"    active={@current_page == :media} />
+            <.nav_link href={~p"/admin/sites"}  icon="hero-map-pin"               label="Sites"          active={@current_page == :sites} />
+            <.nav_link href={~p"/admin/events"} icon="hero-calendar-days"         label="Events"         active={@current_page == :events} />
+            <.nav_link href={~p"/admin/foods"}  icon="hero-cake"                  label="Foods"          active={@current_page == :foods} />
+            <.nav_link href={~p"/admin/audio"}  icon="hero-musical-note"          label="Audio"          active={@current_page == :audio} />
+            <.nav_link href={~p"/admin/media"}  icon="hero-photo"                 label="Media"          active={@current_page == :media} />
 
             <.nav_group label="Trips" />
-            <.nav_link href={~p"/admin/trips"} icon="hero-map" label="Trips" active={@current_page == :trips} />
+            <.nav_link href={~p"/admin/trips"}  icon="hero-map"                   label="Trips"          active={@current_page == :trips} />
 
             <.nav_group label="Accommodation" />
             <.nav_link href={~p"/admin/accomodations"} icon="hero-building-office-2" label="Accommodations" active={@current_page == :accommodations} />
-            <.nav_link href={~p"/admin/bookings"}        icon="hero-bookmark"          label="Bookings"       active={@current_page == :bookings} />
-            <.nav_link href={~p"/admin/reviews"}         icon="hero-star"              label="Reviews"        active={@current_page == :reviews} />
+            <.nav_link href={~p"/admin/bookings"}      icon="hero-bookmark"          label="Bookings"       active={@current_page == :bookings} />
+            <.nav_link href={~p"/admin/reviews"}       icon="hero-star"              label="Reviews"        active={@current_page == :reviews} />
 
             <.nav_group label="System" />
-            <.nav_link href={~p"/admin/users"}    icon="hero-users"        label="Users & Roles" active={@current_page == :users} />
-            <.nav_link href={~p"/admin/settings"} icon="hero-cog-6-tooth"  label="Settings"      active={@current_page == :settings} />
-
+            <.nav_link href={~p"/admin/users"}    icon="hero-users"       label="Users & Roles"  active={@current_page == :users} />
+            <.nav_link href={~p"/admin/settings"} icon="hero-cog-6-tooth" label="Settings"       active={@current_page == :settings} />
           </nav>
 
-          <%!-- Sidebar footer --%>
           <div style="padding: 0.75rem; border-top: 1px solid #E8E2D9; flex-shrink: 0;">
             <.link href={~p"/users/log-out"} method="delete"
                    style="display: flex; align-items: center; gap: 0.75rem;
@@ -296,7 +419,7 @@ defmodule EnrouteHayeWeb.Layouts do
               <span>Log out</span>
             </.link>
             <p style="font-size: 0.65rem; color: #d1d5db; margin-top: 0.6rem; padding: 0 0.75rem;">
-              © {Date.utc_today().year} Kuomboka Digital Heritage
+              © {Date.utc_today().year} Enroute Home Digital Heritage
             </p>
           </div>
 
@@ -306,103 +429,10 @@ defmodule EnrouteHayeWeb.Layouts do
     """
   end
 
-  # ── Sidebar sub-components ───────────────────────────────────────────
-
-  attr :label, :string, required: true
-
-  defp nav_group(assigns) do
-    ~H"""
-    <p style="font-size: 0.62rem; font-weight: 700; letter-spacing: 0.18em;
-              text-transform: uppercase; color: rgba(139,26,26,0.45);
-              padding: 0 0.75rem; margin: 1.25rem 0 0.35rem;">
-      {@label}
-    </p>
-    """
-  end
-
-  attr :href,   :string,  required: true
-  attr :icon,   :string,  required: true
-  attr :label,  :string,  required: true
-  attr :active, :boolean, default: false
-
-  defp nav_link(assigns) do
-    ~H"""
-    <a href={@href}
-       style={nav_link_style(@active)}
-       onmouseover={if !@active, do: "this.style.background='rgba(139,26,26,0.05)'; this.style.color='#8B1A1A'"}
-       onmouseout={if !@active, do: "this.style.background='transparent'; this.style.color='#4b5563'"}>
-      <.icon name={@icon} class="size-4" style="flex-shrink: 0;" />
-      <span>{@label}</span>
-    </a>
-    """
-  end
-
-  defp nav_link_style(true) do
-    "display: flex; align-items: center; gap: 0.75rem; padding: 0.55rem 0.75rem;
-     padding-left: calc(0.75rem - 3px);
-     border-radius: 0.5rem; font-size: 0.82rem; font-weight: 600;
-     color: #8B1A1A; background: rgba(139,26,26,0.08);
-     border-left: 3px solid #8B1A1A; text-decoration: none;
-     margin-bottom: 0.1rem;"
-  end
-
-  defp nav_link_style(false) do
-    "display: flex; align-items: center; gap: 0.75rem; padding: 0.55rem 0.75rem;
-     padding-left: calc(0.75rem - 3px);
-     border-radius: 0.5rem; font-size: 0.82rem;
-     color: #4b5563; background: transparent;
-     border-left: 3px solid transparent; text-decoration: none;
-     margin-bottom: 0.1rem; transition: background 0.15s, color 0.15s;"
-  end
-
-  # ───────────────────────────────────────────────
-  #  UNAUTHENTICATED LAYOUT — navbar only, no footer
-  # ───────────────────────────────────────────────
-  attr :flash, :map, required: true
-  attr :current_scope, :map, default: nil
-  slot :inner_block, required: true
-
-  def unauth_no_footer(assigns) do
-    ~H"""
-    <div class="min-h-screen flex flex-col kuomboka-bg">
-
-      <nav id="navbar-hook" class="navbar visible fixed top-0 left-0 right-0 z-50 transition-all duration-300"
-           phx-hook="Navbar">
-        <div class="navbar-inner max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex items-center justify-between h-16">
-          <a href={~p"/"} class="navbar-brand flex items-center gap-2">
-            <span class="brand-crown text-yellow-400 text-2xl">♛</span>
-            <span class="brand-name text-white font-bold tracking-widest text-sm uppercase">KUOMBOKA</span>
-          </a>
-          <div class="navbar-links hidden md:flex items-center gap-6">
-            <a href={~p"/#journey"}   class="nav-link text-white/80 hover:text-yellow-400 text-sm tracking-wide transition-colors">The Journey</a>
-            <a href={~p"/#ceremony"}  class="nav-link text-white/80 hover:text-yellow-400 text-sm tracking-wide transition-colors">Ceremony</a>
-            <a href={~p"/#barge"}     class="nav-link text-white/80 hover:text-yellow-400 text-sm tracking-wide transition-colors">Nalikwanda</a>
-            <a href={~p"/#culture"}   class="nav-link text-white/80 hover:text-yellow-400 text-sm tracking-wide transition-colors">Culture</a>
-            <a href={~p"/journey"}    class="btn-outline-gold border border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black px-4 py-1.5 rounded text-sm tracking-wide transition-all">Start Tour</a>
-            <a href={~p"/users/log-in"}   class="text-white/70 hover:text-white text-sm transition-colors">Sign in</a>
-            <a href={~p"/users/register"} class="bg-yellow-400 text-black font-semibold px-4 py-1.5 rounded text-sm hover:bg-yellow-300 transition-colors">Get Started</a>
-          </div>
-          <button class="md:hidden text-white p-2" phx-click="toggle_mobile_menu" aria-label="Toggle menu">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-            </svg>
-          </button>
-        </div>
-      </nav>
-
-      <main class="flex-1 pt-16">
-        <.flash_group flash={@flash} />
-        {render_slot(@inner_block)}
-      </main>
-
-    </div>
-    """
-  end
-
   # ───────────────────────────────────────────────
   #  DEFAULT PHOENIX APP LAYOUT
   # ───────────────────────────────────────────────
-  attr :flash, :map, required: true
+  attr :flash,         :map, required: true
   attr :current_scope, :map, default: nil
   slot :inner_block, required: true
 
@@ -439,12 +469,12 @@ defmodule EnrouteHayeWeb.Layouts do
   #  FLASH GROUP
   # ───────────────────────────────────────────────
   attr :flash, :map, required: true
-  attr :id, :string, default: "flash-group"
+  attr :id,    :string, default: "flash-group"
 
   def flash_group(assigns) do
     ~H"""
     <div id={@id} aria-live="polite">
-      <.flash kind={:info} flash={@flash} />
+      <.flash kind={:info}  flash={@flash} />
       <.flash kind={:error} flash={@flash} />
       <.flash
         id="client-error"
@@ -490,5 +520,53 @@ defmodule EnrouteHayeWeb.Layouts do
       </button>
     </div>
     """
+  end
+
+  # ───────────────────────────────────────────────
+  #  SIDEBAR SUB-COMPONENTS (admin only)
+  # ───────────────────────────────────────────────
+  attr :label, :string, required: true
+
+  defp nav_group(assigns) do
+    ~H"""
+    <p style="font-size: 0.62rem; font-weight: 700; letter-spacing: 0.18em;
+              text-transform: uppercase; color: rgba(139,26,26,0.45);
+              padding: 0 0.75rem; margin: 1.25rem 0 0.35rem;">
+      {@label}
+    </p>
+    """
+  end
+
+  attr :href,   :string,  required: true
+  attr :icon,   :string,  required: true
+  attr :label,  :string,  required: true
+  attr :active, :boolean, default: false
+
+  defp nav_link(assigns) do
+    ~H"""
+    <a href={@href}
+       style={nav_link_style(@active)}
+       onmouseover={if !@active, do: "this.style.background='rgba(139,26,26,0.05)'; this.style.color='#8B1A1A'"}
+       onmouseout={if !@active, do: "this.style.background='transparent'; this.style.color='#4b5563'"}>
+      <.icon name={@icon} class="size-4" style="flex-shrink: 0;" />
+      <span>{@label}</span>
+    </a>
+    """
+  end
+
+  defp nav_link_style(true) do
+    "display: flex; align-items: center; gap: 0.75rem; padding: 0.55rem 0.75rem;
+     padding-left: calc(0.75rem - 3px); border-radius: 0.5rem;
+     font-size: 0.82rem; font-weight: 600; color: #8B1A1A;
+     background: rgba(139,26,26,0.08); border-left: 3px solid #8B1A1A;
+     text-decoration: none; margin-bottom: 0.1rem;"
+  end
+
+  defp nav_link_style(false) do
+    "display: flex; align-items: center; gap: 0.75rem; padding: 0.55rem 0.75rem;
+     padding-left: calc(0.75rem - 3px); border-radius: 0.5rem;
+     font-size: 0.82rem; color: #4b5563; background: transparent;
+     border-left: 3px solid transparent; text-decoration: none;
+     margin-bottom: 0.1rem; transition: background 0.15s, color 0.15s;"
   end
 end

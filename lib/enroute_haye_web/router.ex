@@ -20,7 +20,8 @@ defmodule EnrouteHayeWeb.Router do
   scope "/", EnrouteHayeWeb do
     pipe_through :browser
 
-    live "/", Unauth.Home, :index
+    live "/", Unauth.LandingPage, :index
+    live "/kuomboka", Unauth.Kuomboka, :index
     live "/mize", Unauth.LikumbiLyaMize, :index
     live "/journey", Unauth.Journey, :index
     live "/audio", Auth.Audio.Index, :index

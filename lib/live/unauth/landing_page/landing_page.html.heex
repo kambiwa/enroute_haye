@@ -1,0 +1,303 @@
+  <Layouts.unauth_app flash={@flash} current_scope={@current_scope}>
+    <section
+      style="position: relative; min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 5rem; overflow: hidden; background: #0f1a0e;">
+      <%!-- Background gradient layers --%>
+      <div style="position: absolute; inset: 0; background: linear-gradient(135deg, #0f1a0e 0%, #1C2B1A 40%, #1a2a28 100%);"></div>
+      <div style="position: absolute; inset: 0; opacity: .18; background-image: repeating-linear-gradient(90deg, rgba(255,255,255,.04) 0, rgba(255,255,255,.04) 1px, transparent 1px, transparent 60px), repeating-linear-gradient(0deg, rgba(255,255,255,.04) 0, rgba(255,255,255,.04) 1px, transparent 1px, transparent 60px);"></div>
+      <div style="position: absolute; right: 0; top: 0; width: 50%; height: 100%; background: linear-gradient(135deg, rgba(74,92,46,.35) 0%, rgba(201,168,76,.08) 50%, transparent 100%);"></div>
+      <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 67%; background: linear-gradient(to top, rgba(15,26,14,.97) 0%, transparent 100%);"></div>
+      <%!-- Radial glow accent --%>
+      <div style="position: absolute; top: 20%; left: 60%; width: 400px; height: 400px; border-radius: 50%; background: radial-gradient(circle, rgba(201,168,76,.12) 0%, transparent 70%); pointer-events: none;"></div>
+
+      <div style="position: relative; z-index: 10; max-width: 80rem; margin: 0 auto; padding: 0 1.5rem; width: 100%;">
+        <div style="max-width: 42rem;">
+          <span style="display: inline-block; color: #E8B94A; font-size: .7rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; margin-bottom: 1rem;">
+            ✦ Welcome to Zambia
+          </span>
+
+          <h1 style="font-size: clamp(3.5rem, 8vw, 6rem); font-weight: 900; line-height: .9; margin-bottom: 1.5rem; color: white; font-family: Georgia, 'Times New Roman', serif;">
+            Discover<br>Zambia.<br>
+            <span style="color: #C9A84C; filter: drop-shadow(0 0 12px rgba(201,168,76,.35));">Live Our<br>Heritage.</span>
+          </h1>
+
+          <p style="color: rgba(255,255,255,.65); font-size: 1rem; max-width: 28rem; margin-bottom: 2rem; line-height: 1.7;">
+            From mighty rivers to ancient traditions, Zambia invites you to explore its wonders, culture, and warm hospitality.
+          </p>
+
+          <%!-- Search bar --%>
+          <div style="display: flex; flex-wrap: wrap; gap: .75rem; margin-bottom: 2rem; max-width: 32rem;">
+            <div style="flex: 1; min-width: 160px; display: flex; align-items: center; gap: .5rem; background: rgba(255,255,255,.1); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,.18); border-radius: .75rem; padding: .75rem 1rem;">
+              <svg style="width: 1rem; height: 1rem; color: #E8B94A; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+              </svg>
+              <input type="text" placeholder="Where to?"
+                style="background: transparent; color: white; font-size: .875rem; outline: none; flex: 1; border: none;"
+                placeholder-color="rgba(255,255,255,.45)" />
+            </div>
+            <div style="display: flex; align-items: center; gap: .5rem; background: rgba(255,255,255,.1); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,.18); border-radius: .75rem; padding: .75rem 1rem;">
+              <svg style="width: 1rem; height: 1rem; color: #E8B94A; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+              <input type="text" placeholder="Add dates"
+                style="background: transparent; color: white; font-size: .875rem; outline: none; width: 6rem; border: none;" />
+            </div>
+            <button style="background: linear-gradient(110deg,#C9A84C 0%,#E8B94A 45%,#fff3c0 55%,#E8B94A 65%,#C9A84C 100%); background-size: 200% auto; color: #1a1a00; font-weight: 700; padding: .75rem 1.5rem; border-radius: .75rem; font-size: .875rem; border: none; cursor: pointer; white-space: nowrap; transition: box-shadow .3s;">
+              Explore
+            </button>
+          </div>
+
+          <%!-- Stats row --%>
+          <div style="display: flex; flex-wrap: wrap; gap: 1.5rem;">
+            <%= for stat <- @stats do %>
+              <div style="text-align: center;">
+                <div style="font-size: 1.75rem; font-weight: 900; color: #E8B94A; font-family: Georgia, serif; text-shadow: 0 0 18px rgba(201,168,76,.45);"><%= stat.value %></div>
+                <div style="color: rgba(255,255,255,.45); font-size: .65rem; letter-spacing: .18em; text-transform: uppercase;"><%= stat.label %></div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <%!-- Scroll indicator --%>
+      <div style="position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: .25rem; animation: bounce-down 1.8s ease-in-out infinite;">
+        <span style="color: rgba(255,255,255,.3); font-size: .65rem; letter-spacing: .18em; text-transform: uppercase;">Scroll</span>
+        <svg style="width: 1rem; height: 1rem; color: #E8B94A;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </div>
+    </section>
+
+    <%!-- ═══════════════════════════════════════════
+        EXPLORE BY PROVINCE
+    ════════════════════════════════════════════════ --%>
+    <section style="background: radial-gradient(ellipse at 20% 50%, rgba(74,92,46,.18) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(201,168,76,.12) 0%, transparent 50%), #F5EDD6; padding: 6rem 0; position: relative; overflow: hidden;">
+      <div style="max-width: 80rem; margin: 0 auto; padding: 0 1.5rem;">
+        <div style="margin-bottom: 3rem;">
+          <span style="color: #92650a; font-size: .7rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase;">Explore</span>
+          <h2 style="font-size: clamp(2rem, 4vw, 3rem); font-weight: 900; margin-top: .5rem; color: #1C2B1A; font-family: Georgia, serif; line-height: 1.1;">
+            Explore Zambia<br>by Province
+          </h2>
+          <p style="color: #6b7280; margin-top: .75rem; max-width: 28rem; font-size: .875rem;">
+            Hover over a province to discover iconic wonders and natural treasures unique to each region.
+          </p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr; gap: 2rem; align-items: start;" class="lg:grid-cols-3-custom">
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; align-items: start;">
+            <%!-- Map --%>
+            <div style="border-radius: 1.5rem; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,.18); background: #e8f0e0;">
+              <svg viewBox="0 0 520 400" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: auto; display: block;">
+                <defs>
+                  <radialGradient id="mapGlow" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#8B9B5A" stop-opacity=".3"/>
+                    <stop offset="100%" stop-color="#4A5C2E" stop-opacity=".05"/>
+                  </radialGradient>
+                </defs>
+                <path d="M80,80 L160,60 L220,40 L300,50 L380,70 L440,100 L460,150 L450,210 L430,260 L400,300 L360,330 L310,350 L260,355 L210,340 L170,310 L130,280 L90,240 L65,190 L60,140 Z"
+                  fill="url(#mapGlow)" stroke="#C9A84C" stroke-width="2" stroke-dasharray="6,3" opacity=".6"/>
+                <ellipse cx="200" cy="200" rx="90" ry="70" fill="#8B9B5A" opacity=".7"/>
+                <ellipse cx="300" cy="150" rx="75" ry="60" fill="#6B8E6B" opacity=".65"/>
+                <ellipse cx="130" cy="160" rx="60" ry="55" fill="#5C7A6E" opacity=".6"/>
+                <ellipse cx="100" cy="250" rx="50" ry="50" fill="#7A9B7A" opacity=".6"/>
+                <ellipse cx="200" cy="290" rx="70" ry="50" fill="#6B8B5A" opacity=".65"/>
+                <ellipse cx="360" cy="250" rx="65" ry="55" fill="#9BAF6B" opacity=".65"/>
+                <ellipse cx="380" cy="130" rx="60" ry="45" fill="#7B9BAF" opacity=".6"/>
+                <ellipse cx="290" cy="80"  rx="55" ry="35" fill="#6B8BAF" opacity=".55"/>
+                <ellipse cx="160" cy="90"  rx="50" ry="35" fill="#8B9BAF" opacity=".55"/>
+                <ellipse cx="300" cy="310" rx="55" ry="40" fill="#7A8B6A" opacity=".6"/>
+                <text x="185" y="205" font-size="9" fill="white" font-weight="600" text-anchor="middle">Lusaka</text>
+                <text x="295" y="155" font-size="9" fill="white" font-weight="600" text-anchor="middle">Copperbelt</text>
+                <text x="125" y="165" font-size="8" fill="white" font-weight="600" text-anchor="middle">North-Western</text>
+                <text x="100"  y="255" font-size="9" fill="white" font-weight="600" text-anchor="middle">Western</text>
+                <text x="200" y="295" font-size="9" fill="white" font-weight="600" text-anchor="middle">Southern</text>
+                <text x="365" y="255" font-size="9" fill="white" font-weight="600" text-anchor="middle">Eastern</text>
+                <text x="378" y="133" font-size="9" fill="white" font-weight="600" text-anchor="middle">Luapula</text>
+                <text x="290" y="83"  font-size="9" fill="white" font-weight="600" text-anchor="middle">Northern</text>
+                <text x="160" y="93"  font-size="9" fill="white" font-weight="600" text-anchor="middle">Muchinga</text>
+                <text x="300" y="313" font-size="9" fill="white" font-weight="600" text-anchor="middle">Central</text>
+                <circle cx="185" cy="195" r="5" fill="#C9A84C" style="cursor:pointer;" />
+                <circle cx="295" cy="145" r="5" fill="#C9A84C" style="cursor:pointer;" />
+                <circle cx="365" cy="240" r="6" fill="#E8B94A" stroke="white" stroke-width="1.5" style="cursor:pointer;" />
+              </svg>
+            </div>
+
+            <%!-- Featured + Province List --%>
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+              <div style="border-radius: 1.5rem; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,.2); background: linear-gradient(135deg, #2D3D1E, #1C2B1A); color: white; transition: transform .35s, box-shadow .35s;"
+                onmouseover="this.style.transform='translateY(-8px) scale(1.015)'; this.style.boxShadow='0 28px 60px rgba(0,0,0,.3)';"
+                onmouseout="this.style.transform=''; this.style.boxShadow='0 20px 40px rgba(0,0,0,.2)';">
+                <div style="padding: 1.25rem 1.25rem .75rem;">
+                  <div style="display: inline-block; background: rgba(232,185,74,.2); color: #E8B94A; font-size: .7rem; font-weight: 700; padding: .2rem .75rem; border-radius: 9999px; margin-bottom: .75rem;">Eastern Province</div>
+                  <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: .5rem; line-height: 1.3;">Nyau/Gule Wamkulu<br>Ceremony</h3>
+                  <p style="color: rgba(255,255,255,.55); font-size: .8rem; line-height: 1.6;">A majestic ceremony celebrating Chewa migration in Nyau grottos.</p>
+                </div>
+                <div style="height: 5rem; margin: 0 1rem 1rem; border-radius: 1rem; background: linear-gradient(135deg, #4A5C2E, #8B9B5A); display: flex; align-items: center; justify-content: center; font-size: 2.5rem;">🎭</div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: .5rem;">
+                <%= for province <- Enum.take(@provinces, 6) do %>
+                  <button style={"background: rgba(255,255,255,.65); backdrop-filter: blur(8px); border: 1px solid rgba(201,168,76,.3); border-radius: .75rem; padding: .5rem .75rem; text-align: left; font-size: .75rem; font-weight: 600; color: #1C2B1A; cursor: pointer; transition: background .25s, transform .25s, box-shadow .25s;"}
+                    onmouseover="this.style.background='white'; this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 24px rgba(0,0,0,.1)';"
+                    onmouseout="this.style.background='rgba(255,255,255,.65)'; this.style.transform=''; this.style.boxShadow='';">
+                    <span style={"width: .5rem; height: .5rem; border-radius: 50%; display: inline-block; margin-right: .35rem; background: #{province.color}; vertical-align: middle;"}></span>
+                    <%= province.name %>
+                  </button>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <%!-- ═══════════════════════════════════════════
+        ICONIC EXPERIENCES
+    ════════════════════════════════════════════════ --%>
+    <section style="background: #1C2B1A; padding: 6rem 0;">
+      <div style="max-width: 80rem; margin: 0 auto; padding: 0 1.5rem;">
+        <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; margin-bottom: 2.5rem; gap: 1rem;">
+          <div>
+            <span style="color: #E8B94A; font-size: .7rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase;">Experiences</span>
+            <h2 style="font-size: clamp(2rem, 4vw, 3rem); font-weight: 900; color: white; margin-top: .5rem; font-family: Georgia, serif;">Iconic Experiences</h2>
+          </div>
+          <div style="display: flex; align-items: center; gap: .5rem; flex-wrap: wrap;">
+            <%= for {tab, icon} <- [{"All", "✦"}, {"Nature & Wildlife", "🐘"}, {"Culture & Heritage", "🎭"}, {"Adventure", "🧗"}, {"Water Wonders", "🌊"}] do %>
+              <button style={"font-size: .75rem; padding: .375rem 1rem; border-radius: 9999px; font-weight: 600; border: none; cursor: pointer; transition: all .2s; " <>
+                if tab == "All", do: "background: #E8B94A; color: #1a1a00;", else: "background: rgba(255,255,255,.1); color: rgba(255,255,255,.7);"}>
+                <%= icon %> <%= tab %>
+              </button>
+            <% end %>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 1.25rem; overflow-x: auto; padding-bottom: .5rem; scroll-snap-type: x mandatory;">
+          <%= for {exp, i} <- Enum.with_index(@experiences) do %>
+            <div style={"flex: 1; min-width: 220px; border-radius: 1.5rem; overflow: hidden; position: relative; min-height: 320px; cursor: pointer; scroll-snap-align: start; transition: transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s; background: linear-gradient(135deg, #2D3D1E #{i*8}%, #1a2a1a);"}
+              onmouseover="this.style.transform='translateY(-8px) scale(1.015)'; this.style.boxShadow='0 24px 60px rgba(0,0,0,.35)';"
+              onmouseout="this.style.transform=''; this.style.boxShadow='';">
+              <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 5rem; opacity: .25;">
+                <%= case exp.category do
+                  "Nature & Wildlife" -> "🌿"
+                  "Culture & Heritage" -> "🎭"
+                  _ -> "🏕️"
+                end %>
+              </div>
+              <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(28,43,26,1) 30%, transparent 70%);"></div>
+              <div style="position: absolute; top: 1rem; left: 1rem;">
+                <span style="background: rgba(0,0,0,.4); backdrop-filter: blur(8px); color: rgba(255,255,255,.8); font-size: .7rem; padding: .25rem .75rem; border-radius: 9999px;"><%= exp.badge %></span>
+              </div>
+              <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 1.25rem;">
+                <h3 style="color: white; font-weight: 700; font-size: .95rem; line-height: 1.3;"><%= exp.title %></h3>
+                <p style="color: rgba(232,185,74,.75); font-size: .75rem; margin-top: .25rem;"><%= exp.subtitle %></p>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <div style="text-align: center; margin-top: 2.5rem;">
+          <button style="background: linear-gradient(110deg,#C9A84C 0%,#E8B94A 45%,#fff3c0 55%,#E8B94A 65%,#C9A84C 100%); background-size: 200% auto; color: #1a1a00; font-weight: 700; padding: .875rem 2rem; border-radius: 9999px; font-size: .875rem; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: .5rem; transition: box-shadow .3s, background-position .6s;">
+            Explore More Experiences
+            <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <%!-- ═══════════════════════════════════════════
+        PLAN YOUR JOURNEY
+    ════════════════════════════════════════════════ --%>
+    <section style="padding: 6rem 0; background: radial-gradient(ellipse at 20% 50%, rgba(74,92,46,.15) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(201,168,76,.10) 0%, transparent 50%), #F5EDD6;">
+      <div style="max-width: 64rem; margin: 0 auto; padding: 0 1.5rem; text-align: center;">
+        <div style="margin-bottom: 3.5rem;">
+          <span style="color: #92650a; font-size: .7rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase;">How it works</span>
+          <h2 style="font-size: clamp(2rem, 4vw, 3rem); font-weight: 900; margin-top: .5rem; margin-bottom: .75rem; color: #1C2B1A; font-family: Georgia, serif;">Plan Your Journey</h2>
+          <p style="color: #6b7280; font-size: .875rem;">Everything you need to plan the perfect trip.</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem;">
+          <%= for {step, i} <- Enum.with_index(@journey_steps) do %>
+            <div style="background: rgba(255,255,255,.6); border: 1px solid rgba(201,168,76,.2); border-radius: 1rem; padding: 1.25rem; text-align: center; cursor: pointer; transition: background .3s, transform .3s, box-shadow .3s;"
+              onmouseover="this.style.background='white'; this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 40px rgba(0,0,0,.1)';"
+              onmouseout="this.style.background='rgba(255,255,255,.6)'; this.style.transform=''; this.style.boxShadow='';">
+              <div style="font-size: 2rem; margin-bottom: .75rem;"><%= step.icon %></div>
+              <div style="width: 1.5rem; height: 1.5rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .7rem; font-weight: 700; margin: 0 auto .5rem; background: #C9A84C; color: white;"><%= i + 1 %></div>
+              <h4 style="font-weight: 700; font-size: .8rem; margin-bottom: .25rem; color: #1C2B1A;"><%= step.title %></h4>
+              <p style="color: #6b7280; font-size: .72rem; line-height: 1.5;"><%= step.desc %></p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </section>
+
+    <%!-- ═══════════════════════════════════════════
+        HERITAGE SECTION
+    ════════════════════════════════════════════════ --%>
+    <section style="padding: 6rem 0; position: relative; overflow: hidden; background: #1C2B1A;">
+      <div style="position: absolute; top: 50%; left: 25%; width: 24rem; height: 24rem; border-radius: 50%; opacity: .18; filter: blur(60px); background: radial-gradient(circle, #C9A84C, transparent); pointer-events: none;"></div>
+
+      <div style="max-width: 80rem; margin: 0 auto; padding: 0 1.5rem; position: relative; z-index: 1;">
+        <div style="display: grid; grid-template-columns: 1fr; gap: 3rem; align-items: center;" class="lg:grid-cols-heritage">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: center;">
+            <%!-- Left text --%>
+            <div>
+              <span style="color: #E8B94A; font-size: .7rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase;">Our Roots</span>
+              <h2 style="font-size: clamp(2rem, 4vw, 3rem); font-weight: 900; color: white; margin-top: .5rem; margin-bottom: 1.25rem; font-family: Georgia, serif; line-height: 1.1;">
+                Zambia's Heritage.<br><span style="color: #E8B94A;">Our Pride.</span>
+              </h2>
+              <p style="color: rgba(255,255,255,.55); line-height: 1.75; margin-bottom: 2rem; font-size: .875rem; max-width: 26rem;">
+                Our traditions, stories, music, and people make Zambia unforgettable. Listen, watch, and learn from our living heritage.
+              </p>
+              <button style="background: linear-gradient(110deg,#C9A84C 0%,#E8B94A 45%,#fff3c0 55%,#E8B94A 65%,#C9A84C 100%); background-size: 200% auto; color: #1a1a00; font-weight: 700; padding: .875rem 1.75rem; border-radius: 9999px; font-size: .875rem; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: .5rem; transition: box-shadow .3s;">
+                Discover Our Heritage
+                <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                </svg>
+              </button>
+            </div>
+
+            <%!-- Heritage cards grid --%>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+              <%= for {item, _i} <- Enum.with_index(@heritage_items) do %>
+                <div style="border-radius: 1rem; overflow: hidden; position: relative; min-height: 180px; cursor: pointer; transition: transform .35s, box-shadow .35s; background: linear-gradient(135deg, #2D3D1E, #1C2B1A);"
+                  onmouseover="this.style.transform='translateY(-8px) scale(1.015)'; this.style.boxShadow='0 20px 50px rgba(0,0,0,.3)';"
+                  onmouseout="this.style.transform=''; this.style.boxShadow='';">
+                  <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 3.5rem; opacity: .22;"><%= item.icon %></div>
+                  <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 1rem; background: linear-gradient(to top, rgba(28,43,26,.97), transparent);">
+                    <h4 style="color: white; font-weight: 700; font-size: .75rem;"><%= item.title %></h4>
+                    <p style="color: rgba(232,185,74,.65); font-size: .7rem; margin-top: .2rem;"><%= item.desc %></p>
+                  </div>
+                  <div style="position: absolute; top: .75rem; right: .75rem; width: 1.75rem; height: 1.75rem; border-radius: 50%; background: #E8B94A; display: flex; align-items: center; justify-content: center;">
+                    <svg style="width: .75rem; height: .75rem; color: #1a1a00; margin-left: 2px;" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M8 5v14l11-7z"/>
+                    </svg>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <%!-- ═══════════════════════════════════════════
+        NEWSLETTER
+    ════════════════════════════════════════════════ --%>
+    <section style="padding: 5rem 0; background: radial-gradient(ellipse at 50% 50%, rgba(201,168,76,.08) 0%, transparent 60%), #F5EDD6; border-top: 1px solid rgba(201,168,76,.25);">
+      <div style="max-width: 36rem; margin: 0 auto; padding: 0 1.5rem; text-align: center;">
+        <span style="color: #92650a; font-size: .7rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase;">Stay Inspired</span>
+        <h2 style="font-size: 1.875rem; font-weight: 900; margin-top: .5rem; margin-bottom: .5rem; color: #1C2B1A; font-family: Georgia, serif;">Never Miss a Story</h2>
+        <p style="color: #6b7280; font-size: .875rem; margin-bottom: 2rem;">Top destinations, stories, and exclusive offers.</p>
+
+        <form phx-submit="subscribe" style="display: flex; gap: .75rem; max-width: 28rem; margin: 0 auto;">
+          <input type="email" name="email" value={@email}
+            placeholder="Enter your email"
+            style="flex: 1; background: white; border: 1px solid #fcd34d; border-radius: .75rem; padding: .875rem 1.25rem; font-size: .875rem; outline: none; color: #1C2B1A; transition: border-color .2s, box-shadow .2s;" />
+          <button type="submit" style="background: linear-gradient(110deg,#C9A84C 0%,#E8B94A 45%,#fff3c0 55%,#E8B94A 65%,#C9A84C 100%); background-size: 200% auto; color: #1a1a00; font-weight: 700; padding: .875rem 1.5rem; border-radius: .75rem; font-size: .875rem; border: none; cursor: pointer; white-space: nowrap; transition: box-shadow .3s;">
+            Subscribe
+          </button>
+        </form>
+      </div>
+    </section>
+</Layouts.unauth_app>

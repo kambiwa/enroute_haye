@@ -1042,6 +1042,10 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 @keyframes audioWave { 0%,100% { transform: scaleY(0.4); } 50% { transform: scaleY(1); } }
 @keyframes waveMove  { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
+@keyframes bounce-down {
+  0%, 100% { transform: translateX(-50%) translateY(0); opacity: 1; }
+  50%       { transform: translateX(-50%) translateY(8px); opacity: .5; }
+}
 /* ── Responsive ── */
 @media (min-width: 768px) {
   .timeline-spine { display: block; }
