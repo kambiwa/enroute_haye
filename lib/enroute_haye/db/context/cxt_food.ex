@@ -71,4 +71,5 @@ defmodule EnrouteHaye.Context.CxtFood do
   end
 
   defp apply_order(query, _), do: order_by(query, [f], desc: f.id)
+  
 end

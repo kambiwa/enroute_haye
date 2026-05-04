@@ -1,10 +1,11 @@
-<div class="journey-root">
-  <%!-- ── Header ──────────────────────────────────────────── --%>
-  <header class="journey-header">
-    <div class="journey-logo">ENROUTE <span>HAYE</span></div>
-    <div class="journey-tagline">Digital Tour Guide · Zambia Cultural Journeys</div>
-  </header>
+<Layouts.unauth_app flash={@flash} current_scope={@current_scope}>
 
+<div class="journey-root">
+
+
+  <br><br><br>
+ <div class="journey-logo">ENROUTE <span>HAYE</span></div>
+ <div class="journey-tagline">Digital Tour Guide · Zambia Cultural Journeys</div>
   <%!-- ── Progress Bar ─────────────────────────────────────── --%>
   <div class="journey-progress">
     <div class="journey-steps">
@@ -13,7 +14,7 @@
           "prog-step",
           idx == @step && "prog-step--active",
           idx < @step  && "prog-step--done"
-        ]}>
+        ]}> 
           <%= step_label(step) %>
         </div>
       <% end %>
@@ -172,13 +173,13 @@
                 class={["map-pin", pin.id in @active_pins && "map-pin--active"]}
                 phx-click="toggle_pin"
                 phx-value-pin={pin.id}
-                title={pin.label}
+                title={pin.description}
               >
-                <div class="pin-dot" style={"background: #{pin.color};"}>
+                <div class="pin-dot" style={"background: #C9A84C;"}>
                   <span><%= pin.image_url %></span>
                 </div>
                 <div class="pin-label"><%= pin.description %></div>
-                <div class="pin-dot" style={"background: #{pin.color};"}>
+                <div class="pin-dot" style={"background: #C9A84C;"}>
                   <span><%= pin.location %></span>
                 </div>
               </button>
@@ -430,5 +431,6 @@
       </div>
     <% end %>
 
-  </div><%!-- /.step-container --%>
-</div><%!-- /.journey-root --%>
+  </div>
+</div>
+</Layouts.unauth_app>

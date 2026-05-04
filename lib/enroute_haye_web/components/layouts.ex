@@ -58,67 +58,92 @@ defmodule EnrouteHayeWeb.Layouts do
     ~H"""
     <div class="min-h-screen flex flex-col kuomboka-bg">
 
+      <%!-- ═══════════════════════════════════════════
+           NAV — three zones: logo | links | actions
+      ════════════════════════════════════════════════ --%>
+      <nav
+        style="background: rgba(28,43,26,.88); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,255,255,.08);"
+        class="fixed top-0 left-0 right-0 z-50">
 
-       <%!-- ═══════════════════════════════════════════
-            NAV
-        ════════════════════════════════════════════════ --%>
-        <nav style="background: rgba(28,43,26,.88); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,255,255,.1);"
-          class="fixed top-0 left-0 right-0 z-50">
-          <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white"
-                style="background: linear-gradient(135deg, #E8B94A, #2D6A2D);">EH</div>
-              <span class="text-white font-semibold tracking-wide text-sm leading-tight">
-                ENROUTE<br><span style="color: #E8B94A;">HAYE</span>
-              </span>
-            </div>
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between gap-8">
 
-            <div class="hidden md:flex items-center gap-8 text-sm" style="color: rgba(255,255,255,.8);">
-              <a href={~p"/#barge"} class="hover:text-amber-400 transition-colors" style="transition: color .2s;">Destinations</a>
-              <.drop_down href={~p"/#ceremony"} class="nav-link text-white/80 hover:text-yellow-400 text-sm tracking-wide transition-colors">
+          <%!-- ── LOGO ── --%>
+          <a href={~p"/"} class="flex items-center gap-2 flex-shrink-0">
+            <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white"
+              style="background: linear-gradient(135deg, #E8B94A, #2D6A2D);">EH</div>
+            <span class="text-white font-semibold tracking-wide text-sm leading-tight">
+              ENROUTE<br><span style="color: #E8B94A;">HAYE</span>
+            </span>
+          </a>
+
+          <%!-- ── CENTER NAV LINKS ── --%>
+          <div class="hidden md:flex items-center gap-6 text-sm flex-1 justify-center" style="color: rgba(255,255,255,.75);">
+            <a href={~p"/#barge"} class="hover:text-amber-400 transition-colors whitespace-nowrap">
+              Destinations
+            </a>
+            <a href="#" class="hover:text-amber-400 transition-colors whitespace-nowrap">
+              Experiences
+            </a>
+            <.drop_down href={~p"/#ceremony"} class="text-white/75 hover:text-amber-400 text-sm transition-colors">
               Ceremony
               <:items>
-                <a href={~p"/mize"} class="block px-4 py-2 text-sm text-white/80 hover:text-yellow-400 hover:bg-gray-800 transition-colors">
-                  Mize
-                </a>
-                <a href={~p"/kuomboka"} class="block px-4 py-2 text-sm text-white/80 hover:text-yellow-400 hover:bg-gray-800 transition-colors">
-                  Kuomboka
-                </a>
+                <a href={~p"/mize"}     class="block px-4 py-2 text-sm text-gray-700 hover:text-amber-500 hover:bg-gray-50 transition-colors">Mize</a>
+                <a href={~p"/kuomboka"} class="block px-4 py-2 text-sm text-gray-700 hover:text-amber-500 hover:bg-gray-50 transition-colors">Kuomboka</a>
               </:items>
             </.drop_down>
-              <a href={~p"/journey"} class="btn-outline-gold border border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black px-4 py-1.5 rounded text-sm tracking-wide transition-all">
-              Start Tour
+            <a href={~p"/journey"} class="hover:text-amber-400 transition-colors whitespace-nowrap">
+              Plan Your Trip
             </a>
-            <a href={~p"/users/log-in"} class="text-white/70 hover:text-white text-sm transition-colors">
+            <a href="#" class="hover:text-amber-400 transition-colors whitespace-nowrap">
+              Events &amp; Ceremonies
+            </a>
+            <a href="#" class="hover:text-amber-400 transition-colors whitespace-nowrap">
+              Discover Zambia
+            </a>
+          </div>
+
+          <%!-- ── RIGHT ACTIONS ── --%>
+          <div class="hidden md:flex items-center gap-3 flex-shrink-0">
+            <%!-- Icon: Search --%>
+            <button style="color: rgba(255,255,255,.65);" class="hover:text-white transition-colors p-1">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+              </svg>
+            </button>
+
+            <%!-- Icon: Wishlist --%>
+            <button style="color: rgba(255,255,255,.65);" class="hover:text-white transition-colors p-1">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+              </svg>
+            </button>
+
+            <%!-- Divider --%>
+            <div style="width: 1px; height: 18px; background: rgba(255,255,255,.15);"></div>
+
+            <%!-- Sign in --%>
+            <a href={~p"/users/log-in"} style="color: rgba(255,255,255,.7); font-size: .875rem;" class="hover:text-white transition-colors whitespace-nowrap">
               Sign in
             </a>
-            <a href={~p"/users/register"} class="bg-yellow-400 text-black font-semibold px-4 py-1.5 rounded text-sm hover:bg-yellow-300 transition-colors">
-              Get Started
-            </a>
-              <a href="#" class="hover:text-amber-400 transition-colors" style="transition: color .2s;">Experiences</a>
-              <a href="#" class="hover:text-amber-400 transition-colors" style="transition: color .2s;">Plan Your Trip</a>
-              <a href="#" class="hover:text-amber-400 transition-colors" style="transition: color .2s;">Events & Ceremonies</a>
-              <a href="#" class="hover:text-amber-400 transition-colors" style="transition: color .2s;">Discover Zambia</a>
-            </div>
 
-            <div class="flex items-center gap-3">
-              <button style="color: rgba(255,255,255,.8);" class="hover:text-white transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                </svg>
-              </button>
-              <button style="color: rgba(255,255,255,.8);" class="hover:text-white transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                </svg>
-              </button>
+            <%!-- Plan Trip CTA --%>
+            <a href={~p"/journey"}>
               <button
-                style="background: linear-gradient(110deg,#C9A84C 0%,#E8B94A 40%,#fff8e0 50%,#E8B94A 60%,#C9A84C 100%); background-size: 200% auto; color: #1a1a00; font-weight: 700; font-size: .875rem; padding: .5rem 1.25rem; border-radius: 9999px; border: none; cursor: pointer; transition: box-shadow .3s, background-position .6s;">
+                style="background: linear-gradient(110deg,#C9A84C 0%,#E8B94A 40%,#fff8e0 50%,#E8B94A 60%,#C9A84C 100%); background-size: 200% auto; color: #1a1a00; font-weight: 700; font-size: .8rem; padding: .45rem 1.1rem; border-radius: 9999px; border: none; cursor: pointer; white-space: nowrap; transition: box-shadow .3s, background-position .6s;">
                 Plan Trip
               </button>
-            </div>
+            </a>
           </div>
-        </nav>
+
+          <%!-- ── MOBILE HAMBURGER ── --%>
+          <button class="md:hidden text-white p-2 flex-shrink-0" aria-label="Toggle menu">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+
+        </div>
+      </nav>
 
       <main class="flex-1 pt-16">
         <.flash_group flash={@flash} />

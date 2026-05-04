@@ -37,6 +37,7 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
   def mount(_params, _session, socket) do
     {:ok,
      assign(socket,
+       current_scope: nil,
        step: 0,
        steps: @steps,
        foods: CxtFood.list_foods(%{"order_by" => %{"sort_field" => "name", "sort_direction" => "asc"}}),
