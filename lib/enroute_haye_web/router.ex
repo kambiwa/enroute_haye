@@ -66,6 +66,9 @@ defmodule EnrouteHayeWeb.Router do
       live "/accomodations/new", Auth.Accommodations.New, :new
       live "/accomodations/:id/edit", Auth.Accommodations.Edit, :edit
 
+      live "/reviews", Auth.Review.Index, :index
+      live "/bookings", Auth.Bookings.Index, :index
+
       live "/events", Auth.Events.Index, :index
       live "/events/new", Auth.Events.New, :new
       live "/events/:id/edit", Auth.Events.Edit, :edit

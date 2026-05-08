@@ -9,7 +9,7 @@ defmodule EnrouteHayeWeb.Unauth.LikumbiLyaMize do
       |> assign(:current_scope, nil)
       |> assign(:timeline_events, timeline_events())
       |> assign(:makishi_details, makishi_details())
-      |> assign(:active_makishi, "mwana_pwo")
+      |> assign(:active_makishi, "mwana_pwebo")
       |> assign(:mobile_menu_open, false)
 
     {:ok, socket}
@@ -33,11 +33,11 @@ defmodule EnrouteHayeWeb.Unauth.LikumbiLyaMize do
   defp makishi_details do
     [
       %{
-        id: "mwana_pwo",
+        id: "mwana_pwebo",
         icon: "grace",
-        title: "Mwana Pwo",
+        title: "Mwana Pwebo",
         description:
-          "The ancestral female spirit, Mwana Pwo embodies grace, femininity, and the beauty of womanhood. Her mask features delicate facial markings and her dance teaches young initiates the virtues of patience and elegance."
+          "The ancestral female spirit, Mwana Pwebo embodies grace, femininity, and the beauty of womanhood. Her mask features delicate facial markings and her dance teaches young initiates the virtues of patience and elegance."
       },
       %{
         id: "chihongo",
@@ -80,7 +80,7 @@ defmodule EnrouteHayeWeb.Unauth.LikumbiLyaMize do
         time: "MIDDAY",
         title: "Dances & Performances",
         description:
-          "The ceremonial ground transforms into a theatre of colour and rhythm. Mwana Pwo glides with impossible grace, Chihongo commands with thunderous authority, and the crowds respond with ululations that shake the trees.",
+          "The ceremonial ground transforms into a theatre of colour and rhythm. Mwana Pwebo glides with impossible grace, Chihongo commands with thunderous authority, and the crowds respond with ululations that shake the trees.",
         image: "/images/mize/mask.jpg",
         image_alt: "Makishi performances",
         align: :right
