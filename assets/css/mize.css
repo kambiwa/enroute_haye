@@ -1,17 +1,32 @@
 /* =============================================================
-   likumbi_lya_mize.css
+   likumbi_lya_mize.css  — Likumbi Lya Mize ceremony page
    Import in app.css:  @import "./likumbi_lya_mize.css";
 
-   Conventions match app.css:
+   Conventions:
    • llm- prefix on every class → zero collision with Kuomboka
-   • Variables added to :root in app.css (see patch below)
-   • Fonts: Cinzel / Cinzel Decorative added to app.css @import
-   • Uses existing base classes (.section, .container, .grid-2col,
-     .timeline-*, .barge-*, .hotspot, .detail-card, .player, etc.)
-     and layers llm- modifiers on top of them
+   • All overrides use section-scoped selectors for clean cascade wins
+   • Fonts: Cinzel / Cinzel Decorative (already in app.css @import)
+   • Variables live in :root of app.css
    ============================================================= */
 
-/* ── Hero ── */
+/* ─────────────────────────────────────────────
+   LOADER
+───────────────────────────────────────────── */
+.llm-loader {
+  background: var(--llm-forest);
+}
+.llm-loader .loader-spinner {
+  border-color: rgba(45, 97, 39, 0.2) transparent var(--llm-ochre) transparent;
+}
+.llm-loader-title {
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.18em;
+  color: var(--llm-bone);
+}
+
+/* ─────────────────────────────────────────────
+   HERO
+───────────────────────────────────────────── */
 .llm-hero {
   background:
     radial-gradient(ellipse at 20% 50%, rgba(45, 97, 39, 0.35) 0%, transparent 60%),
@@ -19,26 +34,34 @@
     linear-gradient(160deg, var(--llm-forest) 0%, #0a1a08 60%, var(--llm-earth) 100%);
 }
 
-/* Override the diagonal red strip that app.css .hero::after adds */
-.llm-hero::after { display: none; }
+/* Remove the diagonal red strip that app.css .hero::after adds */
+.llm-hero::after {
+  display: none;
+}
 
+/* Ambient blobs */
 .llm-blob-1 {
   background: radial-gradient(circle, rgba(45, 97, 39, 0.4) 0%, transparent 70%);
-  width: 600px; height: 600px;
-  top: -100px; left: -150px;
+  width: 600px;
+  height: 600px;
+  top: -100px;
+  left: -150px;
   animation: llm-blob-drift 18s ease-in-out infinite alternate;
 }
 .llm-blob-2 {
   background: radial-gradient(circle, rgba(212, 160, 23, 0.18) 0%, transparent 70%);
-  width: 500px; height: 500px;
-  bottom: -80px; right: -100px;
+  width: 500px;
+  height: 500px;
+  bottom: -80px;
+  right: -100px;
   animation: llm-blob-drift 22s ease-in-out infinite alternate-reverse;
 }
 
 /* Ground mist */
 .llm-mist {
   position: absolute;
-  bottom: 0; left: 0;
+  bottom: 0;
+  left: 0;
   width: 100%;
   pointer-events: none;
   z-index: 1;
@@ -46,12 +69,14 @@
 .llm-mist-wave {
   position: absolute;
   bottom: 0;
-  width: 100%; height: 120px;
+  width: 100%;
+  height: 120px;
 }
 .llm-mist-1 { animation: llm-wave-drift 14s ease-in-out infinite alternate; }
 .llm-mist-2 { animation: llm-wave-drift 10s ease-in-out infinite alternate-reverse; }
 
-/* Hero copy */
+/* Hero copy — all on dark bg so bone/ochre always readable */
+.llm-hero .hero-eyebrow,
 .llm-eyebrow {
   color: var(--llm-ochre-light);
   letter-spacing: 0.2em;
@@ -65,20 +90,15 @@
     0 0 80px rgba(212, 160, 23, 0.3),
     0 4px 24px rgba(0, 0, 0, 0.6);
 }
-.llm-divider-icon { color: var(--llm-ochre); font-size: 1.4rem; }
-
-/* Loader */
-.llm-loader { background: var(--llm-forest); }
-.llm-loader .loader-spinner {
-  border-color: var(--llm-forest-lit) transparent var(--llm-ochre) transparent;
+.llm-hero .hero-desc {
+  color: rgba(240, 230, 208, 0.75);
 }
-.llm-loader-title {
-  font-family: 'Cinzel', serif;
-  letter-spacing: 0.18em;
-  color: var(--llm-bone);
+.llm-divider-icon {
+  color: var(--llm-ochre);
+  font-size: 1.4rem;
 }
 
-/* ── CTA — overrides the red btn-primary from app.css ── */
+/* CTA — override the red btn-primary from app.css */
 .llm-hero .btn-primary,
 .llm-btn-primary {
   background: linear-gradient(135deg, var(--llm-ochre), var(--llm-earth-mid));
@@ -93,11 +113,14 @@
   box-shadow: 0 8px 30px rgba(212, 160, 23, 0.4);
 }
 
-/* Audio button bars — ochre instead of red */
-.llm-hero .audio-bars span,
-.llm-audio-section .audio-bars span { background: var(--llm-ochre); }
+/* Audio bars — ochre on dark hero */
+.llm-hero .audio-bars span {
+  background: var(--llm-ochre);
+}
 
-/* ── Sections ── */
+/* ─────────────────────────────────────────────
+   SECTION BACKGROUNDS
+───────────────────────────────────────────── */
 .llm-section-forest  { background: linear-gradient(180deg, var(--llm-forest) 0%, #152912 100%); }
 .llm-section-earth   { background: linear-gradient(180deg, #152912 0%, #1e1008 100%); }
 .llm-section-culture { background: linear-gradient(180deg, var(--llm-forest) 0%, #152912 100%); }
@@ -107,47 +130,81 @@
     radial-gradient(ellipse at 50% 0%, rgba(155, 44, 44, 0.12) 0%, transparent 60%),
     linear-gradient(180deg, #1e1008 0%, var(--llm-forest) 100%);
 }
-.llm-audio-section { background: linear-gradient(180deg, #1e1008 0%, var(--llm-forest) 100%); }
+.llm-audio-section {
+  background: linear-gradient(180deg, #1e1008 0%, var(--llm-forest) 100%);
+}
 
-/* All dark LLM sections: bone text instead of white */
+/* ─────────────────────────────────────────────
+   GLOBAL TEXT OVERRIDES FOR ALL DARK LLM SECTIONS
+   High-specificity selectors beat app.css defaults
+───────────────────────────────────────────── */
+
+/* Section titles */
 .llm-section-forest .section-title,
 .llm-section-earth  .section-title,
 .llm-section-mask   .section-title,
 .llm-section-culture .section-title,
 .llm-section-visit  .section-title,
-.llm-audio-section  .section-title   { color: var(--llm-bone); }
+.llm-audio-section  .section-title {
+  color: var(--llm-bone);
+}
 
+/* Section subtitle */
+.llm-section-forest .section-sub,
+.llm-section-earth  .section-sub,
+.llm-section-mask   .section-sub,
+.llm-section-culture .section-sub,
+.llm-section-visit  .section-sub,
+.llm-audio-section  .section-sub {
+  color: rgba(240, 230, 208, 0.6);
+}
+
+/* Body / paragraph text */
 .llm-section-forest .body-text,
 .llm-section-earth  .body-text,
 .llm-section-mask   .body-text,
-.llm-section-culture .body-text      { color: rgba(240, 230, 208, 0.7); }
+.llm-section-culture .body-text,
+.llm-section-visit  .body-text {
+  color: rgba(240, 230, 208, 0.7);
+}
 
-.llm-section-forest .timeline-title,
-.llm-section-earth  .timeline-title  { color: var(--llm-bone); }
-
-.llm-section-forest .timeline-desc,
-.llm-section-earth  .timeline-desc   { color: rgba(240, 230, 208, 0.65); }
-
-/* ── Badge ── */
+/* ─────────────────────────────────────────────
+   BADGE (Introduction section)
+───────────────────────────────────────────── */
 .llm-badge {
   background: rgba(45, 97, 39, 0.3);
   border-color: rgba(212, 160, 23, 0.35);
   color: var(--llm-ochre-light);
 }
-.llm-badge-dot { background: var(--llm-ochre); }
+.llm-badge-dot {
+  background: var(--llm-ochre);
+}
 
-/* ── Stats ── */
-.llm-stat-num { color: var(--llm-ochre); }
+/* ─────────────────────────────────────────────
+   STATS ROW (Introduction section — dark bg)
+───────────────────────────────────────────── */
+.llm-section-forest .stats-row {
+  border-top-color: rgba(212, 160, 23, 0.25);
+}
+.llm-section-forest .stat-border {
+  border-color: rgba(212, 160, 23, 0.2);
+}
+.llm-section-forest .stat-num,
+.llm-stat-num {
+  color: var(--llm-ochre);
+}
+.llm-section-forest .stat-label {
+  color: rgba(240, 230, 208, 0.5);
+}
 
-/* Stats row on dark background */
-.llm-section-forest .stats-row { border-top-color: rgba(212, 160, 23, 0.25); }
-.llm-section-forest .stat-border { border-color: rgba(212, 160, 23, 0.2); }
-.llm-section-forest .stat-label { color: rgba(240, 230, 208, 0.5); }
-
-/* ── Image frame ── */
-.llm-img-frame img { filter: saturate(1.15) contrast(1.05); }
+/* ─────────────────────────────────────────────
+   IMAGE FRAME (Introduction section)
+───────────────────────────────────────────── */
 .llm-img-frame {
-  position: relative; /* ensure ::before positions correctly */
+  position: relative;
+}
+.llm-img-frame img {
+  filter: saturate(1.15) contrast(1.05);
 }
 .llm-img-frame::before {
   content: '';
@@ -159,16 +216,22 @@
   z-index: 2;
 }
 
-/* Float card overrides */
+/* Float cards on dark section */
 .llm-section-forest .float-card {
   background: var(--llm-forest-mid);
   border-color: rgba(212, 160, 23, 0.2);
   border-left-color: var(--llm-ochre);
 }
-.llm-section-forest .float-card strong { color: var(--llm-bone); }
-.llm-section-forest .float-card .float-meta { color: rgba(240, 230, 208, 0.5); }
+.llm-section-forest .float-card strong {
+  color: var(--llm-bone);
+}
+.llm-section-forest .float-card .float-meta {
+  color: rgba(240, 230, 208, 0.5);
+}
 
-/* ── Timeline ── */
+/* ─────────────────────────────────────────────
+   TIMELINE (A Day in the Forest — dark earth bg)
+───────────────────────────────────────────── */
 .llm-timeline-spine {
   background: linear-gradient(
     180deg,
@@ -178,21 +241,39 @@
     transparent
   );
 }
+
+/* Time label */
+.llm-section-earth .timeline-time,
 .llm-timeline-time {
   color: var(--llm-ochre);
   font-family: 'Cinzel', serif;
   letter-spacing: 0.15em;
 }
-.llm-diamond { color: var(--llm-ochre); margin-right: 0.4em; }
+.llm-diamond {
+  color: var(--llm-ochre);
+  margin-right: 0.4em;
+}
+
+/* Timeline titles and descriptions — explicitly bone/muted on dark */
+.llm-section-earth .timeline-title {
+  color: var(--llm-bone);
+}
+.llm-section-earth .timeline-desc {
+  color: rgba(240, 230, 208, 0.65);
+}
+
+/* Timeline dot */
 .llm-timeline-dot {
   background: var(--llm-ochre);
   border-color: var(--llm-forest);
   box-shadow: 0 0 0 4px rgba(212, 160, 23, 0.25);
 }
+
+/* Timeline card inner — override red border-top from app.css */
 .llm-timeline-card .timeline-card-inner {
   background: var(--llm-forest-mid);
   border: 2px solid rgba(212, 160, 23, 0.2);
-  border-top: 2px solid rgba(212, 160, 23, 0.2); /* override red border-top */
+  border-top: 2px solid rgba(212, 160, 23, 0.2);
   border-radius: 12px;
 }
 .llm-timeline-card .timeline-card-inner:hover {
@@ -200,21 +281,29 @@
   box-shadow: 0 8px 30px rgba(212, 160, 23, 0.15);
 }
 
-/* ── Makishi / Barge section ── */
+/* ─────────────────────────────────────────────
+   MAKISHI SPIRITS SECTION
+───────────────────────────────────────────── */
 .llm-dot-grid {
   background-image: radial-gradient(circle, rgba(212, 160, 23, 0.12) 1px, transparent 1px);
   background-size: 28px 28px;
   opacity: 1; /* override the 0.04 from .dot-grid */
 }
+
 .llm-mask-wrap {
   border: 1px solid rgba(212, 160, 23, 0.2);
   border-radius: 16px;
+  overflow: hidden;
 }
 .llm-mask-vignette {
   background: linear-gradient(to bottom, transparent 40%, rgba(15, 36, 16, 0.85) 100%);
 }
-.llm-mask-caption h3 { color: var(--llm-ochre-light); }
-.llm-mask-caption p  { color: rgba(240, 230, 208, 0.6); }
+.llm-mask-caption h3 {
+  color: var(--llm-ochre-light);
+}
+.llm-mask-caption p {
+  color: rgba(240, 230, 208, 0.6);
+}
 
 /* Hotspot positions */
 .llm-hotspot-mwana    { top: 28%; left: 32%; }
@@ -230,7 +319,9 @@
   background: rgba(212, 160, 23, 0.3);
   border-color: var(--llm-ochre);
 }
-.llm-hotspot-pulse { background: var(--llm-ochre); }
+.llm-hotspot-pulse {
+  background: var(--llm-ochre);
+}
 .llm-hotspot .hotspot-label {
   background: var(--llm-forest);
   border-color: rgba(212, 160, 23, 0.2);
@@ -241,18 +332,26 @@
 .llm-detail-card {
   background: rgba(255, 255, 255, 0.03);
   border-color: rgba(212, 160, 23, 0.08);
+  opacity: 1; /* override app.css .detail-card opacity: 0.5 on inactive */
 }
 .llm-detail-card.active {
   border-left-color: var(--llm-ochre);
   background: rgba(212, 160, 23, 0.07);
 }
-.llm-detail-card .detail-title { color: var(--llm-ochre-light); }
-.llm-detail-card .detail-desc  { color: rgba(240, 230, 208, 0.65); }
+.llm-detail-card .detail-title {
+  color: var(--llm-ochre-light);
+}
+.llm-detail-card .detail-desc {
+  color: rgba(240, 230, 208, 0.65);
+}
 .llm-detail-icon-wrap {
   background: rgba(212, 160, 23, 0.15);
   border: 1px solid rgba(212, 160, 23, 0.3);
 }
-.llm-detail-icon { color: var(--llm-ochre); font-size: 1.25rem; }
+.llm-detail-icon {
+  color: var(--llm-ochre);
+  font-size: 1.25rem;
+}
 
 /* Spirit facts panel */
 .llm-spirit-facts {
@@ -260,25 +359,44 @@
   border: 1px solid rgba(212, 160, 23, 0.15);
   border-top: 3px solid var(--llm-ochre);
 }
-.llm-spirit-facts .specs-title { color: var(--llm-ochre-light); }
+.llm-spirit-facts .specs-title {
+  color: var(--llm-ochre-light);
+}
 .llm-spirit-facts .specs-list li {
   color: rgba(240, 230, 208, 0.65);
   border-bottom-color: rgba(212, 160, 23, 0.1);
 }
 
-/* ── Gold utility (em inside section-title) ── */
-.llm-gold { color: var(--llm-ochre); }
+/* ─────────────────────────────────────────────
+   GOLD UTILITY
+───────────────────────────────────────────── */
+.llm-gold {
+  color: var(--llm-ochre);
+  font-style: italic;
+}
 
-/* ── Culture section ── */
+/* ─────────────────────────────────────────────
+   CULTURAL SIGNIFICANCE SECTION
+   (dark forest bg — override app.css black defaults)
+───────────────────────────────────────────── */
+.llm-section-culture .culture-point h3 {
+  color: var(--llm-bone);
+}
+.llm-section-culture .culture-point p {
+  color: rgba(240, 230, 208, 0.65);
+}
 .llm-point-icon {
   color: var(--llm-ochre);
   font-size: 1.4rem;
   background: rgba(212, 160, 23, 0.1);
+  border-radius: 4px;
 }
-.llm-section-culture .culture-point h3 { color: var(--llm-bone); }
-.llm-section-culture .culture-point p  { color: rgba(240, 230, 208, 0.65); }
 
+/* Outline button — ochre on dark */
 .llm-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   border: 1.5px solid var(--llm-ochre);
   color: var(--llm-ochre);
   background: transparent;
@@ -292,15 +410,26 @@
   color: var(--llm-forest);
 }
 
-/* ── Audio player ── */
-.llm-audio-section .audio-section { border-top-color: rgba(212, 160, 23, 0.2); }
-.llm-audio-section .section-sub { color: rgba(240, 230, 208, 0.55); }
+/* ─────────────────────────────────────────────
+   AUDIO PLAYER SECTION
+───────────────────────────────────────────── */
+.llm-audio-section .audio-section {
+  border-top-color: rgba(212, 160, 23, 0.2);
+}
+.llm-audio-section .section-sub {
+  color: rgba(240, 230, 208, 0.55);
+}
 .llm-audio-icon {
   color: var(--llm-ochre);
   font-size: 3rem;
   display: block;
   margin-bottom: 0.5rem;
 }
+.llm-audio-section .audio-bars span {
+  background: var(--llm-ochre);
+}
+
+/* Player widget */
 .llm-player {
   border: 1px solid rgba(212, 160, 23, 0.2);
   border-top: 3px solid var(--llm-ochre);
@@ -317,12 +446,23 @@
   transform: scale(1.08);
   box-shadow: 0 8px 32px rgba(212, 160, 23, 0.4);
 }
-.llm-progress-track { background: rgba(212, 160, 23, 0.15); }
-.llm-progress-fill  { background: var(--llm-ochre); }
-.llm-player .time-label { color: rgba(240, 230, 208, 0.5); }
-.llm-player input[type=range] { accent-color: var(--llm-ochre); }
+.llm-progress-track {
+  background: rgba(212, 160, 23, 0.15);
+}
+.llm-progress-fill {
+  background: var(--llm-ochre);
+}
+.llm-player .time-label {
+  color: rgba(240, 230, 208, 0.5);
+}
+.llm-player input[type=range] {
+  accent-color: var(--llm-ochre);
+}
 
-/* ── Visitor guide grid ── */
+/* ─────────────────────────────────────────────
+   VISITOR GUIDE SECTION
+   (dark bg — text must be bone/muted, not black)
+───────────────────────────────────────────── */
 .llm-guide-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -334,16 +474,21 @@
   border: 1px solid rgba(212, 160, 23, 0.15);
   border-radius: 14px;
   padding: 1.75rem;
-  transition: border-color 0.3s var(--ease-out),
-              transform    0.3s var(--ease-out),
-              box-shadow   0.3s var(--ease-out);
+  transition:
+    border-color 0.3s var(--ease-out),
+    transform    0.3s var(--ease-out),
+    box-shadow   0.3s var(--ease-out);
 }
 .llm-guide-card:hover {
   border-color: rgba(212, 160, 23, 0.45);
   transform: translateY(-4px);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
 }
-.llm-guide-icon { font-size: 2rem; margin-bottom: 0.75rem; display: block; }
+.llm-guide-icon {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+  display: block;
+}
 .llm-guide-card h3 {
   font-family: 'Cinzel', serif;
   color: var(--llm-ochre-light);
@@ -358,7 +503,9 @@
   line-height: 1.65;
 }
 
-/* ── Animations (llm- namespaced to avoid conflicts) ── */
+/* ─────────────────────────────────────────────
+   ANIMATIONS
+───────────────────────────────────────────── */
 @keyframes llm-blob-drift {
   0%   { transform: translate(0, 0) scale(1); }
   100% { transform: translate(30px, -20px) scale(1.05); }
@@ -368,11 +515,15 @@
   100% { transform: translateX(-40px); }
 }
 
-/* ── Responsive ── */
+/* ─────────────────────────────────────────────
+   RESPONSIVE
+───────────────────────────────────────────── */
 @media (max-width: 768px) {
   .llm-hero-title {
     font-size: clamp(2.8rem, 14vw, 5rem);
     line-height: 1;
   }
-  .llm-guide-grid { grid-template-columns: 1fr; }
+  .llm-guide-grid {
+    grid-template-columns: 1fr;
+  }
 }

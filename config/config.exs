@@ -54,6 +54,10 @@ config :esbuild,
     env: %{"NODE_PATH" => [Path.expand("../deps", __DIR__), Mix.Project.build_path()]}
   ]
 
+  config :chromic_pdf,
+  chrome_executable: "/usr/bin/chromium-browser",
+  chrome_args: ["--no-sandbox", "--disable-setuid-sandbox"]
+
 # Configure tailwind (the version is required)
 config :tailwind,
   version: "4.1.12",
