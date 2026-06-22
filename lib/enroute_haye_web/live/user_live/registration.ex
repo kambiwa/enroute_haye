@@ -81,12 +81,12 @@ defmodule EnrouteHayeWeb.UserLive.Registration do
             ">
               Create your<br/>
               <span style="color: #C9A84C;">Heritage</span> account
-            </h1> 
+            </h1>
 
             <%!-- Divider --%>
             <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1.1rem;">
               <span style="flex: 1; height: 1px; background: #e5e7eb;"></span>
-              <span style="font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: #9ca3af;">or</span>
+              <span style="font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: #9ca3af;">Eroute Home</span>
               <span style="flex: 1; height: 1px; background: #e5e7eb;"></span>
             </div>
 

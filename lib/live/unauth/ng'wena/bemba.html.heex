@@ -1,0 +1,360 @@
+<Layouts.unauth_app flash={@flash} current_scope={@current_scope}>
+
+<%!-- ============================
+  LOADER
+============================= --%>
+<div id="loader" class="uk-loader-screen" aria-hidden="true" phx-hook="LoaderHook">
+  <div class="uk-loader-inner">
+    <div class="uk-loader-ring">
+      <div class="uk-loader-spinner"></div>
+      <div class="uk-loader-emblem">
+        <.icon name="hero-shield-check-solid" class="w-8 h-8" style="color: #1A3A5C;" />
+      </div>
+    </div>
+    <p class="uk-loader-title">UKUSEFYA</p>
+    <p class="uk-loader-sub">PA NG'WENA · THE BEMBA CROCODILE CEREMONY</p>
+  </div>
+</div>
+
+<%!-- ============================
+  HERO
+============================= --%>
+<section class="uk-hero" id="hero">
+
+  <%!-- Diagonal indigo shard — crocodile scale geometry --%>
+  <div class="uk-hero-shard" aria-hidden="true"></div>
+
+  <%!-- Ambient texture --%>
+  <div class="uk-dust uk-dust-1" aria-hidden="true"></div>
+  <div class="uk-dust uk-dust-2" aria-hidden="true"></div>
+
+  <%!-- Particle canvas --%>
+  <canvas id="particles-hook" class="uk-particles-canvas" aria-hidden="true"
+    phx-hook="Particles"></canvas>
+
+  <div class="uk-hero-content" id="hero-content">
+    <p class="uk-hero-eyebrow reveal">Mwine Lubemba Chitimukulu's Royal Ceremony</p>
+
+    <h1 class="uk-hero-title reveal" style="--delay: 0.2s">UKUSEFYA</h1>
+
+    <div class="uk-hero-divider reveal" style="--delay: 0.4s" aria-hidden="true">
+      <span class="uk-divider-mark">◆</span>
+      <span class="uk-divider-line"></span>
+      <span class="uk-divider-mark">◆</span>
+    </div>
+
+    <p class="uk-hero-desc reveal" style="--delay: 0.5s">
+      Journey with the Bemba nation as they re-enact a thousand miles of migration,
+      honour the sacred crocodile of their ancestors, and celebrate an empire
+      built on rivers, forests, and living memory.
+    </p>
+
+    <div class="uk-hero-cta reveal" style="--delay: 0.7s">
+      <a href="/journey" class="uk-btn-primary">
+        Enter the Arena <span class="uk-btn-arrow">→</span>
+      </a>
+      <button class="uk-btn-audio" id="audio-hook" phx-hook="AudioPlayer">
+        <span class="uk-audio-bars" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span>
+        </span>
+        Bemba Drums
+      </button>
+    </div>
+  </div>
+
+  <div class="uk-scroll-hint reveal" style="--delay: 1s" aria-label="Scroll to explore">
+    <span class="uk-scroll-chevron">↓</span>
+  </div>
+</section>
+
+<%!-- ============================
+  INTRODUCTION
+============================= --%>
+<section id="journey" class="uk-section uk-section-dark">
+  <div class="uk-container uk-grid-2col">
+
+    <div class="uk-intro-text scroll-reveal">
+      <div class="uk-badge">
+        <span class="uk-badge-dot"></span>
+        Living Tradition · Northern Province
+      </div>
+
+      <h2 class="uk-section-title">
+        Celebrating on the <em class="uk-indigo">Crocodile</em>
+      </h2>
+
+      <p class="uk-body-text">
+        Ukusefya Pa Ng'wena — meaning "paying homage to the crocodile" — is the paramount
+        ceremony of the Bemba people of Northern Zambia. Held each August/September at
+        Ng'wena Village National Monument in Mungwi District, it commemorates the great
+        Bemba migration from Kola and the discovery of the sacred crocodile that marked
+        their destined homeland, presided over by Paramount Chief Chitimukulu.
+      </p>
+
+      <div class="uk-stats-row">
+        <div class="uk-stat">
+          <span class="uk-stat-num">400+</span>
+          <span class="uk-stat-label">Years of History</span>
+        </div>
+        <div class="uk-stat uk-stat-border">
+          <span class="uk-stat-num">43</span>
+          <span class="uk-stat-label">Bemba Kingdoms</span>
+        </div>
+        <div class="uk-stat">
+          <span class="uk-stat-num">SEPT</span>
+          <span class="uk-stat-label">Every Year</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="uk-intro-image scroll-reveal" style="--delay: 0.2s">
+      <div class="uk-img-frame uk-img-frame-tilt">
+        <img src="/images/ukusefya_plains.jpg" alt="Ng'wena Village, Mungwi District, Northern Zambia" loading="lazy" />
+        <div class="uk-img-overlay">
+          <p class="uk-img-label">THE SACRED GROUND</p>
+          <p class="uk-img-caption">Ng'wena Village, Mungwi, Northern Zambia</p>
+        </div>
+      </div>
+
+      <div class="uk-float-card uk-float-card-tr scroll-reveal" style="--delay: 0.4s">
+        <span class="uk-float-icon">📅</span>
+        <span class="uk-float-meta">When</span>
+        <strong>September 17–19, 2026</strong>
+      </div>
+
+      <div class="uk-float-card uk-float-card-bl scroll-reveal" style="--delay: 0.6s">
+        <span class="uk-float-icon">📍</span>
+        <span class="uk-float-meta">Where</span>
+        <strong>Ng'wena Village, Mungwi, Zambia</strong>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<%!-- ============================
+  TIMELINE / CEREMONY
+============================= --%>
+<section id="ceremony" class="uk-section uk-section-mid">
+  <div class="uk-container">
+    <div class="uk-section-header scroll-reveal">
+      <h2 class="uk-section-title uk-text-center">
+        The Sacred <em class="uk-indigo">Journey</em>
+      </h2>
+      <p class="uk-section-sub">Follow the ceremony from the Kasama carnival to the grand climax at Ng'wena Village</p>
+    </div>
+
+    <div class="uk-timeline">
+      <div class="uk-timeline-spine" aria-hidden="true"></div>
+
+      <%= for {event, idx} <- Enum.with_index(@timeline_events) do %>
+        <div class={["uk-timeline-item", if(rem(idx, 2) == 0, do: "uk-align-right", else: "uk-align-left"), "scroll-reveal"]}
+             style={"--delay: #{idx * 0.15}s"}>
+
+          <div class="uk-timeline-text">
+            <span class="uk-timeline-time">
+              <span class="uk-timeline-icon-sm">◆</span>
+              <%= event.time %>
+            </span>
+            <h3 class="uk-timeline-title"><%= event.title %></h3>
+            <p class="uk-timeline-desc"><%= event.description %></p>
+          </div>
+
+          <div class="uk-timeline-card">
+            <div class="uk-timeline-card-inner">
+              <img src={event.image} alt={event.image_alt} loading="lazy" class="uk-timeline-img" />
+            </div>
+            <div class="uk-timeline-dot" aria-hidden="true"></div>
+          </div>
+
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>
+
+<%!-- ============================
+  ROYAL SECTION
+  (Chitimukulu & His Court)
+============================= --%>
+<section id="royal" class="uk-section uk-section-dark uk-royal-section">
+  <div class="uk-dot-grid" aria-hidden="true"></div>
+
+  <div class="uk-container">
+    <div class="uk-section-header scroll-reveal">
+      <h2 class="uk-section-title uk-text-center">
+        <em class="uk-indigo">Chitimukulu</em> & His Court
+      </h2>
+      <p class="uk-section-sub">Mwine Lubemba — owner of the Bemba land, sovereign of 43 kingdoms, keeper of the crocodile clan</p>
+    </div>
+
+    <div class="uk-royal-grid">
+      <%!-- Main image with hotspots --%>
+      <div class="uk-royal-main scroll-reveal">
+        <div class="uk-royal-img-wrap">
+          <img src="/images/ukusefya_royal.jpg" alt="Chitimukulu in full royal regalia" loading="lazy" class="uk-royal-img" />
+          <div class="uk-royal-overlay"></div>
+
+          <button class="uk-hotspot uk-hotspot-throne"
+            phx-click="show_detail" phx-value-type="crocodile"
+            title="The Crocodile Throne">
+            <span class="uk-hotspot-pulse"></span>
+            <span class="uk-hotspot-label">Crocodile Throne</span>
+          </button>
+
+          <button class="uk-hotspot uk-hotspot-migration"
+            phx-click="show_detail" phx-value-type="migration"
+            title="The Migration Re-enactment">
+            <span class="uk-hotspot-pulse"></span>
+            <span class="uk-hotspot-label">Migration Re-enactment</span>
+          </button>
+
+          <button class="uk-hotspot uk-hotspot-paramount"
+            phx-click="show_detail" phx-value-type="chitimukulu"
+            title="Mwine Lubemba">
+            <span class="uk-hotspot-pulse"></span>
+            <span class="uk-hotspot-label">Mwine Lubemba</span>
+          </button>
+
+          <div class="uk-royal-caption">
+            <h3>The Royal Court</h3>
+            <p>Click the markers to explore the ceremony's sacred elements</p>
+          </div>
+        </div>
+      </div>
+
+      <%!-- Detail panels --%>
+      <div class="uk-royal-details scroll-reveal" style="--delay: 0.2s">
+        <%= for detail <- @royal_details do %>
+          <div class={"uk-detail-card #{if @active_detail == detail.id, do: "active"}"}>
+            <div class="uk-detail-icon-wrap">
+              <span class="uk-detail-icon">
+                <%= case detail.icon do
+                  "crocodile" -> "🐊"
+                  "migration" -> "🗺"
+                  "crown"     -> "👑"
+                  _ -> "◆"
+                end %>
+              </span>
+            </div>
+            <div>
+              <h4 class="uk-detail-title"><%= detail.title %></h4>
+              <p class="uk-detail-desc"><%= detail.description %></p>
+            </div>
+          </div>
+        <% end %>
+
+        <div class="uk-royal-specs scroll-reveal" style="--delay: 0.4s">
+          <h4 class="uk-specs-title">Ceremony Essentials</h4>
+          <ul class="uk-specs-list">
+            <li><span>Held At</span><span class="uk-indigo">Ng'wena Village Monument</span></li>
+            <li><span>Season</span><span class="uk-indigo">Mid-September</span></li>
+            <li><span>Presided By</span><span class="uk-indigo">Chitimukulu Kanyanta-Manga II</span></li>
+            <li><span>Chiefdoms</span><span class="uk-indigo">43 Bemba Kingdoms</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%!-- ============================
+  CULTURAL SIGNIFICANCE
+============================= --%>
+<section id="culture" class="uk-section uk-section-mid">
+  <div class="uk-container uk-grid-2col">
+
+    <div class="uk-culture-mosaic order-2 scroll-reveal">
+      <div class="uk-mosaic-col uk-mosaic-col-offset">
+        <div class="uk-mosaic-img uk-tall">
+          <img src="/images/ukusefya_dance.jpg" alt="Bemba traditional dance" loading="lazy" />
+        </div>
+        <div class="uk-mosaic-img uk-medium">
+          <img src="/images/ukusefya_drums.jpg" alt="Bemba drummers" loading="lazy" />
+        </div>
+      </div>
+      <div class="uk-mosaic-col">
+        <div class="uk-mosaic-img uk-short">
+          <img src="/images/ukusefya_crowd.jpg" alt="Ceremony crowd at Ng'wena" loading="lazy" />
+        </div>
+        <div class="uk-mosaic-img uk-tall">
+          <img src="/images/ukusefya_village.jpg" alt="Ng'wena Village National Monument" loading="lazy" />
+        </div>
+      </div>
+    </div>
+
+    <div class="uk-culture-text order-1 scroll-reveal" style="--delay: 0.2s">
+      <h2 class="uk-section-title">
+        A Nation's <em class="uk-indigo">Living Memory</em>
+      </h2>
+
+      <div class="uk-culture-points">
+        <div class="uk-culture-point">
+          <div class="uk-point-icon">🐊</div>
+          <div>
+            <h3>The Crocodile Covenant</h3>
+            <p>When Bemba ancestors reached the Milando River, they found a dead crocodile with two stones in its mouth — interpreted as a message from the spirits that this was their chosen land. The crocodile, Ing'wena, became the eternal totem of the Chitimukulu clan and the symbol of the entire Bemba nation.</p>
+          </div>
+        </div>
+
+        <div class="uk-culture-point">
+          <div class="uk-point-icon">🗺</div>
+          <div>
+            <h3>The Great Migration</h3>
+            <p>The Bemba trace their roots to Kola in modern-day Angola. Led by princes Chiti and Nkole — sons of King Mukulumpe of the Luba Empire — they journeyed across thousands of miles through the Congo Basin, crossing the Luapula, Chambeshi, and Kalungu rivers before reaching Ng'wena. The ceremony re-lives every step of that founding odyssey.</p>
+          </div>
+        </div>
+
+        <div class="uk-culture-point">
+          <div class="uk-point-icon">🎶</div>
+          <div>
+            <h3>Songs of the Ancestors</h3>
+            <p>Ukusefya Pa Ng'wena preserves Bemba musical heritage in its purest form — Buomba sacred songs, Imfunkuntu ceremonial dances, and Malaila war chants that have echoed across Northern Zambia for four centuries. These are not performances; they are the living voice of the ancestors.</p>
+          </div>
+        </div>
+      </div>
+
+      <a href="#" class="uk-btn-outline-indigo uk-mt-8 inline-flex items-center gap-2">
+        Explore Full History <span>→</span>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<%!-- ============================
+  AUDIO EXPERIENCE
+============================= --%>
+<section class="uk-section uk-section-dark uk-audio-section">
+  <div class="uk-container uk-narrow uk-text-center">
+    <span class="uk-audio-icon-lg">♪</span>
+    <h2 class="uk-section-title">Immersive Audio Experience</h2>
+    <p class="uk-section-sub">
+      Hear the ancient Buomba songs, the thunder of Bemba ceremonial drums,
+      and the Malaila war chants rising across the forests of Mungwi
+    </p>
+
+    <div class="uk-player scroll-reveal" id="player-hook" phx-hook="Player">
+      <div class="uk-player-controls">
+        <button class="uk-ctrl-btn" id="skip-back" aria-label="Skip backward">⏮</button>
+        <button class="uk-ctrl-btn uk-ctrl-play" id="play-btn" aria-label="Play/Pause">▶</button>
+        <button class="uk-ctrl-btn" id="skip-fwd" aria-label="Skip forward">⏭</button>
+      </div>
+
+      <div class="uk-player-progress">
+        <span id="current-time" class="uk-time-label">0:00</span>
+        <div class="uk-progress-track" id="progress-track" role="progressbar">
+          <div class="uk-progress-fill" id="progress-fill" style="width: 0%"></div>
+        </div>
+        <span class="uk-time-label">3:58</span>
+      </div>
+
+      <div class="uk-player-volume">
+        <span>🔈</span>
+        <input type="range" min="0" max="100" value="70" id="volume-range" aria-label="Volume" />
+      </div>
+    </div>
+  </div>
+</section>
+
+</Layouts.unauth_app>
