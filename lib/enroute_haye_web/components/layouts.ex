@@ -37,7 +37,7 @@ defmodule EnrouteHayeWeb.Layouts do
             <.nav_dropdown href={~p"/#ceremony"} label="Ceremony" active={@current_page == :ceremony}>
               <:item href={~p"/mize"}>Mize</:item>
               <:item href={~p"/kuomboka"}>Kuomboka</:item>
-              <:item href={~p"/kuomboka"}>Kuomboka</:item>
+              <:item href={~p"/ncwala"}>Ncwala</:item>
 
             </.nav_dropdown>
             <.nav_link href={~p"/journey"}  label="Plan Your Trip"     active={@current_page == :journey} />
@@ -87,7 +87,7 @@ defmodule EnrouteHayeWeb.Layouts do
                 <span class="font-bold tracking-widest text-sm uppercase">Enroute Home</span>
               </div>
               <p class="text-white/60 text-sm leading-relaxed">
-                Preserving Through Technology.
+                Preserving Culture Through Technology.
               </p>
             </div>
 

@@ -1,4 +1,4 @@
-defmodule EnrouteHayeWeb.Unauth.LikumbiLyaMize do
+defmodule EnrouteHayeWeb.Unauth.Mize do
   use EnrouteHayeWeb, :live_view
 
   @impl true

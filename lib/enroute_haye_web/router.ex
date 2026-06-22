@@ -22,7 +22,8 @@ defmodule EnrouteHayeWeb.Router do
 
     live "/", Unauth.LandingPage, :index
     live "/kuomboka", Unauth.Kuomboka, :index
-    live "/mize", Unauth.LikumbiLyaMize, :index
+    live "/mize", Unauth.Mize, :index
+    live "/ncwala", Unauth.Ncwala, :index
     live "/journey", Unauth.Journey, :index
     live "/audio", Auth.Audio.Index, :index
     live "/uploads", Auth.Uploads.Audio, :index

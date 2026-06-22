@@ -1,0 +1,358 @@
+<Layouts.unauth_app flash={@flash} current_scope={@current_scope}>
+
+<%!-- ============================
+  LOADER
+============================= --%>
+<div id="loader" class="nc-loader-screen" aria-hidden="true" phx-hook="LoaderHook">
+  <div class="nc-loader-inner">
+    <div class="nc-loader-ring">
+      <div class="nc-loader-spinner"></div>
+      <div class="nc-loader-emblem">
+        <.icon name="hero-shield-check-solid" class="w-8 h-8" style="color: #9E6A19;" />
+      </div>
+    </div>
+    <p class="nc-loader-title">N'CWALA</p>
+    <p class="nc-loader-sub">THE FIRST FRUITS CEREMONY</p>
+  </div>
+</div>
+
+<%!-- ============================
+  HERO
+============================= --%>
+<section class="nc-hero" id="hero">
+
+  <%!-- Diagonal ochre shard — warrior shield geometry --%>
+  <div class="nc-hero-shard" aria-hidden="true"></div>
+
+  <%!-- Ambient texture --%>
+  <div class="nc-dust nc-dust-1" aria-hidden="true"></div>
+  <div class="nc-dust nc-dust-2" aria-hidden="true"></div>
+
+  <%!-- Particle canvas --%>
+  <canvas id="particles-hook" class="nc-particles-canvas" aria-hidden="true"
+    phx-hook="Particles"></canvas>
+
+  <div class="nc-hero-content" id="hero-content">
+    <p class="nc-hero-eyebrow reveal">Inkosi Mpezeni's Royal Ceremony</p>
+
+    <h1 class="nc-hero-title reveal" style="--delay: 0.2s">N'CWALA</h1>
+
+    <div class="nc-hero-divider reveal" style="--delay: 0.4s" aria-hidden="true">
+      <span class="nc-divider-mark">◆</span>
+      <span class="nc-divider-line"></span>
+      <span class="nc-divider-mark">◆</span>
+    </div>
+
+    <p class="nc-hero-desc reveal" style="--delay: 0.5s">
+      Witness the great Ngoni nation honour their ancestors and taste the first fruits
+      of a new harvest — a ceremony of warriors, kings, and living tradition.
+    </p>
+
+    <div class="nc-hero-cta reveal" style="--delay: 0.7s">
+      <a href="/journey" class="nc-btn-primary">
+        Enter the Arena <span class="nc-btn-arrow">→</span>
+      </a>
+      <button class="nc-btn-audio" id="audio-hook" phx-hook="AudioPlayer">
+        <span class="nc-audio-bars" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span>
+        </span>
+        War Drums
+      </button>
+    </div>
+  </div>
+
+  <div class="nc-scroll-hint reveal" style="--delay: 1s" aria-label="Scroll to explore">
+    <span class="nc-scroll-chevron">↓</span>
+  </div>
+</section>
+
+<%!-- ============================
+  INTRODUCTION
+============================= --%>
+<section id="journey" class="nc-section nc-section-dark">
+  <div class="nc-container nc-grid-2col">
+
+    <div class="nc-intro-text scroll-reveal">
+      <div class="nc-badge">
+        <span class="nc-badge-dot"></span>
+        Living Tradition · Eastern Province
+      </div>
+
+      <h2 class="nc-section-title">
+        The Ceremony of <em class="nc-ochre">First Fruits</em>
+      </h2>
+
+      <p class="nc-body-text">
+        N'cwala — meaning "the tasting of the first fruits" — is the paramount ceremony
+        of the Ngoni people of Eastern Zambia. Held each February at Mtenguleni near Chipata,
+        it commemorates the arrival of the Ngoni from KwaZulu and celebrates the blessing
+        of a new harvest before the Inkosi, Mpezeni IV, and his thousands of warriors.
+      </p>
+
+      <div class="nc-stats-row">
+        <div class="nc-stat">
+          <span class="nc-stat-num">150+</span>
+          <span class="nc-stat-label">Years of Tradition</span>
+        </div>
+        <div class="nc-stat nc-stat-border">
+          <span class="nc-stat-num">10K+</span>
+          <span class="nc-stat-label">Warriors & Attendees</span>
+        </div>
+        <div class="nc-stat">
+          <span class="nc-stat-num">FEB</span>
+          <span class="nc-stat-label">Every Year</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="nc-intro-image scroll-reveal" style="--delay: 0.2s">
+      <div class="nc-img-frame nc-img-frame-tilt">
+        <img src="/images/ncwala_plains.jpg" alt="Chipata plains, Eastern Zambia" loading="lazy" />
+        <div class="nc-img-overlay">
+          <p class="nc-img-label">THE ROYAL ARENA</p>
+          <p class="nc-img-caption">Mtenguleni, Chipata, Eastern Zambia</p>
+        </div>
+      </div>
+
+      <div class="nc-float-card nc-float-card-tr scroll-reveal" style="--delay: 0.4s">
+        <span class="nc-float-icon">📅</span>
+        <span class="nc-float-meta">When</span>
+        <strong>February [DATE], 2026</strong>
+      </div>
+
+      <div class="nc-float-card nc-float-card-bl scroll-reveal" style="--delay: 0.6s">
+        <span class="nc-float-icon">📍</span>
+        <span class="nc-float-meta">Where</span>
+        <strong>Mtenguleni, Chipata, Zambia</strong>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<%!-- ============================
+  TIMELINE / CEREMONY
+============================= --%>
+<section id="ceremony" class="nc-section nc-section-mid">
+  <div class="nc-container">
+    <div class="nc-section-header scroll-reveal">
+      <h2 class="nc-section-title nc-text-center">
+        The Sacred <em class="nc-ochre">Procession</em>
+      </h2>
+      <p class="nc-section-sub">Follow the ceremony from the ancestral call at dawn to the great celebration</p>
+    </div>
+
+    <div class="nc-timeline">
+      <div class="nc-timeline-spine" aria-hidden="true"></div>
+
+      <%= for {event, idx} <- Enum.with_index(@timeline_events) do %>
+        <div class={["nc-timeline-item", if(rem(idx, 2) == 0, do: "nc-align-right", else: "nc-align-left"), "scroll-reveal"]}
+             style={"--delay: #{idx * 0.15}s"}>
+
+          <div class="nc-timeline-text">
+            <span class="nc-timeline-time">
+              <span class="nc-timeline-icon-sm">◆</span>
+              <%= event.time %>
+            </span>
+            <h3 class="nc-timeline-title"><%= event.title %></h3>
+            <p class="nc-timeline-desc"><%= event.description %></p>
+          </div>
+
+          <div class="nc-timeline-card">
+            <div class="nc-timeline-card-inner">
+              <img src={event.image} alt={event.image_alt} loading="lazy" class="nc-timeline-img" />
+            </div>
+            <div class="nc-timeline-dot" aria-hidden="true"></div>
+          </div>
+
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>
+
+<%!-- ============================
+  ROYAL REGALIA SECTION
+  (mirrors the Nalikwanda barge section)
+============================= --%>
+<section id="regalia" class="nc-section nc-section-dark nc-regalia-section">
+  <div class="nc-dot-grid" aria-hidden="true"></div>
+
+  <div class="nc-container">
+    <div class="nc-section-header scroll-reveal">
+      <h2 class="nc-section-title nc-text-center">
+        The <em class="nc-ochre">Inkosi</em> & His Court
+      </h2>
+      <p class="nc-section-sub">The living embodiment of Ngoni kingship — warrior, judge, and keeper of the ancestors</p>
+    </div>
+
+    <div class="nc-regalia-grid">
+      <%!-- Main image with hotspots --%>
+      <div class="nc-regalia-main scroll-reveal">
+        <div class="nc-regalia-img-wrap">
+          <img src="/images/ncwala_regalia.jpg" alt="Inkosi in full regalia" loading="lazy" class="nc-regalia-img" />
+          <div class="nc-regalia-overlay"></div>
+
+          <button class="nc-hotspot nc-hotspot-spear"
+            phx-click="show_detail" phx-value-type="spear"
+            title="The Royal Spear">
+            <span class="nc-hotspot-pulse"></span>
+            <span class="nc-hotspot-label">Royal Spear</span>
+          </button>
+
+          <button class="nc-hotspot nc-hotspot-warriors"
+            phx-click="show_detail" phx-value-type="warriors"
+            title="Warrior Regiments">
+            <span class="nc-hotspot-pulse"></span>
+            <span class="nc-hotspot-label">Warrior Regiments</span>
+          </button>
+
+          <button class="nc-hotspot nc-hotspot-firstfruits"
+            phx-click="show_detail" phx-value-type="firstfruits"
+            title="The First Fruits">
+            <span class="nc-hotspot-pulse"></span>
+            <span class="nc-hotspot-label">First Fruits</span>
+          </button>
+
+          <div class="nc-regalia-caption">
+            <h3>The Royal Court</h3>
+            <p>Click the markers to explore the ceremony's sacred elements</p>
+          </div>
+        </div>
+      </div>
+
+      <%!-- Detail panels --%>
+      <div class="nc-regalia-details scroll-reveal" style="--delay: 0.2s">
+        <%= for detail <- @regalia_details do %>
+          <div class={"nc-detail-card #{if @active_detail == detail.id, do: "active"}"}>
+            <div class="nc-detail-icon-wrap">
+              <span class="nc-detail-icon">
+                <%= case detail.icon do
+                  "spear"  -> "⚔"
+                  "shield" -> "🛡"
+                  "grain"  -> "🌾"
+                  _ -> "◆"
+                end %>
+              </span>
+            </div>
+            <div>
+              <h4 class="nc-detail-title"><%= detail.title %></h4>
+              <p class="nc-detail-desc"><%= detail.description %></p>
+            </div>
+          </div>
+        <% end %>
+
+        <div class="nc-regalia-specs scroll-reveal" style="--delay: 0.4s">
+          <h4 class="nc-specs-title">Ceremony Essentials</h4>
+          <ul class="nc-specs-list">
+            <li><span>Held At</span><span class="nc-ochre">Mtenguleni Arena</span></li>
+            <li><span>Season</span><span class="nc-ochre">Late February</span></li>
+            <li><span>Presided By</span><span class="nc-ochre">Inkosi Mpezeni IV</span></li>
+            <li><span>Participants</span><span class="nc-ochre">10,000+</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%!-- ============================
+  CULTURAL SIGNIFICANCE
+============================= --%>
+<section id="culture" class="nc-section nc-section-mid">
+  <div class="nc-container nc-grid-2col">
+
+    <div class="nc-culture-mosaic order-2 scroll-reveal">
+      <div class="nc-mosaic-col nc-mosaic-col-offset">
+        <div class="nc-mosaic-img nc-tall">
+          <img src="/images/ncwala_dance.jpg" alt="Ngoni war dance" loading="lazy" />
+        </div>
+        <div class="nc-mosaic-img nc-medium">
+          <img src="/images/ncwala_shields.jpg" alt="Warriors with shields" loading="lazy" />
+        </div>
+      </div>
+      <div class="nc-mosaic-col">
+        <div class="nc-mosaic-img nc-short">
+          <img src="/images/ncwala_crowd.jpg" alt="Ceremony crowd" loading="lazy" />
+        </div>
+        <div class="nc-mosaic-img nc-tall">
+          <img src="/images/ncwala_palace.jpg" alt="At the royal palace" loading="lazy" />
+        </div>
+      </div>
+    </div>
+
+    <div class="nc-culture-text order-1 scroll-reveal" style="--delay: 0.2s">
+      <h2 class="nc-section-title">
+        A Nation's <em class="nc-ochre">Living Memory</em>
+      </h2>
+
+      <div class="nc-culture-points">
+        <div class="nc-culture-point">
+          <div class="nc-point-icon">⚔</div>
+          <div>
+            <h3>Warrior Heritage</h3>
+            <p>The Ngoni trace their roots to the great Zulu nation. The war dances of N'cwala preserve the martial traditions carried northward on the great migration, keeping alive the spirit of their warrior ancestors.</p>
+          </div>
+        </div>
+
+        <div class="nc-culture-point">
+          <div class="nc-point-icon">🌾</div>
+          <div>
+            <h3>Harvest &amp; Gratitude</h3>
+            <p>N'cwala is above all a ceremony of thanksgiving. No Ngoni person may eat from the new harvest until the Inkosi has tasted it first — a practice that binds the community to both land and king.</p>
+          </div>
+        </div>
+
+        <div class="nc-culture-point">
+          <div class="nc-point-icon">📜</div>
+          <div>
+            <h3>Ancestral Continuity</h3>
+            <p>The ceremony honours those who made the great migration from the south. Through song, dance, and ritual, each generation renews its covenant with the Ngoni forebears who built the nation.</p>
+          </div>
+        </div>
+      </div>
+
+      <a href="#" class="nc-btn-outline-ochre nc-mt-8 inline-flex items-center gap-2">
+        Explore Full History <span>→</span>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<%!-- ============================
+  AUDIO EXPERIENCE
+============================= --%>
+<section class="nc-section nc-section-dark nc-audio-section">
+  <div class="nc-container nc-narrow nc-text-center">
+    <span class="nc-audio-icon-lg">♪</span>
+    <h2 class="nc-section-title">Immersive Audio Experience</h2>
+    <p class="nc-section-sub">
+      Hear the thunder of Ngoni war drums and the voices of ten thousand warriors
+      rising across the Chipata plains
+    </p>
+
+    <div class="nc-player scroll-reveal" id="player-hook" phx-hook="Player">
+      <div class="nc-player-controls">
+        <button class="nc-ctrl-btn" id="skip-back" aria-label="Skip backward">⏮</button>
+        <button class="nc-ctrl-btn nc-ctrl-play" id="play-btn" aria-label="Play/Pause">▶</button>
+        <button class="nc-ctrl-btn" id="skip-fwd" aria-label="Skip forward">⏭</button>
+      </div>
+
+      <div class="nc-player-progress">
+        <span id="current-time" class="nc-time-label">0:00</span>
+        <div class="nc-progress-track" id="progress-track" role="progressbar">
+          <div class="nc-progress-fill" id="progress-fill" style="width: 0%"></div>
+        </div>
+        <span class="nc-time-label">4:12</span>
+      </div>
+
+      <div class="nc-player-volume">
+        <span>🔈</span>
+        <input type="range" min="0" max="100" value="70" id="volume-range" aria-label="Volume" />
+      </div>
+    </div>
+  </div>
+</section>
+
+</Layouts.unauth_app>

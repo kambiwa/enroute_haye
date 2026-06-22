@@ -20,6 +20,7 @@
   HERO
 ============================= --%>
 <section class="hero llm-hero" id="hero">
+
   <%!-- Ambient forest blobs --%>
   <div class="blob llm-blob-1" aria-hidden="true"></div>
   <div class="blob llm-blob-2" aria-hidden="true"></div>
@@ -32,11 +33,11 @@
   <div class="llm-mist" aria-hidden="true">
     <svg class="llm-mist-wave llm-mist-1" viewBox="0 0 1200 120" preserveAspectRatio="none">
       <path d="M0,60 C200,90 400,30 600,60 C800,90 1000,30 1200,60 L1200,120 L0,120 Z"
-            fill="rgba(212,160,23,0.06)"/>
+            fill="rgba(204,0,0,0.06)"/>
     </svg>
     <svg class="llm-mist-wave llm-mist-2" viewBox="0 0 1200 120" preserveAspectRatio="none">
       <path d="M0,40 C150,70 350,10 600,40 C850,70 1050,10 1200,40 L1200,120 L0,120 Z"
-            fill="rgba(20,45,15,0.5)"/>
+            fill="rgba(10,10,10,0.55)"/>
     </svg>
   </div>
 
@@ -61,8 +62,7 @@
 
     <div class="hero-cta reveal" style="--delay: 0.7s">
       <a href="/journey" class="btn-primary llm-btn-primary">
-        Start your tour
-         <span class="btn-arrow">→</span>
+        Enter the Forest <span class="btn-arrow">→</span>
       </a>
       <button class="btn-audio" id="audio-hook" phx-hook="AudioPlayer">
         <span class="audio-bars" aria-hidden="true">
@@ -120,8 +120,10 @@
 
     <div class="intro-image scroll-reveal" style="--delay: 0.2s">
       <div class="img-frame img-frame-tilt llm-img-frame">
-        <img src="/images/mize/mize_logo.png" class="img-content llm-img-content"
-             alt="Makishi masked spirit at Likumbi Lya Mize" loading="lazy" />
+        <img src="/images/mize/mize_logo.png"
+             class="img-content llm-img-content"
+             alt="Makishi masked spirit at Likumbi Lya Mize"
+             loading="lazy" />
         <div class="img-overlay">
           <p class="img-label">THE MAKISHI SPIRITS</p>
           <p class="img-caption">Mize Village, Zambezi District</p>
@@ -154,7 +156,7 @@
         A Day in the <em class="llm-gold">Forest</em>
       </h2>
       <p class="section-sub">
-        Follow the sacred ceremony from the cool dawn drumbeats to the firelit celebrations of night
+        Follow the sacred ceremony from cool dawn drumbeats to the firelit celebrations of night
       </p>
     </div>
 
@@ -191,7 +193,8 @@
 </section>
 
 <%!-- ============================
-  MAKISHI SPIRITS (mirrors Nalikwanda Barge section)
+  MAKISHI SPIRITS
+  (mirrors Nalikwanda barge / Inkosi regalia section)
 ============================= --%>
 <section id="makishi" class="section section-dark llm-section-mask">
   <div class="dot-grid llm-dot-grid" aria-hidden="true"></div>
@@ -220,7 +223,7 @@
             phx-click="show_makishi" phx-value-type="mwana_pwo"
             title="Mwana Pwo">
             <span class="hotspot-pulse llm-hotspot-pulse"></span>
-            <span class="hotspot-label">Mwana Pwebo</span>
+            <span class="hotspot-label">Mwana Pwo</span>
           </button>
 
           <button class="hotspot llm-hotspot llm-hotspot-chihongo"
@@ -289,21 +292,21 @@
     <div class="culture-mosaic order-2 scroll-reveal">
       <div class="mosaic-col mosaic-col-offset">
         <div class="mosaic-img tall">
-          <img src="/images/mize/mask.jpg"
+          <img src="/images/mize/mize_mukanda.jpg"
                alt="Mukanda initiation ceremony" loading="lazy" />
         </div>
         <div class="mosaic-img medium">
-          <img src="/images/mize/mask.jpg"
+          <img src="/images/mize/mize_elders.jpg"
                alt="Luvale elders" loading="lazy" />
         </div>
       </div>
       <div class="mosaic-col">
         <div class="mosaic-img short">
-          <img src="/images/mize/mask.jpg"
+          <img src="/images/mize/mize_drums.jpg"
                alt="Ceremonial drums" loading="lazy" />
         </div>
         <div class="mosaic-img tall">
-          <img src="/images/mize/mask.jpg"
+          <img src="/images/mize/mize_craft.jpg"
                alt="Mask carving craft" loading="lazy" />
         </div>
       </div>
@@ -344,7 +347,7 @@
           <div>
             <h3>UNESCO Recognition</h3>
             <p>
-              The Makishi masquerade was inscribed on UNESCO's Representative List of
+              The Makishi masquerade is inscribed on UNESCO's Representative List of
               the Intangible Cultural Heritage of Humanity, affirming its global
               significance and the need for its careful preservation.
             </p>
@@ -368,7 +371,7 @@
     <span class="audio-icon-lg llm-audio-icon">♩</span>
     <h2 class="section-title">The Drumbeat of the Ancestors</h2>
     <p class="section-sub">
-      Listen to the traditional Luvale ceremonial drums and the call-and-response chants
+      Listen to the traditional Luvale ceremonial drums and call-and-response chants
       that pulse through Mize village during the ceremony
     </p>
 
