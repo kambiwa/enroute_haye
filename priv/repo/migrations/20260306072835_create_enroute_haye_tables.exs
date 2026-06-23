@@ -176,6 +176,38 @@ defmodule EnrouteHaye.Repo.Migrations.CreateEnrouteHayeTables do
       timestamps(type: :utc_datetime)
     end
 
+     # ========================
+    # ROAD TRANSPORT
+    # ========================
+    create table(:road) do
+      add :operator, :string
+      add :route, :string
+      add :departure_point, :text
+      add :arrival_point, :text
+      add :departure_time, :naive_datetime
+      add :arrival_time, :naive_datetime
+      add :price, :decimal
+      add :operator_contact, :string
+
+      timestamps(type: :utc_datetime)
+    end
+
+     # ========================
+    # Air TRANSPORT
+    # ========================
+    create table(:air) do
+      add :airline_name, :string
+      add :flight_number, :string
+      add :departure_district, :text
+      add :arrival, :text
+      add :departure_time, :naive_datetime
+      add :arrival_time, :naive_datetime
+      add :price, :decimal
+      add :airline_contact, :string
+
+      timestamps(type: :utc_datetime)
+    end
+
     # ========================
     # REVIEWS
     # ========================
