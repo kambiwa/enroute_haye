@@ -14,7 +14,6 @@ defmodule EnrouteHayeWeb.Unauth.LandingPage do
       name: "Southern Province",
       blurb: "Home to Victoria Falls and the thundering Zambezi.",
       attractions: "Victoria Falls, Lake Kariba, Mosi-oa-Tunya National Park",
-      culture: "Tonga heritage and the Lwiindi ceremony",
       image: "/images/sites/adventure.jpg"
     },
     %{
@@ -22,7 +21,6 @@ defmodule EnrouteHayeWeb.Unauth.LandingPage do
       name: "Western Province",
       blurb: "Flood plains, royal barges, and the Kuomboka ceremony.",
       attractions: "Barotse Floodplain, Sioma Ngwezi National Park",
-      culture: "Lozi royal traditions and the Kuomboka ceremony",
       image: "/images/litunga.jpg"
     },
     %{
@@ -30,7 +28,6 @@ defmodule EnrouteHayeWeb.Unauth.LandingPage do
       name: "Eastern Province",
       blurb: "Wildlife-rich valleys and the vivid Nc'wala ceremony.",
       attractions: "South Luangwa National Park, Chipata",
-      culture: "Ngoni heritage and the Nc'wala ceremony",
       image: "/images/sites/ncwala.png"
     },
     %{
@@ -38,7 +35,6 @@ defmodule EnrouteHayeWeb.Unauth.LandingPage do
       name: "Northern Province",
       blurb: "Waterfalls, lakeshores, and the Mutomboko ceremony.",
       attractions: "Kalambo Falls, Lake Tanganyika, Nsumbu National Park",
-      culture: "Lunda-Luba legacy and the Mutomboko ceremony",
       image: "/images/lubemba.jpg"
     },
     %{
@@ -46,7 +42,6 @@ defmodule EnrouteHayeWeb.Unauth.LandingPage do
       name: "Luapula Province",
       blurb: "Wetlands and waterfalls along the Congo border.",
       attractions: "Lake Bangweulu, Ntumbachushi Falls",
-      culture: "Ushi and Bemba fishing traditions",
       image: "/images/sites/resort.png"
     },
     %{
@@ -54,7 +49,6 @@ defmodule EnrouteHayeWeb.Unauth.LandingPage do
       name: "Copperbelt Province",
       blurb: "Zambia's industrial heartland with a distinct urban culture.",
       attractions: "Copperbelt Museum, Chembe Bird Sanctuary",
-      culture: "A melting pot forged by the mining industry",
       image: "/images/provinces/copperbelt.jpg"
     },
     %{
@@ -62,7 +56,6 @@ defmodule EnrouteHayeWeb.Unauth.LandingPage do
       name: "Central Province",
       blurb: "The agricultural spine of the country, rich in open land.",
       attractions: "Kabwe Mine Museum, Chisamba farmlands",
-      culture: "Lenje and Soli heritage",
       image: "/images/provinces/central.jpg"
     },
     %{
@@ -70,7 +63,6 @@ defmodule EnrouteHayeWeb.Unauth.LandingPage do
       name: "North-Western Province",
       blurb: "Remote, forested, and home to the Mukanda tradition.",
       attractions: "Zambezi Source, West Lunga National Park",
-      culture: "Lunda, Luvale and Kaonde heritage, Mukanda initiation",
       image: "/images/provinces/northwestern.jpg"
     },
     %{
@@ -78,7 +70,6 @@ defmodule EnrouteHayeWeb.Unauth.LandingPage do
       name: "Muchinga Province",
       blurb: "Escarpments and untouched wilderness in the east.",
       attractions: "North Luangwa National Park, Muchinga Escarpment",
-      culture: "Bisa and Namwanga traditions",
       image: "/images/provinces/muchinga.jpg"
     }
   ]
