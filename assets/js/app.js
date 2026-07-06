@@ -11,6 +11,10 @@ import { hooks as colocatedHooks } from "phoenix-colocated/enroute_haye"
 import topbar from "../vendor/topbar"
 import { CountUp, CopyItinerary, StepSlide } from "./hooks/journey"
 import BookingsChart from "./hooks/bookings_chart"
+import { ScrollNav, Reveal } from "./hooks/landing"
+import maplibregl from "maplibre-gl"
+import "maplibre-gl/dist/maplibre-gl.css"
+window.maplibregl = maplibregl // if your hook expects a global
 
 // ── Helpers ──────────────────────────────────────────────────
 function $(sel, ctx = document) { return ctx.querySelector(sel) }
@@ -178,6 +182,74 @@ const Player = {
   destroyed() { this._cleanup?.() }
 }
 
+const ZambiaMap = {
+  mounted() {
+    const map = new maplibregl.Map({
+      style: 'https://tiles.openfreemap.org/styles/liberty',
+      center: [27.8493, -13.1339], // Zambia center
+      zoom: 5.5,
+      container: this.el,
+    });
+
+    // Store map on hook so we can access it later
+    this.map = map;
+
+    // Wait for map to load, then add pins from server
+    map.on('load', () => {
+      this.addPins();
+    });
+
+    // Listen for pin updates pushed from the server
+    this.handleEvent('pins_updated', ({ pins, active_pins }) => {
+      this.updatePins(pins, active_pins);
+    });
+  },
+
+  addPins() {
+    const pins = JSON.parse(this.el.dataset.pins || '[]');
+    const activePins = JSON.parse(this.el.dataset.activePins || '[]');
+    this.renderMarkers(pins, activePins);
+  },
+
+  renderMarkers(pins, activePins) {
+    // Remove old markers
+    if (this._markers) this._markers.forEach(m => m.remove());
+    this._markers = [];
+
+    pins.forEach(pin => {
+      if (!pin.lng || !pin.lat) return;
+      const isActive = activePins.includes(pin.id);
+
+      const el = document.createElement('div');
+      el.className = 'map-marker' + (isActive ? ' map-marker--active' : '');
+      el.innerHTML = pin.image_url; // your emoji
+      el.title = pin.description;
+
+      el.addEventListener('click', () => {
+        this.pushEvent('toggle_pin', { pin: pin.id });
+      });
+
+      const marker = new maplibregl.Marker({ element: el })
+        .setLngLat([pin.lng, pin.lat])
+        .setPopup(new maplibregl.Popup().setText(pin.description))
+        .addTo(this.map);
+
+      this._markers.push(marker);
+    });
+  },
+
+  updated() {
+    // Re-render markers whenever LiveView re-renders this component
+    const pins = JSON.parse(this.el.dataset.pins || '[]');
+    const activePins = JSON.parse(this.el.dataset.activePins || '[]');
+    this.renderMarkers(pins, activePins);
+  },
+
+  destroyed() {
+    if (this.map) this.map.remove();
+  }
+};
+
 /**
  * AudioPlayerHook — ambient drum button in the hero.
  * Replace console.info with audioEl.play() / .pause() in production.
@@ -282,7 +354,9 @@ const liveSocket = new LiveSocket("/live", Socket, {
     CopyItinerary,
     StepSlide,
     BookingsChart,
-    TrackPlay,       // ← Audio Manager track play buttons
+    TrackPlay,   // ← Audio Manager track play buttons
+    ScrollNav,   // ← Enroute Home landing page
+    Reveal,      // ← Enroute Home landing page
   }
 })
 

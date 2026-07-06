@@ -2,7 +2,7 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
   use EnrouteHayeWeb, :live_view
 
   alias EnrouteHaye.Context.CxtRoad
-  alias EnrouteHaye.Context.CxtAir
+  alias EnrouteHaye.Context.CxtAirLine
   alias EnrouteHaye.Context.CxtFood
   alias EnrouteHaye.Context.CxtSite
 
@@ -28,51 +28,51 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
 
   def mount(_params, _session, socket) do
     {:ok,
-     assign(socket,
-       current_scope: nil,
-       step: 0,
-       steps: @steps,
+    assign(socket,
+      current_scope: nil,
+      step: 0,
+      steps: @steps,
 
-       # Data
-       foods:    CxtFood.list_foods(%{"order_by" => %{"sort_field" => "name", "sort_direction" => "asc"}}),
-       music:    @music,
-       hotels:   @hotels,
-       pins:     CxtSite.list_sites(%{"order_by" => %{"sort_field" => "name", "sort_direction" => "asc"}}),
-       provinces: CxtRoad.list_provinces(),
+      # Data
+      foods:    CxtFood.list_foods(%{"order_by" => %{"sort_field" => "name", "sort_direction" => "asc"}}),
+      music:    @music,
+      hotels:   @hotels,
+      pins:     CxtSite.list_all_sites(%{}),
+      provinces: CxtRoad.list_provinces(),
 
-       # Step 0 — Departure
-       province:          "",
-       district:          "",
-       districts:         [],
-       start_date:        "",
-       duration:          7,
-       duration_custom:   false,
-       transport:         "road",
-       road_providers:    [],
-       air_providers:     [],
-       selected_provider: nil,
+      # Step 0 — Departure
+      province:          "",
+      district:          "",
+      districts:         [],
+      start_date:        "",
+      duration:          7,
+      duration_custom:   false,
+      transport:         "road",
+      road_providers:    [],
+      air_providers:     [],
+      selected_provider: nil,
 
-       # Step 1 — Ceremony
-       ceremony: "kuomboka",
+      # Step 1 — Ceremony
+      ceremony: "kuomboka",
 
-       # Step 2 — Map
-       active_pins: ~w(kuomboka market craft scenic),
+      # Step 2 — Map
+      active_pins: [],
 
-       # Step 3 — Food
-       selected_foods: [],
+      # Step 3 — Food
+      selected_foods: [],
 
-       # Step 4 — Music
-       selected_music: [],
+      # Step 4 — Music
+      selected_music: [],
 
-       # Step 5 — Stay
-       hotel: nil,
+      # Step 5 — Stay
+      hotel: nil,
 
-       # Step 6 — Summary / PDF
-       traveller_name: "",
-       generating_pdf: false,
-       pdf_ready:      false,
-       pdf_error:      nil
-     )}
+      # Step 6 — Summary / PDF
+      traveller_name: "",
+      generating_pdf: false,
+      pdf_ready:      false,
+      pdf_error:      nil
+    )}
   end
 
   # ── Navigation ─────────────────────────────────────────────────────────────
@@ -91,15 +91,16 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
   # ── Step 0 · Province ──────────────────────────────────────────────────────
 
   def handle_event("set_province", %{"province" => prov}, socket) do
+    IO.inspect(socket, label: "===================7087")
     {:noreply,
-     assign(socket,
-       province:          prov,
-       district:          "",
-       districts:         CxtRoad.list_districts(prov),
-       road_providers:    [],
-       air_providers:     [],
-       selected_provider: nil
-     )}
+    assign(socket,
+      province:          prov,
+      district:          "",
+      districts:         CxtRoad.list_districts(prov),
+      road_providers:    [],
+      air_providers:     [],
+      selected_provider: nil
+    )}
   end
 
   # ── Step 0 · District ─────────────────────────────────────────────────────
@@ -162,6 +163,9 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
   # ── Step 2 · Map pins ─────────────────────────────────────────────────────
 
   def handle_event("toggle_pin", %{"pin" => pin_id}, socket) do
+    IO.inspect(socket, label: "===================7087")
+    pin_id = String.to_integer(pin_id)
+
     pins =
       if pin_id in socket.assigns.active_pins,
         do:   List.delete(socket.assigns.active_pins, pin_id),
@@ -238,29 +242,29 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
     token = EnrouteHaye.PDFStore.put(payload)
 
     {:noreply,
-     socket
-     |> assign(generating_pdf: false, pdf_ready: true)
-     |> push_redirect(to: "/pdf/itinerary/#{token}")}
+    socket
+    |> assign(generating_pdf: false, pdf_ready: true)
+    |> push_redirect(to: "/pdf/itinerary/#{token}")}
   end
 
   # ── Private: load transport providers ────────────────────────────────────
 
   defp load_providers(socket, "air", district) do
     assign(socket,
-      air_providers:  CxtAir.list_airlines_from(district),
+      air_providers:  CxtAirLine.list_airlines_from(district),
       road_providers: []
     )
   end
 
   defp load_providers(socket, "mixed", district) do
     assign(socket,
-      air_providers:  CxtAir.list_airlines_from(district),
+      air_providers:  CxtAirLine.list_airlines_from(district),
       road_providers: CxtRoad.list_roads_from(district)
     )
   end
 
   defp load_providers(socket, transport, district)
-       when transport in ~w(road bus solo) do
+      when transport in ~w(road bus solo) do
     assign(socket,
       road_providers: CxtRoad.list_roads_from(district),
       air_providers:  []

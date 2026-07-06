@@ -34,74 +34,81 @@
         <h2 class="step-title">Plan Your Trip</h2>
         <p class="step-sub">Where will your Zambia cultural adventure begin?</p>
 
-        <%!-- Province → District ─────────────────────────────── --%>
+        <%!-- Province ───────────────────────────────────────── --%>
         <div class="field-group field-group--2col">
           <div class="field">
             <label>Province</label>
-            <select phx-change="set_province" name="province">
-              <option value="">Select province…</option>
-              <%= for p <- @provinces do %>
-                <option value={p} selected={@province == p}><%= p %></option>
-              <% end %>
-            </select>
+            <form phx-change="set_province">
+              <select name="province">
+                <option value="">Select province…</option>
+                <%= for p <- @provinces do %>
+                  <option value={p} selected={@province == p}><%= p %></option>
+                <% end %>
+              </select>
+            </form>
           </div>
 
+          <%!-- District ───────────────────────────────────────── --%>
           <div class="field">
             <label>District</label>
-            <select phx-change="set_district" name="district" disabled={@province == ""}>
-              <option value="">
-                <%= if @province == "", do: "Select province first", else: "Select district…" %>
-              </option>
-              <%= for d <- @districts do %>
-                <option value={d} selected={@district == d}><%= d %></option>
-              <% end %>
-            </select>
+            <form phx-change="set_district">
+              <select name="district" disabled={@province == ""}>
+                <option value="">
+                  <%= if @province == "", do: "Select province first", else: "Select district…" %>
+                </option>
+                <%= for d <- @districts do %>
+                  <option value={d} selected={@district == d}><%= d %></option>
+                <% end %>
+              </select>
+            </form>
           </div>
         </div>
 
         <%!-- Start Date ──────────────────────────────────────── --%>
-        <div class="field field--full">
+        <form phx-change="set_date" class="field field--full">
           <label>Start Date</label>
           <input
             type="date"
             name="date"
             value={@start_date}
             min={Date.utc_today() |> Date.to_iso8601()}
-            phx-change="set_date"
           />
-        </div>
+        </form>
 
-        <%!-- Duration ────────────────────────────────────────── --%>
+        <%!-- Duration (slider) ───────────────────────────────── --%>
         <div class="field field--full" style="margin-bottom: 20px;">
           <label>
             Duration:
             <strong style="color: var(--gold)"><%= @duration %> days</strong>
           </label>
-          <input
-            type="range"
-            min="1" max="30"
-            value={@duration}
-            name="duration"
-            class="range-gold"
-            phx-change="set_duration"
-          />
+          <form phx-change="set_duration">
+            <input
+              type="range"
+              min="1" max="30"
+              value={@duration}
+              name="duration"
+              class="range-gold"
+            />
+          </form>
           <div class="range-labels">
             <span>1 day</span><span>30 days</span>
           </div>
+
+          <%!-- Duration (custom number input) ─────────────────── --%>
           <div class="field" style="margin-top: 10px;">
             <label style="font-size: 0.82rem; color: var(--color-text-secondary);">
               Or enter exact days:
             </label>
-            <input
-              type="number"
-              min="1" max="365"
-              value={@duration}
-              name="duration"
-              placeholder="e.g. 45"
-              style="width: 110px;"
-              phx-change="set_duration_custom"
-              phx-debounce="400"
-            />
+            <form phx-change="set_duration_custom" phx-debounce="400">
+              <input
+                type="number"
+                min="1" max="365"
+                value={@duration}
+                name="duration"
+                placeholder="e.g. 45"
+                style="width: 110px;"
+              />
+            </form>
           </div>
         </div>
 
@@ -268,41 +275,58 @@
     <%!-- ═══════════════════════════════════════════
          STEP 2 — MAP
     ═══════════════════════════════════════════ --%>
+    <%!-- ═══════════════════════════════════════════
+     STEP 2 — MAP
+═══════════════════════════════════════════ --%>
     <%= if @step == 2 do %>
       <div class="step-card">
         <div class="step-icon">🗺️</div>
         <h2 class="step-title">Map Your Route</h2>
-        <p class="step-sub">Click map pins to add sites to your itinerary</p>
+        <p class="step-sub">Pin the sites you want to visit — toggle to add or remove</p>
 
         <div class="map-area">
-          <div class="map-bg-overlay"></div>
-          <div class="map-globe-bg">🌍</div>
+          <div
+            id="zambia-map"
+            phx-hook="ZambiaMap"
+            phx-update="ignore"
+            data-pins={Jason.encode!(@pins)}
+            data-active-pins={Jason.encode!(@active_pins)}
+            style="width: 100%; height: 420px; border-radius: 12px;"
+          ></div>
 
-          <div class="map-pins">
-            <%= for pin <- @pins do %>
+          <div class="map-legend">🟡 Active &nbsp; ⚪ Available · Click a site below to toggle</div>
+        </div>
+
+        <%!-- ── Pin / site list with viewing info + estimated price ── --%>
+        <div class="cards-grid">
+          <%= for pin <- @pins do %>
+            <% active = pin.id in @active_pins %>
+            <div class={["item-card", active && "item-card--added"]}>
+              <div class="item-emoji"><%= pin.image_url %></div>
+              <h4 class="item-name"><%= pin.name %></h4>
+              <p class="item-desc"><%= pin.description %></p>
+              <p class="item-desc">📍 <%= pin.location %></p>
+              <p class="item-desc pin-price">
+                <%= if Map.get(pin, :price) in [nil, 0],
+                      do:   "Free entry",
+                      else: "Est. $#{pin.price} / visit" %>
+              </p>
               <button
                 type="button"
-                class={["map-pin", pin.id in @active_pins && "map-pin--active"]}
                 phx-click="toggle_pin"
                 phx-value-pin={pin.id}
-                title={pin.description}
+                class={["add-btn", active && "add-btn--added"]}
               >
-                <div class="pin-dot" style="background: #C9A84C;">
-                  <span><%= pin.image_url %></span>
-                </div>
-                <div class="pin-label"><%= pin.description %></div>
-                <div class="pin-dot" style="background: #C9A84C;">
-                  <span><%= pin.location %></span>
-                </div>
+                <%= if active, do: "✓ Pinned", else: "+ Pin Site" %>
               </button>
-            <% end %>
-          </div>
-
-          <div class="map-legend">🟡 Active  ⚪ Available · Click to toggle</div>
+            </div>
+          <% end %>
         </div>
 
         <p class="map-count">
           ✅ <strong><%= length(@active_pins) %> sites</strong> added to your route
+          · estimated visiting cost
+          $<%= @pins |> Enum.filter(&(&1.id in @active_pins)) |> Enum.map(&Map.get(&1, :price, 0)) |> Enum.sum() %>
         </p>
 
         <div class="btn-row">
@@ -497,7 +521,7 @@
         <% end %>
 
         <%!-- Traveller name ──────────────────────────────────── --%>
-        <div class="traveller-name-field">
+        <form phx-change="set_traveller_name" phx-debounce="200" class="traveller-name-field">
           <label class="traveller-name-label">
             ✍️ Enter your name for a personalised touch to your itinerary PDF
             <span class="traveller-name-optional">[personalises the PDF]</span>
@@ -509,15 +533,13 @@
             placeholder="e.g. Mweembo Kambiwa"
             maxlength="60"
             class={["traveller-name-input", @traveller_name != "" && "traveller-name-input--filled"]}
-            phx-change="set_traveller_name"
-            phx-debounce="200"
           />
           <%= if @traveller_name != "" do %>
             <div class="traveller-name-preview">
               🎟️ Itinerary prepared for <strong><%= @traveller_name %></strong>
             </div>
           <% end %>
-        </div>
+        </form>
 
         <%!-- PDF action --%>
         <%= if @generating_pdf do %>

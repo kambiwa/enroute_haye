@@ -33,7 +33,7 @@ defmodule EnrouteHaye.Context.CxtRoad do
     def list_districts(nil), do: []
 
     def list_districts(""), do: []
-    
+
     def list_districts(province) do
       case province do
         "Central Province"       -> ["Chibombo","Chisamba","Chitambo","Chongwe","Kabwe","Kapiri Mposhi","Luano","Mumbwa","Ngabwe","Serenje"]
@@ -57,9 +57,11 @@ defmodule EnrouteHaye.Context.CxtRoad do
       |> order_by([r], asc: r.departure_time)
       |> Repo.all()
     end
-def list_roads_from(_), do: []
+
+   def list_roads_from(_), do: []
 
   # ── Standard CRUD ────────────────────────────────────────────────────
+
 
   def get_road_operator!(id), do: Repo.get!(Road, id)
 

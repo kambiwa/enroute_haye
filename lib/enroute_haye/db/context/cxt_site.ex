@@ -20,6 +20,13 @@ defmodule EnrouteHaye.Context.CxtSite do
     |> Repo.paginate(page: page, page_size: page_size)
   end
 
+  def list_all_sites(filters \\ %{}) do
+    Site
+    |> apply_status(filters[:status_filter] || filters["status_filter"] || "")
+    |> order_by([f], asc: f.name)
+    |> Repo.all()
+  end
+
   # ── Standard CRUD ────────────────────────────────────────────────────
 
   def get_site!(id), do: Repo.get!(Site, id)

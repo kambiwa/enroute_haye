@@ -103,6 +103,10 @@ defmodule EnrouteHayeWeb.Router do
       live "/trips/new", Auth.Trips.New, :new
       live "/trips/:id/edit", Auth.Trips.Edit, :edit
 
+      live "/roads", Auth.Road.Index, :index
+      live "/roads/new", Auth.Road.New, :new
+      live "/roads/:id/edit", Auth.Road.Edit, :edit
+
 
       live "/users/settings", UserLive.Settings, :edit
       live "/users/settings/confirm-email/:token", UserLive.Settings, :confirm_email

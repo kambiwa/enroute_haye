@@ -80,6 +80,7 @@ defmodule EnrouteHaye.Repo.Migrations.CreateEnrouteHayeTables do
       add :longitude, :float
       add :category, :string
       add :image_url, :string
+      add :price, :integer, default: 0
       add :status, :string, default: "active"
 
       timestamps(type: :utc_datetime)
@@ -179,7 +180,7 @@ defmodule EnrouteHaye.Repo.Migrations.CreateEnrouteHayeTables do
      # ========================
     # ROAD TRANSPORT
     # ========================
-    create table(:road) do
+    create table(:roads) do
       add :operator, :string
       add :route, :string
       add :departure_point, :text
@@ -195,7 +196,7 @@ defmodule EnrouteHaye.Repo.Migrations.CreateEnrouteHayeTables do
      # ========================
     # Air TRANSPORT
     # ========================
-    create table(:air) do
+    create table(:airline) do
       add :airline_name, :string
       add :flight_number, :string
       add :departure_district, :text

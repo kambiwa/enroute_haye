@@ -23,7 +23,7 @@ defmodule EnrouteHayeWeb.PDFController do
           {:ok, pdf_bytes} ->
             name      = payload.traveller_name
             name_slug = if name, do: "_#{slug(name)}", else: ""
-            filename  = "kuomboka_itinerary_#{slug(payload.city)}#{name_slug}.pdf"
+            filename  = "kuomboka_itinerary_#{slug(payload.district)}#{name_slug}.pdf"
 
             conn
             |> put_resp_content_type("application/pdf")
@@ -66,7 +66,7 @@ defmodule EnrouteHayeWeb.PDFController do
     foods  = names_for(p.foods_all, p.selected_foods)
     music  = names_for(p.music_all, p.selected_music)
     hotel  = p.hotel_name || "Not selected"
-    city   = p.city || "Lusaka"
+    district   = p.district || "Lusaka"
     date   = if p.start_date == "", do: "TBD", else: p.start_date
     sites  = length(p.active_pins)
     name   = p.traveller_name
@@ -76,8 +76,8 @@ defmodule EnrouteHayeWeb.PDFController do
 
     subtitle =
       if name,
-        do: "Personalised for #{name} · #{city} · #{p.duration} Days",
-        else: "Personalised Itinerary — #{city} · #{p.duration} Days"
+        do: "Personalised for #{name} · #{district} · #{p.duration} Days",
+        else: "Personalised Itinerary — #{district} · #{p.duration} Days"
 
     """
     <!DOCTYPE html>
@@ -301,7 +301,7 @@ defmodule EnrouteHayeWeb.PDFController do
       <div class="section">
         <div class="section-title">Journey Overview</div>
         <div class="grid">
-          <div class="grid-item"><div class="label">Departure</div><div class="val">#{city}</div></div>
+          <div class="grid-item"><div class="label">Departure</div><div class="val">#{district}</div></div>
           <div class="grid-item"><div class="label">Start Date</div><div class="val">#{date}</div></div>
           <div class="grid-item"><div class="label">Duration</div><div class="val">#{p.duration} Days</div></div>
           <div class="grid-item"><div class="label">Transport</div><div class="val">#{String.capitalize(p.transport)}</div></div>
@@ -326,7 +326,7 @@ defmodule EnrouteHayeWeb.PDFController do
         <div>
           <div class="cost-label">Estimated Total</div>
           <div class="cost-amount">$#{p.total_cost}</div>
-          <div class="cost-range">#{city} · #{p.duration} nights</div>
+          <div class="cost-range">#{district} · #{p.duration} nights</div>
         </div>
       </div>
 

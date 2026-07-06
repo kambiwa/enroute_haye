@@ -1,19 +1,20 @@
 defmodule EnrouteHaye.Schema.Airline do
-      Ecto.Schema
+      use Ecto.Schema
+
       import Ecto.Changeset
       import Ecto.Query
 
-      def schema "airlines" do
+      schema "airline" do
         field :airline_name, :string
         field :flight_number, :string
-        field :departure_district, :text
-        field :arrival, :text
+        field :departure_district, :string
+        field :arrival, :string
         field :departure_time, :naive_datetime
         field :arrival_time, :naive_datetime
         field :price, :decimal
         field :airline_contact, :string
 
-        timestamps(type: :utc_datetime)
+        timestamps()
       end
 
        @doc false

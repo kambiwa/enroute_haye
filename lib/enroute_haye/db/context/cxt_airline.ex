@@ -33,26 +33,26 @@ defmodule EnrouteHaye.Context.CxtAirLine do
 
   # ── Standard CRUD ────────────────────────────────────────────────────
 
-  def get_road_operator!(id), do: Repo.get!(Road, id)
+  def get_airline_operator!(id), do: Repo.get!(Airline, id)
 
-  def create_road_operator(attrs \\ %{}) do
-    %Road{}
-    |> Road.changeset(attrs)
+  def create_airline_operator(attrs \\ %{}) do
+    %Airline{}
+    |> Airline.changeset(attrs)
     |> Repo.insert()
   end
 
-  def update_road_operator(%Road{} = road, attrs) do
-    road
-    |> Road.changeset(attrs)
+  def update_airline_operator(%Airline{} = airline, attrs) do
+    airline
+    |> Airline.changeset(attrs)
     |> Repo.update()
   end
 
-  def delete_road_operator(%Road{} = road) do
-    Repo.delete(road)
+  def delete_airline_operator(%Airline{} = airline) do
+    Repo.delete(airline)
   end
 
-  def change_road_operator(%Road{} = road, attrs \\ %{}) do
-    Road.changeset(road, attrs)
+  def change_airline_operator(%Airline{} = airline, attrs \\ %{}) do
+    Airline.changeset(airline, attrs)
   end
 
 

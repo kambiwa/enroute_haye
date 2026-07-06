@@ -1,0 +1,309 @@
+/* =============================================================
+   landing.css — Enroute Home System
+   "Preserving Culture Through Technology"
+
+   Design language: matte-white, glassmorphic, warm-earth accents.
+   Every single class here is prefixed `zm-` (or lives under the
+   `.enroute-landing` ancestor scope) specifically because this
+   project already ships global, unprefixed classes with the same
+   generic names (.float-card, .btn-primary, .reveal, .hero, etc.)
+   for the Kuomboka/Ncwala/Bemba/Journey pages. Reusing those names
+   — even scoped under an ancestor selector — lets the OLD rule's
+   unset properties (like `position: absolute`) leak through onto
+   these elements. Full prefixing is the only bulletproof fix.
+   ============================================================= */
+
+/* ── Design tokens (exposed as Tailwind utilities: bg-zm-copper, text-zm-ink, font-zm-display, etc.) ── */
+@theme {
+  --color-zm-white:      #FFFFFF;
+  --color-zm-soft-gray:  #F6F7F9;
+  --color-zm-silver:     #E7EAF0;
+
+  --color-zm-copper:     #C66A2B;
+  --color-zm-terracotta: #D96B4A;
+  --color-zm-emerald:    #59C36A;
+  --color-zm-gold:       #E3B448;
+
+  --color-zm-cyan:       #6FD6E8;
+  --color-zm-mint:       #6EE7B7;
+
+  --color-zm-ink:        #1B1E24;
+  --color-zm-body:       #5B6472;
+  --color-zm-muted:      #8891A0;
+
+  --font-zm-display: "Plus Jakarta Sans", "SF Pro Display", Inter, sans-serif;
+  --font-zm-body:    "Inter", "SF Pro Display", sans-serif;
+}
+
+.enroute-landing {
+  font-family: var(--font-zm-body);
+  color: var(--color-zm-ink);
+  background: var(--color-zm-white);
+  -webkit-font-smoothing: antialiased;
+}
+
+.enroute-landing h1,
+.enroute-landing h2,
+.enroute-landing h3,
+.enroute-landing .zm-font-display {
+  font-family: var(--font-zm-display);
+  letter-spacing: -0.02em;
+}
+
+/* ── Glass / frosted surfaces ── */
+.enroute-landing .zm-glass-card {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(24px) saturate(140%);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow:
+    0 1px 1px rgba(20, 24, 33, 0.03),
+    0 12px 32px -12px rgba(20, 24, 33, 0.12);
+  border-radius: 1.5rem;
+}
+
+.enroute-landing .zm-glass-nav {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border-bottom: 1px solid rgba(231, 234, 240, 0.8);
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.enroute-landing .zm-glass-nav.zm-is-scrolled {
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 8px 24px -16px rgba(20, 24, 33, 0.15);
+}
+
+/* Thin glowing borders */
+.enroute-landing .zm-glow-border {
+  position: relative;
+  border: 1px solid rgba(111, 214, 232, 0.35);
+}
+.enroute-landing .zm-glow-border::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(111, 214, 232, 0.5), rgba(198, 106, 43, 0.3));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* ── Buttons ── */
+.enroute-landing .zm-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--color-zm-copper), var(--color-zm-terracotta));
+  color: var(--color-zm-white);
+  font-family: var(--font-zm-display);
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 0.85rem 1.75rem;
+  box-shadow: 0 8px 24px -8px rgba(198, 106, 43, 0.45);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
+}
+.enroute-landing .zm-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px -8px rgba(198, 106, 43, 0.55);
+}
+
+.enroute-landing .zm-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--color-zm-ink);
+  font-family: var(--font-zm-display);
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 0.85rem 1.75rem;
+  border: 1px solid var(--color-zm-silver);
+  backdrop-filter: blur(12px);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.35s ease;
+}
+.enroute-landing .zm-btn-secondary:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-zm-copper);
+}
+
+/* ── Hero background: uploaded map image + animated overlays ──
+   A gradient fallback sits underneath the image so the hero never
+   goes blank if /images/hero-map.png hasn't been placed yet. ── */
+.enroute-landing .zm-hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    url("/images/map.png") center 40% / cover no-repeat,
+    linear-gradient(160deg, #F6F7F9 0%, #E7EAF0 55%, #F6F7F9 100%);
+  animation: zm-hero-drift 28s ease-in-out infinite alternate;
+}
+
+.enroute-landing .zm-hero-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.15) 0%,
+    rgba(255, 255, 255, 0.55) 62%,
+    rgba(255, 255, 255, 0.92) 100%
+  );
+}
+
+@keyframes zm-hero-drift {
+  0%   { transform: scale(1) translate(0, 0); }
+  100% { transform: scale(1.06) translate(-1%, -1%); }
+}
+
+/* Zambia glow pulse, positioned over the uploaded image's Zambia location */
+.enroute-landing .zm-glow-node {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-zm-copper);
+  box-shadow: 0 0 0 0 rgba(198, 106, 43, 0.55);
+  animation: zm-glow-pulse 2.6s ease-out infinite;
+}
+
+@keyframes zm-glow-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(198, 106, 43, 0.55); }
+  70%  { box-shadow: 0 0 0 26px rgba(198, 106, 43, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(198, 106, 43, 0); }
+}
+
+.enroute-landing .zm-mint-node {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-zm-mint);
+  box-shadow: 0 0 12px 2px rgba(110, 231, 183, 0.7);
+  animation: zm-mint-blink 3.4s ease-in-out infinite;
+}
+@keyframes zm-mint-blink {
+  0%, 100% { opacity: 0.4; transform: scale(0.85); }
+  50%      { opacity: 1;   transform: scale(1); }
+}
+
+/* Binary particles drifting upward, resolving into the textile pattern */
+.enroute-landing .zm-binary-particle {
+  position: absolute;
+  font-family: "DM Mono", monospace;
+  font-size: 0.65rem;
+  color: rgba(89, 195, 106, 0.55);
+  animation: zm-binary-float 9s linear infinite;
+  user-select: none;
+}
+@keyframes zm-binary-float {
+  0%   { transform: translateY(0) translateX(0); opacity: 0; }
+  10%  { opacity: 0.8; }
+  90%  { opacity: 0.4; }
+  100% { transform: translateY(-140px) translateX(12px); opacity: 0; }
+}
+
+/* Floating glass stat cards — position is intentionally NOT absolute;
+   these sit in a normal grid flow and only bob in place. */
+.enroute-landing .zm-float-card {
+  animation: zm-float-y 6s ease-in-out infinite;
+}
+.enroute-landing .zm-float-card.zm-delay-1 { animation-delay: 0.6s; }
+.enroute-landing .zm-float-card.zm-delay-2 { animation-delay: 1.2s; }
+.enroute-landing .zm-float-card.zm-delay-3 { animation-delay: 1.8s; }
+@keyframes zm-float-y {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+
+/* ── Scroll reveal ──
+   Visible by default (no JS required). The Reveal hook adds
+   `.zm-reveal-armed` on mount — ONLY THEN does the element hide
+   itself and wait for `.zm-is-visible` from the IntersectionObserver.
+   If the hook never mounts (e.g. hooks not yet merged into app.js),
+   content simply stays visible instead of vanishing. ── */
+.enroute-landing .zm-reveal.zm-reveal-armed {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.enroute-landing .zm-reveal.zm-reveal-armed.zm-is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .enroute-landing * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── Hero stats grid ──
+   Defensive, explicit rule mirroring `grid grid-cols-2 lg:grid-cols-4 gap-4
+   max-w-3xl` on the hero stat cards. These specific utilities were observed
+   not to apply in production (grid-cols-2/lg:grid-cols-4/max-w-3xl absent
+   from rendered layout while gap-4 on the same element worked), most likely
+   a Tailwind content-scanning gap rather than a cascade issue. Kept as a
+   named zm- class per this file's own scoping convention, so the layout is
+   correct even if the underlying utility-generation issue isn't resolved
+   at the build-tool level. */
+.enroute-landing .zm-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  max-width: 48rem; /* Tailwind's max-w-3xl */
+}
+@media (min-width: 1024px) {
+  .enroute-landing .zm-stats-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* ── Province / experience cards ── */
+.enroute-landing .zm-province-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.75rem;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.5s ease;
+}
+.enroute-landing .zm-province-card:hover,
+.enroute-landing .zm-province-card.zm-is-active {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 48px -20px rgba(198, 106, 43, 0.35);
+}
+.enroute-landing .zm-province-card .zm-circuit-overlay {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(111, 214, 232, 0.25), transparent 55%),
+    radial-gradient(circle at 80% 80%, rgba(198, 106, 43, 0.25), transparent 55%);
+  mix-blend-mode: screen;
+}
+.enroute-landing .zm-province-card:hover .zm-circuit-overlay,
+.enroute-landing .zm-province-card.zm-is-active .zm-circuit-overlay {
+  opacity: 1;
+}
+
+.enroute-landing .zm-experience-card {
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
+}
+.enroute-landing .zm-experience-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px -18px rgba(20, 24, 33, 0.25);
+}
+
+/* Section texture: faint woven pattern, very low opacity */
+.enroute-landing .zm-weave-texture {
+  background-image:
+    repeating-linear-gradient(45deg, rgba(198,106,43,0.045) 0px, rgba(198,106,43,0.045) 2px, transparent 2px, transparent 14px),
+    repeating-linear-gradient(-45deg, rgba(89,195,106,0.04) 0px, rgba(89,195,106,0.04) 2px, transparent 2px, transparent 14px);
+}

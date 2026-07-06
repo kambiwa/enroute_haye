@@ -1,151 +1,249 @@
 defmodule EnrouteHayeWeb.Unauth.LandingPage do
   use EnrouteHayeWeb, :live_view
 
+  @provinces [
+    %{
+      id: "lusaka",
+      name: "Lusaka Province",
+      blurb: "The pulse of modern Zambia, where markets, music and city life meet.",
+      attractions: "Kabwata Cultural Village, Lusaka National Museum, Munda Wanga",
+      image: "/images/sites/gallary.png"
+    },
+    %{
+      id: "southern",
+      name: "Southern Province",
+      blurb: "Home to Victoria Falls and the thundering Zambezi.",
+      attractions: "Victoria Falls, Lake Kariba, Mosi-oa-Tunya National Park",
+      culture: "Tonga heritage and the Lwiindi ceremony",
+      image: "/images/sites/adventure.jpg"
+    },
+    %{
+      id: "western",
+      name: "Western Province",
+      blurb: "Flood plains, royal barges, and the Kuomboka ceremony.",
+      attractions: "Barotse Floodplain, Sioma Ngwezi National Park",
+      culture: "Lozi royal traditions and the Kuomboka ceremony",
+      image: "/images/litunga.jpg"
+    },
+    %{
+      id: "eastern",
+      name: "Eastern Province",
+      blurb: "Wildlife-rich valleys and the vivid Nc'wala ceremony.",
+      attractions: "South Luangwa National Park, Chipata",
+      culture: "Ngoni heritage and the Nc'wala ceremony",
+      image: "/images/sites/ncwala.png"
+    },
+    %{
+      id: "northern",
+      name: "Northern Province",
+      blurb: "Waterfalls, lakeshores, and the Mutomboko ceremony.",
+      attractions: "Kalambo Falls, Lake Tanganyika, Nsumbu National Park",
+      culture: "Lunda-Luba legacy and the Mutomboko ceremony",
+      image: "/images/lubemba.jpg"
+    },
+    %{
+      id: "luapula",
+      name: "Luapula Province",
+      blurb: "Wetlands and waterfalls along the Congo border.",
+      attractions: "Lake Bangweulu, Ntumbachushi Falls",
+      culture: "Ushi and Bemba fishing traditions",
+      image: "/images/sites/resort.png"
+    },
+    %{
+      id: "copperbelt",
+      name: "Copperbelt Province",
+      blurb: "Zambia's industrial heartland with a distinct urban culture.",
+      attractions: "Copperbelt Museum, Chembe Bird Sanctuary",
+      culture: "A melting pot forged by the mining industry",
+      image: "/images/provinces/copperbelt.jpg"
+    },
+    %{
+      id: "central",
+      name: "Central Province",
+      blurb: "The agricultural spine of the country, rich in open land.",
+      attractions: "Kabwe Mine Museum, Chisamba farmlands",
+      culture: "Lenje and Soli heritage",
+      image: "/images/provinces/central.jpg"
+    },
+    %{
+      id: "northwestern",
+      name: "North-Western Province",
+      blurb: "Remote, forested, and home to the Mukanda tradition.",
+      attractions: "Zambezi Source, West Lunga National Park",
+      culture: "Lunda, Luvale and Kaonde heritage, Mukanda initiation",
+      image: "/images/provinces/northwestern.jpg"
+    },
+    %{
+      id: "muchinga",
+      name: "Muchinga Province",
+      blurb: "Escarpments and untouched wilderness in the east.",
+      attractions: "North Luangwa National Park, Muchinga Escarpment",
+      culture: "Bisa and Namwanga traditions",
+      image: "/images/provinces/muchinga.jpg"
+    }
+  ]
+
+  @experiences [
+    %{
+      id: "victoria-falls",
+      name: "Victoria Falls",
+      category: "Natural Wonder",
+      duration: "Half day",
+      location: "Livingstone, Southern Province",
+      rating: 4.9,
+      image: "/images/experiences/victoria-falls.jpg"
+    },
+    %{
+      id: "walking-safari",
+      name: "Walking Safari",
+      category: "Adventure",
+      duration: "Full day",
+      location: "South Luangwa National Park",
+      rating: 4.8,
+      image: "/images/experiences/walking-safari.jpg"
+    },
+    %{
+      id: "traditional-ceremonies",
+      name: "Traditional Ceremonies",
+      category: "Culture",
+      duration: "1–3 days",
+      location: "Various provinces",
+      rating: 5.0,
+      image: "/images/experiences/ceremonies.jpg"
+    },
+    %{
+      id: "river-cruises",
+      name: "River Cruises",
+      category: "Leisure",
+      duration: "2–4 hours",
+      location: "Zambezi River",
+      rating: 4.7,
+      image: "/images/experiences/river-cruise.jpg"
+    },
+    %{
+      id: "mukanda",
+      name: "Mukanda Cultural Experience",
+      category: "Culture",
+      duration: "Half day",
+      location: "North-Western Province",
+      rating: 4.9,
+      image: "/images/experiences/mukanda.jpg"
+    },
+    %{
+      id: "craft-markets",
+      name: "Craft Markets",
+      category: "Community",
+      duration: "2 hours",
+      location: "Lusaka & Livingstone",
+      rating: 4.6,
+      image: "/images/experiences/craft-markets.jpg"
+    },
+    %{
+      id: "local-cuisine",
+      name: "Local Cuisine",
+      category: "Food",
+      duration: "2–3 hours",
+      location: "Nationwide",
+      rating: 4.8,
+      image: "/images/experiences/cuisine.jpg"
+    },
+    %{
+      id: "adventure-tourism",
+      name: "Adventure Tourism",
+      category: "Adventure",
+      duration: "Full day",
+      location: "Livingstone",
+      rating: 4.7,
+      image: "/images/experiences/adventure.jpg"
+    }
+  ]
+
+  @stories [
+    %{
+      id: "kuomboka",
+      title: "Inside the Kuomboka: A River Procession Like No Other",
+      author: "Mutinta Sakala",
+      province: "Western Province",
+      minutes: 6,
+      image: "/images/stories/kuomboka.jpg"
+    },
+    %{
+      id: "weavers",
+      title: "The Weavers of Barotseland: Patterns That Outlive Their Makers",
+      author: "Chanda Mwila",
+      province: "Western Province",
+      minutes: 8,
+      image: "/images/stories/weavers.jpg"
+    },
+    %{
+      id: "luangwa-guides",
+      title: "The Last Apprentice Guides of the Luangwa Valley",
+      author: "Bwalya Chishimba",
+      province: "Eastern Province",
+      minutes: 5,
+      image: "/images/stories/luangwa.jpg"
+    }
+  ]
+
+  @impl true
   def mount(_params, _session, socket) do
-    socket =
-      socket
-      |> assign(:page_title, "Discover Zambia | Your Ultimate Travel Guide")
-      |> assign(:current_scope, nil)
-      |> assign(:provinces, provinces())
-      |> assign(:experiences, experiences())
-      |> assign(:journey_steps, journey_steps())
-      |> assign(:heritage_items, heritage_items())
-      |> assign(:stats, stats())
-      |> assign(:email, "")
-
-    {:ok, socket}
+    {:ok,
+     socket
+     |> assign(:page_title, "Enroute Home")
+     |> assign(:mobile_menu_open, false)
+     |> assign(:current_scope, "")
+     |> assign(:active_province, nil)
+     |> assign(:newsletter_form, to_form(%{email: ""}, as: "newsletter"))
+     |> assign(:newsletter_status, nil)
+     |> assign(:contact_form, to_form(%{name: "", email: "", subject: "", message: ""}, as: "contact"))
+     |> assign(:contact_status, nil)
+     |> assign(:provinces, @provinces)
+     |> assign(:experiences, @experiences)
+     |> assign(:stories, @stories)}
   end
 
-  def handle_event("subscribe", %{"email" => email}, socket) do
-    # subscription logic
-    {:noreply, assign(socket, :email, email)}
+  @impl true
+  def handle_event("toggle_mobile_menu", _params, socket) do
+    {:noreply, update(socket, :mobile_menu_open, &(!&1))}
   end
 
-  defp provinces do
-    [
-      %{name: "Lusaka",        slug: "lusaka",        color: "#8B9B5A", highlight: true},
-      %{name: "Copperbelt",    slug: "copperbelt",    color: "#6B8E6B", highlight: false},
-      %{name: "North-Western", slug: "north-western", color: "#5C7A6E", highlight: false},
-      %{name: "Western",       slug: "western",       color: "#7A9B7A", highlight: false},
-      %{name: "Central",       slug: "central",       color: "#8FAF8F", highlight: false},
-      %{name: "Southern",      slug: "southern",      color: "#6B8B5A", highlight: false},
-      %{name: "Eastern",       slug: "eastern",       color: "#9BAF6B", highlight: true},
-      %{name: "Luapula",       slug: "luapula",       color: "#7B9BAF", highlight: false},
-      %{name: "Northern",      slug: "northern",      color: "#6B8BAF", highlight: false},
-      %{name: "Muchinga",      slug: "muchinga",      color: "#8B9BAF", highlight: false}
-    ]
+  def handle_event("close_mobile_menu", _params, socket) do
+    {:noreply, assign(socket, :mobile_menu_open, false)}
   end
 
-  defp experiences do
-    [
-      %{
-        id: 1,
-        title: "Victoria Falls",
-        subtitle: "The Smoke That Thunders",
-        category: "Nature & Wildlife",
-        image_url: "/images/sites/victoria_falls.jpg",
-        badge: "🌊 Water Wonders"
-      },
-      %{
-        id: 2,
-        title: "South Luangwa National Park",
-        subtitle: "Africa's greatest game parks",
-        category: "Nature & Wildlife",
-        image_url: "/images/sites/South-Luangwa-National-Park.jpg",
-        badge: "🐘 Wildlife"
-      },
-      %{
-        id: 3,
-        title: "Kuomboka Ceremony",
-        subtitle: "Lozi Tradition",
-        category: "Culture & Heritage",
-        image_url: "/images/the litunga.jpg",
-        badge: "🎭 Culture"
-      },
-      %{
-        id: 4,
-        title: "Likumbi lya Mize Ceremony",
-        subtitle: "Luvale Tradition - Northern Province",
-        category: "Culture & Heritage",
-        image_url: "/images/mize/mask.jpg",
-        badge: "🎭 Culture"
-      },
-      %{
-        id: 5,
-        title: "Victoria falls bungee jump",
-        subtitle: "Top landscapes",
-        category: "Adventure",
-        image_url: "/images/sites/adventure.jpg",
-        badge: "🏕️ Adventure"
-      }
-    ]
+  def handle_event("hover_province", %{"id" => id}, socket) do
+    {:noreply, assign(socket, :active_province, id)}
   end
 
-  defp journey_steps do
-    [
-      %{
-        icon: "🗺️",
-        title: "Curate Itineraries",
-        desc: "Personalised plans with ease and ideas",
-        image_url: "/images/sites/itenerary.png"
-      },
-      %{
-        icon: "📍",
-        title: "Top Destinations",
-        desc: "Inspirational places worth every mile",
-        image_url: "/images/sites/map.png"
-      },
-      %{
-        icon: "🎭",
-        title: "Events & Ceremonies",
-        desc: "Local dates and cultural calendar",
-        image_url: "/images/sites/ncwala.png"
-      },
-      %{
-        icon: "🛏️",
-        title: "Stay Options",
-        desc: "Find lodges that suit your style and budget",
-        image_url: "/images/sites/resort.png"
-      },
-      %{
-        icon: "🎟️",
-        title: "Book & Enjoy",
-        desc: "Simple booking with no fuss, one-click ease",
-        image_url: "/images/sites/camp.png"
-
-      }
-    ]
+  def handle_event("unhover_province", _params, socket) do
+    {:noreply, assign(socket, :active_province, nil)}
   end
 
-  defp heritage_items do
-    [
-      %{
-        title: "Traditional Music",
-        desc: "Listen to our sounds",
-        icon: "🎵",
-        image_url: "/images/heritage/music.jpg"
-      },
-      %{
-        title: "Cultural Dances",
-        desc: "Watch and learn more",
-        icon: "💃",
-        image_url: "/images/maoma.png"
-      },
-      %{
-        title: "Photo Gallery",
-        desc: "Moments & places",
-        icon: "📸",
-        image_url: "/images/sites/gallary.png"
-      }
-    ]
+  def handle_event("newsletter_submit", %{"newsletter" => %{"email" => email}}, socket) do
+    if valid_email?(email) do
+      # TODO: persist subscriber, e.g. Enroute.Newsletter.subscribe(email)
+      {:noreply,
+       socket
+       |> assign(:newsletter_status, :success)
+       |> assign(:newsletter_form, to_form(%{email: ""}, as: "newsletter"))}
+    else
+      {:noreply, assign(socket, :newsletter_status, :error)}
+    end
   end
 
-  defp stats do
-    [
-      %{value: "10",   label: "Provinces"},
-      %{value: "72+",  label: "National Parks"},
-      %{value: "200+", label: "Cultural Sites"},
-      %{value: "50+",  label: "Traditions"}
-    ]
+  def handle_event("contact_submit", %{"contact" => params}, socket) do
+    # TODO: persist/send via Enroute.Contact.send_message(params)
+    _ = params
+
+    {:noreply,
+     socket
+     |> assign(:contact_status, :success)
+     |> assign(:contact_form, to_form(%{name: "", email: "", subject: "", message: ""}, as: "contact"))}
   end
+
+  defp valid_email?(email) when is_binary(email) do
+    String.match?(email, ~r/^[^\s@]+@[^\s@]+\.[^\s@]+$/)
+  end
+
+  defp valid_email?(_), do: false
 end
