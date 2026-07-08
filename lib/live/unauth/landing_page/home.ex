@@ -6,7 +6,7 @@ defmodule EnrouteHayeWeb.Unauth.LandingPage do
       id: "lusaka",
       name: "Lusaka Province",
       blurb: "The pulse of modern Zambia, where markets, music and city life meet.",
-      attractions: "Kabwata Cultural Village, Lusaka National Museum, Munda Wanga",
+      attractions: "Art Gallaries, Kabwata Cultural Village, Lusaka National Museum, Munda Wanga",
       image: "/images/sites/gallary.png"
     },
     %{
@@ -20,7 +20,7 @@ defmodule EnrouteHayeWeb.Unauth.LandingPage do
       id: "western",
       name: "Western Province",
       blurb: "Flood plains, royal barges, and the Kuomboka ceremony.",
-      attractions: "Barotse Floodplain, Sioma Ngwezi National Park",
+      attractions: "Barotse Floodplain, Sioma Ngwezi National Park, The Litunga's  Palace",
       image: "/images/litunga.jpg"
     },
     %{
@@ -34,7 +34,7 @@ defmodule EnrouteHayeWeb.Unauth.LandingPage do
       id: "northern",
       name: "Northern Province",
       blurb: "Waterfalls, lakeshores, and the Mutomboko ceremony.",
-      attractions: "Kalambo Falls, Lake Tanganyika, Nsumbu National Park",
+      attractions: "Kalambo Falls, Nsumbu National Park",
       image: "/images/lubemba.jpg"
     },
     %{
@@ -48,29 +48,29 @@ defmodule EnrouteHayeWeb.Unauth.LandingPage do
       id: "copperbelt",
       name: "Copperbelt Province",
       blurb: "Zambia's industrial heartland with a distinct urban culture.",
-      attractions: "Copperbelt Museum, Chembe Bird Sanctuary",
-      image: "/images/provinces/copperbelt.jpg"
+      attractions: "Mines, Copperbelt Museum, Chembe Bird Sanctuary",
+      image: "/images/sites/cb_mine.jpg"
     },
     %{
       id: "central",
       name: "Central Province",
       blurb: "The agricultural spine of the country, rich in open land.",
-      attractions: "Kabwe Mine Museum, Chisamba farmlands",
-      image: "/images/provinces/central.jpg"
+      attractions: "Bush Camps, Chisamba farmlands",
+      image: "/images/sites/camp.png"
     },
     %{
       id: "northwestern",
       name: "North-Western Province",
       blurb: "Remote, forested, and home to the Mukanda tradition.",
       attractions: "Zambezi Source, West Lunga National Park",
-      image: "/images/provinces/northwestern.jpg"
+      image: "/images/sites/west_lunga.jpg"
     },
     %{
       id: "muchinga",
       name: "Muchinga Province",
       blurb: "Escarpments and untouched wilderness in the east.",
       attractions: "North Luangwa National Park, Muchinga Escarpment",
-      image: "/images/provinces/muchinga.jpg"
+      image: "/images/sites/muchinga.jpg"
     }
   ]
 
@@ -82,7 +82,7 @@ defmodule EnrouteHayeWeb.Unauth.LandingPage do
       duration: "Half day",
       location: "Livingstone, Southern Province",
       rating: 4.9,
-      image: "/images/experiences/victoria-falls.jpg"
+      image: "/images/sites/victoria_falls.jpg"
     },
     %{
       id: "walking-safari",
@@ -91,7 +91,7 @@ defmodule EnrouteHayeWeb.Unauth.LandingPage do
       duration: "Full day",
       location: "South Luangwa National Park",
       rating: 4.8,
-      image: "/images/experiences/walking-safari.jpg"
+      image: "/images/sites/cheeta-park.jpg"
     },
     %{
       id: "traditional-ceremonies",
@@ -100,7 +100,7 @@ defmodule EnrouteHayeWeb.Unauth.LandingPage do
       duration: "1–3 days",
       location: "Various provinces",
       rating: 5.0,
-      image: "/images/experiences/ceremonies.jpg"
+      image: "/images/royal_steps.jpg"
     },
     %{
       id: "river-cruises",
@@ -109,7 +109,7 @@ defmodule EnrouteHayeWeb.Unauth.LandingPage do
       duration: "2–4 hours",
       location: "Zambezi River",
       rating: 4.7,
-      image: "/images/experiences/river-cruise.jpg"
+      image: "/images/sites/boatcruise.jpg"
     },
     %{
       id: "mukanda",
@@ -118,7 +118,7 @@ defmodule EnrouteHayeWeb.Unauth.LandingPage do
       duration: "Half day",
       location: "North-Western Province",
       rating: 4.9,
-      image: "/images/experiences/mukanda.jpg"
+      image: "/images/mize/mask.jpg"
     },
     %{
       id: "craft-markets",
@@ -127,7 +127,7 @@ defmodule EnrouteHayeWeb.Unauth.LandingPage do
       duration: "2 hours",
       location: "Lusaka & Livingstone",
       rating: 4.6,
-      image: "/images/experiences/craft-markets.jpg"
+      image: "/images/sites/craft.jpg"
     },
     %{
       id: "local-cuisine",
@@ -136,7 +136,7 @@ defmodule EnrouteHayeWeb.Unauth.LandingPage do
       duration: "2–3 hours",
       location: "Nationwide",
       rating: 4.8,
-      image: "/images/experiences/cuisine.jpg"
+      image: "/images/sites/cousine.jpg"
     },
     %{
       id: "adventure-tourism",
@@ -145,7 +145,7 @@ defmodule EnrouteHayeWeb.Unauth.LandingPage do
       duration: "Full day",
       location: "Livingstone",
       rating: 4.7,
-      image: "/images/experiences/adventure.jpg"
+      image: "/images/sites/adv.jpg"
     }
   ]
 
@@ -156,7 +156,8 @@ defmodule EnrouteHayeWeb.Unauth.LandingPage do
       author: "Mutinta Sakala",
       province: "Western Province",
       minutes: 6,
-      image: "/images/stories/kuomboka.jpg"
+      image: "/images/stories/kuomboka.jpg",
+      video_url: "/videos/stories/kuomboka.mp4"
     },
     %{
       id: "weavers",
@@ -164,7 +165,8 @@ defmodule EnrouteHayeWeb.Unauth.LandingPage do
       author: "Chanda Mwila",
       province: "Western Province",
       minutes: 8,
-      image: "/images/stories/weavers.jpg"
+      image: "/images/stories/weavers.jpg",
+      video_url: "/videos/stories/weavers.mp4"
     },
     %{
       id: "luangwa-guides",
@@ -172,7 +174,8 @@ defmodule EnrouteHayeWeb.Unauth.LandingPage do
       author: "Bwalya Chishimba",
       province: "Eastern Province",
       minutes: 5,
-      image: "/images/stories/luangwa.jpg"
+      image: "/images/stories/luangwa.jpg",
+      video_url: "/videos/stories/luangwa.mp4"
     }
   ]
 

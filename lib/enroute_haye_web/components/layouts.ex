@@ -312,55 +312,60 @@ defmodule EnrouteHayeWeb.Layouts do
   # ───────────────────────────────────────────────
   #  PUBLIC NAV SUB-COMPONENTS
   # ───────────────────────────────────────────────
-  attr :href,   :string,  required: true
-  attr :label,  :string,  required: true
-  attr :active, :boolean, default: false
+    attr :href,   :string,  required: true
+    attr :label,  :string,  required: true
+    attr :active, :boolean, default: false
 
-  defp nav_link(assigns) do
-    ~H"""
-    <a href={@href}
-       style={if @active, do: "color: #E8B94A;", else: "color: rgba(255,255,255,.75);"}
-       class="hover:text-amber-400 transition-colors whitespace-nowrap text-sm">
-      {@label}
-    </a>
-    """
-  end
-
-  attr :href,   :string,  required: true
-  attr :label,  :string,  required: true
-  attr :active, :boolean, default: false
-  slot :item, required: true do
-    attr :href, :string, required: true
-  end
-
-  defp nav_dropdown(assigns) do
-    ~H"""
-    <div class="relative group">
+    defp nav_link(assigns) do
+      ~H"""
       <a href={@href}
-         style={if @active, do: "color: #E8B94A;", else: "color: rgba(255,255,255,.75);"}
-         class="flex items-center gap-1 hover:text-amber-400 transition-colors text-sm whitespace-nowrap">
+        class={[
+          "hover:text-zm-copper transition-colors whitespace-nowrap text-sm font-medium",
+          (@active && "text-zm-copper") || "text-zm-body"
+        ]}>
         {@label}
-        <svg class="w-3 h-3 mt-0.5 transition-transform duration-200 group-hover:rotate-180"
-             fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-        </svg>
       </a>
-      <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-44
-                  opacity-0 invisible group-hover:opacity-100 group-hover:visible
-                  transition-all duration-200 z-50"
-           style="background: rgba(28,43,26,.95); backdrop-filter: blur(16px); border: 1px solid rgba(201,168,76,.25); border-radius: .75rem; box-shadow: 0 16px 40px rgba(0,0,0,.4); padding: .35rem;">
-        <%= for item <- @item do %>
-          <a href={item.href}
-             style="display: block; padding: .55rem 1rem; font-size: .82rem; color: rgba(255,255,255,.75); text-decoration: none; border-radius: .5rem; transition: background .15s, color .15s;"
-             onmouseover="this.style.background='rgba(201,168,76,.15)'; this.style.color='#E8B94A'"
-             onmouseout="this.style.background='transparent'; this.style.color='rgba(255,255,255,.75)'">
-            {render_slot(item)}
-          </a>
-        <% end %>
+      """
+    end
+
+    attr :href,   :string,  required: true
+    attr :label,  :string,  required: true
+    attr :active, :boolean, default: false
+    slot :item, required: true do
+      attr :href, :string, required: true
+    end
+
+    defp nav_dropdown(assigns) do
+      ~H"""
+      <div class="relative group">
+        <a href={@href}
+          class={[
+            "flex items-center gap-1 hover:text-zm-copper transition-colors text-sm whitespace-nowrap font-medium",
+            (@active && "text-zm-copper") || "text-zm-body"
+          ]}>
+          {@label}
+          <svg class="w-3 h-3 mt-0.5 transition-transform duration-200 group-hover:rotate-180"
+              fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </a>
+        <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56
+                    opacity-0 invisible translate-y-1
+                    group-hover:opacity-100 group-hover:visible group-hover:translate-y-0
+                    transition-all duration-200 z-50
+                    bg-white/95 backdrop-blur-md border border-zm-copper/15
+                    rounded-xl shadow-xl p-1.5">
+          <%= for item <- @item do %>
+            <a href={item.href}
+              class="block px-4 py-2.5 text-sm text-zm-body rounded-lg transition-colors
+                      hover:bg-zm-copper/10 hover:text-zm-copper">
+              {render_slot(item)}
+            </a>
+          <% end %>
+        </div>
       </div>
-    </div>
-    """
-  end
+      """
+    end
 
   # ───────────────────────────────────────────────
   #  ADMIN SIDEBAR SUB-COMPONENTS

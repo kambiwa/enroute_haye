@@ -87,7 +87,6 @@
               <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
               <div class="absolute inset-x-0 bottom-0 p-6 text-white">
                 <h3 class="font-zm-display text-xl font-bold">{province.name}</h3>
-                <p class="text-sm text-white/85 mt-1.5 leading-snug">{province.blurb}</p>
                 <div class="mt-4 pt-4 border-t border-white/20 text-xs space-y-1 text-white/80">
                   <p><span class="text-zm-mint font-medium">Attractions</span> — {province.attractions}</p>
                 </div>
@@ -189,28 +188,17 @@
     <section class="py-28 bg-zm-soft-gray">
       <div class="mx-auto max-w-7xl px-6 lg:px-10 grid lg:grid-cols-2 gap-16 items-center">
         <div class="zm-reveal" phx-hook="Reveal" id="culture-illustration">
-          <div class="relative aspect-square rounded-[2rem] overflow-hidden zm-glass-card p-10 flex items-center justify-center">
-            <svg viewBox="0 0 300 300" class="w-full h-full">
-              <defs>
-                <linearGradient id="weaveGrad" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stop-color="#C66A2B"/>
-                  <stop offset="100%" stop-color="#E3B448"/>
-                </linearGradient>
-              </defs>
-              <g stroke="url(#weaveGrad)" stroke-width="2" opacity="0.8" fill="none">
-                <path d="M40 260 Q80 200 40 140 Q0 80 40 40"/>
-                <path d="M70 260 Q110 200 70 140 Q30 80 70 40"/>
-                <path d="M100 260 Q140 200 100 140 Q60 80 100 40"/>
-              </g>
-              <g stroke="#6FD6E8" stroke-width="1.5" opacity="0.7" fill="none">
-                <path d="M150 150h40M190 150v-30M190 120h30M220 120v40M220 160h20"/>
-                <path d="M150 170h30M180 170v30M180 200h-25M155 200v-20"/>
-                <circle cx="230" cy="120" r="3" fill="#59C36A"/>
-                <circle cx="155" cy="200" r="3" fill="#59C36A"/>
-              </g>
-            </svg>
+            <div class="relative aspect-square rounded-[2rem] overflow-hidden zm-glass-card">
+              <img
+                src={~p"/images/mize/basket_weave.png"}
+                alt="Woman weaving a traditional basket"
+                class="w-full h-full object-cover"
+              />
+
+              <!-- Optional soft overlay for premium look -->
+              <div class="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-white/5"></div>
+            </div>
           </div>
-        </div>
 
         <div class="zm-reveal" phx-hook="Reveal" id="culture-content">
           <span class="text-sm font-semibold uppercase tracking-wide text-zm-copper">Our Purpose</span>
@@ -234,31 +222,108 @@
       </div>
     </section>
 
-    <%!-- ==================== SECTION 5 — FEATURED CULTURAL STORIES ==================== --%>
-    <section id="stories" class="py-28">
-      <div class="mx-auto max-w-7xl px-6 lg:px-10">
-        <div class="max-w-2xl mb-16 zm-reveal" phx-hook="Reveal" id="stories-heading">
-          <span class="text-sm font-semibold uppercase tracking-wide text-zm-copper">Stories</span>
-          <h2 class="font-zm-display text-4xl lg:text-5xl font-bold text-zm-ink mt-3">Featured Cultural Stories</h2>
-          <p class="text-zm-body mt-4 text-lg">Told by the people who live them.</p>
-        </div>
-
-        <div class="grid lg:grid-cols-3 gap-8">
-          <article :for={story <- @stories} class="group cursor-pointer">
-            <div class="aspect-[16/10] rounded-2xl overflow-hidden mb-5">
-              <img src={story.image} alt={story.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
-            </div>
-            <p class="text-xs font-semibold uppercase tracking-wide text-zm-copper mb-2">{story.province} · {story.minutes} min read</p>
-            <h3 class="font-zm-display text-xl font-bold text-zm-ink leading-snug mb-2 group-hover:text-zm-copper transition-colors">{story.title}</h3>
-            <p class="text-sm text-zm-body mb-3">By {story.author}</p>
-            <span class="text-sm font-semibold text-zm-ink inline-flex items-center gap-1.5">
-              Read Story
-              <svg viewBox="0 0 24 24" class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-            </span>
-          </article>
-        </div>
+  <%!-- ==================== SECTION 5 — FEATURED CULTURAL STORIES ==================== --%>
+  <section id="stories" class="py-28">
+    <div class="mx-auto max-w-7xl px-6 lg:px-10">
+      <div class="max-w-2xl mb-16 zm-reveal" phx-hook="Reveal" id="stories-heading">
+        <span class="text-sm font-semibold uppercase tracking-wide text-zm-copper">Stories</span>
+        <h2 class="font-zm-display text-4xl lg:text-5xl font-bold text-zm-ink mt-3">Featured Cultural Stories</h2>
+        <p class="text-zm-body mt-4 text-lg">Told by the people who live them.</p>
       </div>
-    </section>
+
+      <div class="grid lg:grid-cols-3 gap-8">
+        <article :for={story <- @stories} class="group" data-video-src={story.video_url}>
+          <div class="story-video-wrap relative aspect-[16/10] rounded-2xl overflow-hidden mb-5 bg-zm-ink/5">
+            <video class="story-video w-full h-full object-cover" poster={story.image} preload="none" playsinline muted>
+              <source src={story.video_url} type="video/mp4" />
+            </video>
+
+            <%!-- Click-to-play overlay --%>
+            <button type="button"
+                    class="story-play-btn absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-opacity duration-300"
+                    aria-label={"Play " <> story.title}>
+              <span class="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                <svg viewBox="0 0 24 24" class="w-6 h-6 text-zm-ink ml-1" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              </span>
+            </button>
+
+            <%!-- Expand to full modal --%>
+            <button type="button"
+                    class="story-expand-btn absolute bottom-3 right-3 w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-sm flex items-center justify-center text-white transition-colors z-10"
+                    aria-label={"Expand " <> story.title}>
+              <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H3v6M15 3h6v6M3 15v6h6M21 15v6h-6"/></svg>
+            </button>
+          </div>
+
+          <p class="text-xs font-semibold uppercase tracking-wide text-zm-copper mb-2">{story.province} · {story.minutes} min watch</p>
+          <h3 class="font-zm-display text-xl font-bold text-zm-ink leading-snug mb-2 group-hover:text-zm-copper transition-colors">{story.title}</h3>
+          <p class="text-sm text-zm-body mb-3">By {story.author}</p>
+          <span class="text-sm font-semibold text-zm-ink inline-flex items-center gap-1.5">
+            Watch Story
+            <svg viewBox="0 0 24 24" class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <%!-- Shared full-screen video modal --%>
+  <div id="story-video-modal" class="hidden fixed inset-0 z-[100] items-center justify-center bg-black/80 backdrop-blur-sm p-6">
+    <div class="relative w-full max-w-4xl aspect-video">
+      <video id="story-modal-video" class="w-full h-full rounded-2xl" controls></video>
+      <button type="button" id="story-modal-close"
+              class="absolute -top-10 right-0 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+              aria-label="Close video">
+        <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      document.querySelectorAll('.story-play-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var card = btn.closest('.story-video-wrap');
+          var video = card.querySelector('.story-video');
+          video.muted = false;
+          video.setAttribute('controls', '');
+          video.play();
+          btn.style.opacity = '0';
+          btn.style.pointerEvents = 'none';
+        });
+      });
+
+      document.querySelectorAll('.story-expand-btn').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var article = btn.closest('[data-video-src]');
+          var src = article.getAttribute('data-video-src');
+          var modal = document.getElementById('story-video-modal');
+          var modalVideo = document.getElementById('story-modal-video');
+          modalVideo.src = src;
+          modal.classList.remove('hidden');
+          modal.classList.add('flex');
+          modalVideo.play();
+        });
+      });
+
+      var modal = document.getElementById('story-video-modal');
+      var modalVideo = document.getElementById('story-modal-video');
+
+      function closeModal() {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        modalVideo.pause();
+        modalVideo.removeAttribute('src');
+        modalVideo.load();
+      }
+
+      document.getElementById('story-modal-close').addEventListener('click', closeModal);
+      modal.addEventListener('click', function (e) {
+        if (e.target === modal) closeModal();
+      });
+    })();
+  </script>
 
     <%!-- ==================== SECTION 6 — NEWSLETTER ==================== --%>
     <section class="py-28 relative overflow-hidden bg-zm-soft-gray">
