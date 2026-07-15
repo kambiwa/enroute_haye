@@ -1,6 +1,8 @@
 defmodule EnrouteHayeWeb.Unauth.LandingPage do
   use EnrouteHayeWeb, :live_view
 
+  alias EnrouteHaye.Context.CxtMedia
+
   @provinces [
     %{
       id: "lusaka",
@@ -159,6 +161,7 @@ defmodule EnrouteHayeWeb.Unauth.LandingPage do
       image: "/images/stories/kuomboka.jpg",
       video_url: "/videos/stories/kuomboka.mp4"
     },
+    
     %{
       id: "weavers",
       title: "The Weavers of Barotseland: Patterns That Outlive Their Makers",
@@ -168,6 +171,37 @@ defmodule EnrouteHayeWeb.Unauth.LandingPage do
       image: "/images/stories/weavers.jpg",
       video_url: "/videos/stories/weavers.mp4"
     },
+
+    %{
+      id: "luangwa-guides",
+      title: "The Last Apprentice Guides of the Luangwa Valley",
+      author: "Bwalya Chishimba",
+      province: "Eastern Province",
+      minutes: 5,
+      image: "/images/stories/luangwa.jpg",
+      video_url: "/videos/stories/luangwa.mp4"
+    },
+
+    %{
+      id: "luangwa-guides",
+      title: "The Last Apprentice Guides of the Luangwa Valley",
+      author: "Bwalya Chishimba",
+      province: "Eastern Province",
+      minutes: 5,
+      image: "/images/stories/luangwa.jpg",
+      video_url: "/videos/stories/luangwa.mp4"
+    },
+
+    %{
+      id: "luangwa-guides",
+      title: "The Last Apprentice Guides of the Luangwa Valley",
+      author: "Bwalya Chishimba",
+      province: "Eastern Province",
+      minutes: 5,
+      image: "/images/stories/luangwa.jpg",
+      video_url: "/videos/stories/luangwa.mp4"
+    },
+
     %{
       id: "luangwa-guides",
       title: "The Last Apprentice Guides of the Luangwa Valley",
@@ -193,7 +227,7 @@ defmodule EnrouteHayeWeb.Unauth.LandingPage do
      |> assign(:contact_status, nil)
      |> assign(:provinces, @provinces)
      |> assign(:experiences, @experiences)
-     |> assign(:stories, @stories)}
+     |> assign(:stories, build_stories())}
   end
 
   @impl true
@@ -224,6 +258,26 @@ defmodule EnrouteHayeWeb.Unauth.LandingPage do
       {:noreply, assign(socket, :newsletter_status, :error)}
     end
   end
+
+  defp build_stories do
+  featured =
+    CxtMedia.list_featured_videos(6)
+    |> Enum.map(&media_to_story/1)
+
+  needed = 6 - length(featured)
+  featured ++ Enum.take(@stories, max(needed, 0))
+end
+
+defp media_to_story(media) do
+  %{
+    title: media.title,
+    author: media.author,
+    province: media.location,
+    minutes: media.minutes || 0,
+    image: media.poster_path || "/images/stories/default_poster.jpg",
+    video_url: media.file_path
+  }
+end
 
   def handle_event("contact_submit", %{"contact" => params}, socket) do
     # TODO: persist/send via Enroute.Contact.send_message(params)

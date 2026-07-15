@@ -84,8 +84,8 @@ defmodule EnrouteHayeWeb.Router do
       live "/audio/:id/edit", Auth.AudioManager.Edit, :edit
 
       live "/media", Auth.MediaManager.Index, :index
-      live "/media/new", Auth.MediaManager.New, :new
-      live "/media/:id/edit", Auth.MediaManager.Edit, :edit
+      live "/media/new", Auth.MediaManager.Index, :new
+      live "/media/:id/edit", Auth.MediaManager.Index, :edit
 
 
       live "/trips", Auth.Trips.Index, :index

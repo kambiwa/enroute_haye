@@ -170,9 +170,15 @@ defmodule EnrouteHaye.Repo.Migrations.CreateEnrouteHayeTables do
     # MEDIA
     # ========================
     create table(:media) do
-      add :file_url, :string
-      add :type, :string
-      add :description, :text
+        add :title, :string
+        add :media_type, :string
+        add :author, :string
+        add :category, :string
+        add :description, :string
+        add :location, :string
+        add :file_path, :string
+        add :minutes, :integer
+        add :poster_path, :string
 
       timestamps(type: :utc_datetime)
     end
