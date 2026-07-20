@@ -4,6 +4,7 @@ defmodule EnrouteHaye.Schema.Event do
 
   schema "events" do
       field :title, :string
+      field :type, :string
       field :description, :string
       field :start_date, :naive_datetime
       field :end_date, :naive_datetime
@@ -16,9 +17,9 @@ defmodule EnrouteHaye.Schema.Event do
   end
 
   @doc false
-  def changeset(food, attrs) do
-    food
-    |> cast(attrs, [:title, :description, :start_date, :end_date, :location, :latitude, :longitude, :image_url])
-    |> validate_required([:title, :start_date, :end_date])
+  def changeset(event, attrs) do
+    event
+    |> cast(attrs, [:title, :type, :description, :start_date, :end_date, :location, :latitude, :longitude, :image_url])
+    |> validate_required([:title, :type, :start_date, :end_date])
   end
 end

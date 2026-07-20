@@ -223,54 +223,41 @@
     <%!-- ═══════════════════════════════════════════
          STEP 1 — CEREMONY
     ═══════════════════════════════════════════ --%>
-    <%= if @step == 1 do %>
-      <div class="step-card">
-        <div class="step-icon">🪘</div>
-        <h2 class="step-title">Choose Your Ceremony</h2>
-        <p class="step-sub">Select the ceremonial heart of your cultural experience</p>
+      <%= if @step == 1 do %>
+    <div class="step-card">
+      <div class="step-icon">🪘</div>
+      <h2 class="step-title">Choose Your Ceremony</h2>
+      <p class="step-sub">Select the ceremonial heart of your cultural experience</p>
 
-        <div class="ceremony-cards">
+      <div class="ceremony-cards">
+         <%= for ceremony <- @ceremonies do %>
           <button
             type="button"
             phx-click="set_ceremony"
-            phx-value-ceremony="kuomboka"
-            class={["ceremony-card ceremony-card--pulse", @ceremony == "kuomboka" && "ceremony-card--selected"]}
+            phx-value-ceremony={ceremony.id}
+            class={["ceremony-card", @ceremony == ceremony.id && "ceremony-card--selected"]}
           >
             <div class="ceremony-check">✓</div>
-            <div class="ceremony-badge">👑</div>
-            <h3>Kuomboka Ceremony</h3>
-            <p>Western Zambia · Lozi Kingdom · March–April</p>
+            <%= if ceremony.image_url do %>
+              <img src={ceremony.image_url} class="ceremony-badge-img" alt={ceremony.title} />
+            <% else %>
+              <div class="ceremony-badge">🪘</div>
+            <% end %>
+              <h3><%= ceremony.title %></h3>
+              <p><%= ceremony.description %></p>
+              <p><%= ceremony.location %></p>
           </button>
-
-          <button
-            type="button"
-            phx-click="set_ceremony"
-            phx-value-ceremony="other"
-            class={["ceremony-card", @ceremony == "other" && "ceremony-card--selected"]}
-          >
-            <div class="ceremony-check">✓</div>
-            <div class="ceremony-badge">🎭</div>
-            <h3>Other Traditional Ceremonies</h3>
-            <p>Nc'wala · Lwiindi · Umutomboko · Kulamba</p>
-          </button>
-        </div>
-
-        <div class="tooltip-box">
-          <span class="tooltip-icon">🚣</span>
-          <div>
-            The <strong>Kuomboka</strong> ("to get out of water") is a spectacular annual ceremony
-            where the Litunga (Lozi King) travels by royal barge — the <em>Nalikwanda</em> —
-            from his flooded lowland palace to higher ground, accompanied by hundreds of paddlers
-            in traditional dress and the thunderous beating of royal drums.
-          </div>
-        </div>
-
-        <div class="btn-row">
-          <button type="button" phx-click="back" class="btn-back">← Back</button>
-          <button type="button" phx-click="next" class="btn-next">Next →</button>
-        </div>
+        <% end %>
       </div>
-    <% end %>
+
+    
+
+      <div class="btn-row">
+        <button type="button" phx-click="back" class="btn-back">← Back</button>
+        <button type="button" phx-click="next" class="btn-next">Next →</button>
+      </div>
+    </div>
+  <% end %>
 
     <%!-- ═══════════════════════════════════════════
          STEP 2 — MAP

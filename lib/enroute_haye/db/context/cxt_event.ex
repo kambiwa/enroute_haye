@@ -20,6 +20,13 @@ defmodule EnrouteHaye.Context.CxtEvent do
     |> Repo.paginate(page: page, page_size: page_size)
   end
 
+
+
+   def list_ceremonies() do
+    Event
+    |> where([e], e.type == "Traditional ceremony")
+    |> Repo.all() 
+   end
   # ── Standard CRUD ────────────────────────────────────────────────────
 
   def get_event!(id), do: Repo.get!(Event, id)

@@ -105,6 +105,7 @@ defmodule EnrouteHaye.Repo.Migrations.CreateEnrouteHayeTables do
     # ========================
     create table(:events) do
       add :title, :string
+      add :type, :string
       add :description, :text
       add :start_date, :naive_datetime
       add :end_date, :naive_datetime

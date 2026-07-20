@@ -5,6 +5,10 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
   alias EnrouteHaye.Context.CxtAirLine
   alias EnrouteHaye.Context.CxtFood
   alias EnrouteHaye.Context.CxtSite
+  alias EnrouteHaye.Context.CxtEvent
+  alias EnrouteHayeWeb.Pagination
+  alias EnrouteHayeWeb.PaginationComponent
+  alias Ecto.Changeset
 
   @steps ~w(basics ceremony map food music stay summary)a
 
@@ -26,54 +30,56 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
 
   # ── Mount ──────────────────────────────────────────────────────────────────
 
-  def mount(_params, _session, socket) do
-    {:ok,
-    assign(socket,
-      current_scope: nil,
-      step: 0,
-      steps: @steps,
+      def mount(_params, _session, socket) do
+      ceremonies = CxtEvent.list_ceremonies()
+
+      socket
+      |> assign(:current_scope, nil)
+      |> assign(:step, 0)
+      |> assign(:steps, @steps)
 
       # Data
-      foods:    CxtFood.list_foods(%{"order_by" => %{"sort_field" => "name", "sort_direction" => "asc"}}),
-      music:    @music,
-      hotels:   @hotels,
-      pins:     CxtSite.list_all_sites(%{}),
-      provinces: CxtRoad.list_provinces(),
+      |> assign(:foods, CxtFood.list_foods(%{"order_by" => %{"sort_field" => "name", "sort_direction" => "asc"}}))
+      |> assign(:music, @music)
+      |> assign(:hotels, @hotels)
+      |> assign(:pins, CxtSite.list_all_sites(%{}))
+      |> assign(:provinces, CxtRoad.list_provinces())
+      |> assign(:ceremonies, ceremonies)
 
       # Step 0 — Departure
-      province:          "",
-      district:          "",
-      districts:         [],
-      start_date:        "",
-      duration:          7,
-      duration_custom:   false,
-      transport:         "road",
-      road_providers:    [],
-      air_providers:     [],
-      selected_provider: nil,
+      |> assign(:province, "")
+      |> assign(:district, "")
+      |> assign(:districts, [])
+      |> assign(:start_date, "")
+      |> assign(:duration, 7)
+      |> assign(:duration_custom, false)
+      |> assign(:transport, "road")
+      |> assign(:road_providers, [])
+      |> assign(:air_providers, [])
+      |> assign(:selected_provider, nil)
 
       # Step 1 — Ceremony
-      ceremony: "kuomboka",
+      |> assign(:ceremony, default_ceremony_id(ceremonies))
 
       # Step 2 — Map
-      active_pins: [],
+      |> assign(:active_pins, [])
 
       # Step 3 — Food
-      selected_foods: [],
+      |> assign(:selected_foods, [])
 
       # Step 4 — Music
-      selected_music: [],
+      |> assign(:selected_music, [])
 
       # Step 5 — Stay
-      hotel: nil,
+      |> assign(:hotel, nil)
 
       # Step 6 — Summary / PDF
-      traveller_name: "",
-      generating_pdf: false,
-      pdf_ready:      false,
-      pdf_error:      nil
-    )}
-  end
+      |> assign(:traveller_name, "")
+      |> assign(:generating_pdf, false)
+      |> assign(:pdf_ready, false)
+      |> assign(:pdf_error, nil)
+      |> then(&{:ok, &1})
+    end
 
   # ── Navigation ─────────────────────────────────────────────────────────────
 
@@ -91,7 +97,6 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
   # ── Step 0 · Province ──────────────────────────────────────────────────────
 
   def handle_event("set_province", %{"province" => prov}, socket) do
-    IO.inspect(socket, label: "===================7087")
     {:noreply,
     assign(socket,
       province:          prov,
@@ -102,6 +107,7 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
       selected_provider: nil
     )}
   end
+
 
   # ── Step 0 · District ─────────────────────────────────────────────────────
 
@@ -157,13 +163,13 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
 
   # ── Step 1 · Ceremony ──────────────────────────────────────────────────────
 
+
   def handle_event("set_ceremony", %{"ceremony" => c}, socket),
-    do: {:noreply, assign(socket, ceremony: c)}
+   do: {:noreply, assign(socket, ceremony: String.to_integer(c))}
 
   # ── Step 2 · Map pins ─────────────────────────────────────────────────────
 
   def handle_event("toggle_pin", %{"pin" => pin_id}, socket) do
-    IO.inspect(socket, label: "===================7087")
     pin_id = String.to_integer(pin_id)
 
     pins =
@@ -246,6 +252,10 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
     |> assign(generating_pdf: false, pdf_ready: true)
     |> push_redirect(to: "/pdf/itinerary/#{token}")}
   end
+
+  defp default_ceremony_id([%{id: id} | _]), do: id
+  defp default_ceremony_id([]), do: nil
+
 
   # ── Private: load transport providers ────────────────────────────────────
 

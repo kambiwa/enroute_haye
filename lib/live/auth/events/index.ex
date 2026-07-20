@@ -212,6 +212,9 @@ defmodule EnrouteHayeWeb.Auth.Events.Index do
             <:col :let={event} label="Name">
               <span style="color: #374151; font-weight: 500;">{event.title}</span>
             </:col>
+            <:col :let={event} label="Type">
+              <span style="color: #6b7280; ">{event.type}</span>
+            </:col>
             <:col :let={event} label="Description">
               <span style="color: #6b7280;">{event.description}</span>
             </:col>

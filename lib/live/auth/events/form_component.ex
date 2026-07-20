@@ -65,6 +65,12 @@ defmodule EnrouteHayeWeb.Events.FormComponent do
                   label="Event Title"
                 />
                 <.input
+                  field={@form[:type]}
+                  label="Event Type"
+                  type="select"
+                  options={["Traditional ceremony","Conference", "Workshop", "Meetup", "Webinar", "Other"]}
+                />
+                <.input
                   field={@form[:location]}
                   label="Location"
                 />
