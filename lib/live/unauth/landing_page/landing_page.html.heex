@@ -135,15 +135,15 @@
     <section id="journey" class="py-28">
       <div class="mx-auto max-w-7xl px-6 lg:px-10">
         <div class="max-w-2xl mb-16 zm-reveal" phx-hook="Reveal" id="journey-heading">
-          <span class="text-sm font-semibold uppercase tracking-wide text-zm-copper">Journey Planner</span>
-          <h2 class="font-zm-display text-4xl lg:text-5xl font-bold text-zm-ink mt-3">Plan Your Journey</h2>
+          <span class="text-sm font-semibold uppercase tracking-wide text-zm-copper">Trip Planner</span>
+          <h2 class="font-zm-display text-4xl lg:text-5xl font-bold text-zm-ink mt-3">Plan Your Trip</h2>
           <p class="text-zm-body mt-4 text-lg">Build an itinerary in six steps — Enroute maps the route, cost and timing for you.</p>
         </div>
 
         <div class="grid lg:grid-cols-5 gap-10 items-start">
           <div class="lg:col-span-2 zm-glass-card p-8">
             <ol class="space-y-6">
-              <li :for={{label, n} <- Enum.with_index(["Choose Province", "Choose Experiences", "Accommodation", "Transportation", "Budget", "Generate Itinerary"], 1)} class="flex items-center gap-4">
+              <li :for={{label, n} <- Enum.with_index(["Choose starting from", "Choose transport mode", "ceremony if any", "pin sites", "choose local delicacies","choose accomodation", "Generate Itinerary"], 1)} class="flex items-center gap-4">
                 <span class="w-9 h-9 rounded-full bg-white border border-zm-silver flex items-center justify-center font-zm-display text-sm font-bold text-zm-copper shrink-0">
                   {n}
                 </span>

@@ -5,19 +5,19 @@ defmodule EnrouteHayeWeb.Unauth.Kuomboka do
   def mount(_params, _session, socket) do
     socket =
       socket
-      |> assign(:page_title, "Kuomboka — The Royal Journey")
+      |> assign(:page_title, "Kuomboka — The Royal Migration")
       |> assign(:current_scope, nil)
       |> assign(:timeline_events, timeline_events())
-      |> assign(:barge_details, barge_details())
-      |> assign(:active_detail, "masthead")
+      |> assign(:regalia_details, regalia_details())
+      |> assign(:active_regalia, "nalikwanda")
       |> assign(:mobile_menu_open, false)
 
     {:ok, socket}
   end
 
   @impl true
-  def handle_event("show_detail", %{"type" => type}, socket) do
-    {:noreply, assign(socket, :active_detail, type)}
+  def handle_event("show_regalia", %{"type" => type}, socket) do
+    {:noreply, assign(socket, :active_regalia, type)}
   end
 
   @impl true
@@ -30,28 +30,28 @@ defmodule EnrouteHayeWeb.Unauth.Kuomboka do
     {:noreply, assign(socket, :mobile_menu_open, false)}
   end
 
-  defp barge_details do
+  defp regalia_details do
     [
       %{
-        id: "masthead",
-        icon: "crown",
-        title: "Elephant Masthead",
+        id: "nalikwanda",
+        icon: "power",
+        title: "Nalikwanda",
         description:
-          "The barge features a giant elephant head with ears that flap in the wind, symbolizing the strength and wisdom of the Litunga. The elephant is the royal emblem."
+          "The Litunga's royal barge, painted in bold black-and-white stripes and crowned with a carved elephant statue. Nalikwanda carries the king, his family, and his regalia safely across the flooded Zambezi plains."
       },
       %{
-        id: "paddlers",
-        icon: "users",
-        title: "Royal Paddlers",
+        id: "maoma",
+        icon: "ceremony",
+        title: "Maoma Drums",
         description:
-          "Over 100 highly trained paddlers in traditional attire propel the barge. They perform synchronized rowing to the rhythm of royal drums."
+          "A set of enormous royal war drums, each bearing its own name and history. Their deep, rolling beat sets the pace for the paddlers and announces the Litunga's progress to villages along the route."
       },
       %{
-        id: "cabin",
-        icon: "castle",
-        title: "Royal Cabin",
+        id: "njamba",
+        icon: "grace",
+        title: "Njamba Paddlers",
         description:
-          "An enclosed cabin shelters the Litunga from the elements. It is decorated with traditional Lozi patterns and the royal colors of red and black."
+          "Over a hundred selected men, dressed in animal-skin skirts and red berets crowned with feathers, paddle the Nalikwanda in perfect rhythm — a display of discipline, strength, and pride in service to the king."
       }
     ]
   end
@@ -60,43 +60,48 @@ defmodule EnrouteHayeWeb.Unauth.Kuomboka do
     [
       %{
         time: "DAWN",
-        icon: "sunrise",
-        title: "The Royal Drums Awaken",
+        title: "Preparation at Lealui",
         description:
-          "Maoma royal drums begin their thunderous call across the flood plains, signaling the start of the journey. The sound carries for miles, calling all Lozi people to witness.",
-        image: "/images/maoma.png",
-        image_alt: "Royal Drummers",
+          "Before first light, the royal court at Lealui stirs. The Nalikwanda is inspected and loaded, the Litunga's regalia is prepared, and paddlers gather at the water's edge as the floodwaters press closer to the palace.",
+        image: "/images/kuomboka/kuomboka_dawn.jpg",
+        image_alt: "Dawn preparations at Lealui",
         align: :right
       },
       %{
         time: "MORNING",
-        icon: "anchor",
-        title: "Boarding the Nalikwanda",
+        title: "The Litunga Boards",
         description:
-          "The Litunga emerges in full royal regalia, accompanied by the Prime Minister and royal attendants. The black barge leads, followed by the white Nalikwanda with its elephant masthead.",
-        image: "/images/boarding.png",
-        image_alt: "Litunga boarding",
+          "The Litunga emerges in full ceremonial dress and boards the Nalikwanda beneath a canopy raised in his honour. The Maoma drums begin their deep, rolling call, signalling to the whole floodplain that the migration has begun.",
+        image: "/images/kuomboka/kuomboka_departure.jpg",
+        image_alt: "The Litunga boarding the Nalikwanda",
         align: :left
       },
       %{
-        time: "AFTERNOON",
-        icon: "sailboat",
-        title: "The Voyage",
+        time: "MIDDAY",
+        title: "The Great Crossing",
         description:
-          "Over 100 paddlers propel the barges across the flooded plains. The rhythmic chanting of \"Kuomboka! Kuomboka!\" echoes across the water as crowds line the banks.",
-        image: "/images/voyage.jpg",
-        image_alt: "The Voyage",
+          "The Nalikwanda glides across the flooded plains, escorted by smaller barges carrying musicians, family, and Indunas. Crowds line the drier stretches of ground, singing and waving as the royal flotilla passes.",
+        image: "/images/kuomboka/kuomboka_crossing.jpg",
+        image_alt: "The royal flotilla crossing the floodplain",
         align: :right
       },
       %{
-        time: "EVENING",
-        icon: "home",
+        time: "AFTERNOON",
         title: "Arrival at Limulunga",
         description:
-          "The barges dock at the dry capital. Traditional dances, songs, and celebrations continue late into the night as the Litunga takes residence until the waters recede.",
-        image: "/images/the royal steps.jpg",
-        image_alt: "Celebration",
+          "As the Nalikwanda nears the raised ground of Limulunga, the pace of the drums quickens and the waiting crowd erupts in celebration. The Litunga disembarks to be received by his people at the flood-season capital.",
+        image: "/images/kuomboka/kuomboka_arrival.jpg",
+        image_alt: "Arrival of the royal barge at Limulunga",
         align: :left
+      },
+      %{
+        time: "EVENING",
+        title: "Celebration at Limulunga",
+        description:
+          "Night falls on song, dance, and feasting as the Lozi nation marks another successful crossing. The Litunga's presence at Limulunga affirms the continuity of Barotse tradition for another flood season.",
+        image: "/images/kuomboka/kuomboka_celebration.jpg",
+        image_alt: "Evening celebrations at Limulunga",
+        align: :right
       }
     ]
   end

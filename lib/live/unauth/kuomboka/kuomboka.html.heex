@@ -1,133 +1,149 @@
-  <Layouts.unauth_app flash={@flash} current_scope={@current_scope}>
-  <div id="loader" class="loader-screen" aria-hidden="true" phx-hook="LoaderHook">
-    <div class="loader-inner">
-      <div class="loader-ring">
-        <div class="loader-spinner"></div>
-        <div class="loader-crown">
-          <.icon name="hero-star-solid" class="w-8 h-8 text-yellow-400" />
-        </div>
+<Layouts.unauth_app flash={@flash} current_scope={@current_scope}>
+
+<%!-- ============================
+  LOADER
+============================= --%>
+<div id="loader" class="kmb-loader-screen" aria-hidden="true" phx-hook="LoaderHook">
+  <div class="kmb-loader-inner">
+    <div class="kmb-loader-ring">
+      <div class="kmb-loader-spinner"></div>
+      <div class="kmb-loader-crown">
+        <img src="/images/kuomboka/kuomboka_logo.png" alt="Nalikwanda royal barge silhouette" class="kmb-loader-mask" />
       </div>
-      <p class="loader-title">KUOMBOKA</p>
-      <p class="loader-sub">THE ROYAL JOURNEY</p>
     </div>
+    <p class="kmb-loader-title">KUOMBOKA</p>
+    <p class="kmb-loader-sub">THE ROYAL MIGRATION</p>
   </div>
+</div>
 
 <%!-- ============================
   HERO
 ============================= --%>
-<section class="hero" id="hero">
-  <%!-- Ambient blobs --%>
-  <div class="blob blob-1" aria-hidden="true"></div>
-  <div class="blob blob-2" aria-hidden="true"></div>
+<section class="kmb-hero" id="hero">
+
+  <%!-- Diagonal ceremonial-red shard --%>
+  <div class="kmb-hero-shard" aria-hidden="true"></div>
+
+  <%!-- Ambient river blobs --%>
+  <div class="kmb-blob kmb-blob-1" aria-hidden="true"></div>
+  <div class="kmb-blob kmb-blob-2" aria-hidden="true"></div>
 
   <%!-- Particle canvas --%>
-  <canvas id="particles-hook" class="particles-canvas" aria-hidden="true"
+  <canvas id="particles-hook" class="kmb-particles-canvas" aria-hidden="true"
     phx-hook="Particles"></canvas>
 
-  <%!-- Water waves --%>
-  <div class="waves" aria-hidden="true">
-    <svg class="wave wave-1" viewBox="0 0 1200 120" preserveAspectRatio="none">
-      <path d="M0,60 C200,90 400,30 600,60 C800,90 1000,30 1200,60 L1200,120 L0,120 Z" fill="rgba(255,215,0,0.07)"/>
+  <%!-- Floodwater ripple waves --%>
+  <div class="kmb-mist" aria-hidden="true">
+    <svg class="kmb-mist-wave kmb-mist-1" viewBox="0 0 1200 120" preserveAspectRatio="none">
+      <path d="M0,60 C200,90 400,30 600,60 C800,90 1000,30 1200,60 L1200,120 L0,120 Z"
+            fill="rgba(204,0,0,0.06)"/>
     </svg>
-    <svg class="wave wave-2" viewBox="0 0 1200 120" preserveAspectRatio="none">
-      <path d="M0,40 C150,70 350,10 600,40 C850,70 1050,10 1200,40 L1200,120 L0,120 Z" fill="rgba(2,62,125,0.4)"/>
+    <svg class="kmb-mist-wave kmb-mist-2" viewBox="0 0 1200 120" preserveAspectRatio="none">
+      <path d="M0,40 C150,70 350,10 600,40 C850,70 1050,10 1200,40 L1200,120 L0,120 Z"
+            fill="rgba(10,10,10,0.55)"/>
     </svg>
   </div>
 
-  <div class="hero-content" id="hero-content">
-    <p class="hero-eyebrow reveal">The Litunga's Royal Voyage</p>
+  <div class="kmb-hero-content" id="hero-content">
+    <p class="kmb-hero-eyebrow reveal">The Lozi Royal Ceremony · Western Province</p>
 
-    <h1 class="hero-title reveal" style="--delay: 0.2s">KUOMBOKA</h1>
+    <h1 class="kmb-hero-title reveal" style="--delay: 0.2s">
+      KUOMBOKA
+    </h1>
 
-    <div class="hero-divider reveal" style="--delay: 0.4s" aria-hidden="true">
-      <span class="divider-line"></span>
-      <span class="divider-icon">〰</span>
-      <span class="divider-line"></span>
+    <div class="kmb-hero-divider reveal" style="--delay: 0.4s" aria-hidden="true">
+      <span class="kmb-divider-line"></span>
+      <span class="kmb-divider-icon">◈</span>
+      <span class="kmb-divider-line"></span>
     </div>
 
-    <p class="hero-desc reveal" style="--delay: 0.5s">
-      Experience the majestic journey of the Lozi King as he leaves the flooded plains
-      for the dry capital, aboard the legendary Nalikwanda.
+    <p class="kmb-hero-desc reveal" style="--delay: 0.5s">
+      When the Zambezi floodplain rises, the Litunga of the Lozi people boards the
+      royal barge Nalikwanda and leads his people from Lealui to the high ground
+      of Limulunga — a migration that has bound the Barotseland nation to the
+      rhythm of the river for generations.
     </p>
 
-    <div class="hero-cta reveal" style="--delay: 0.7s">
-      <a href="/journey" class="btn-primary">
-        Begin Experience <span class="btn-arrow">→</span>
+    <div class="kmb-hero-cta reveal" style="--delay: 0.7s">
+      <a href="/journey" class="kmb-btn-primary">
+        Join the Migration <span class="kmb-btn-arrow">→</span>
       </a>
-      <button class="btn-audio" id="audio-hook" phx-hook="AudioPlayer">
-        <span class="audio-bars" aria-hidden="true">
+      <button class="kmb-btn-audio" id="audio-hook" phx-hook="AudioPlayer">
+        <span class="kmb-audio-bars" aria-hidden="true">
           <span></span><span></span><span></span><span></span><span></span>
         </span>
-        Ambient Drums
+        Royal Maoma Drums
       </button>
     </div>
   </div>
 
-  <div class="scroll-hint reveal" style="--delay: 1s" aria-label="Scroll to explore">
-    <span class="scroll-chevron">↓</span>
+  <div class="kmb-scroll-hint reveal" style="--delay: 1s" aria-label="Scroll to explore">
+    <span class="kmb-scroll-chevron">↓</span>
   </div>
 </section>
 
 <%!-- ============================
   INTRODUCTION
 ============================= --%>
-<section id="journey" class="section section-dark">
-  <div class="container grid-2col">
+<section id="journey" class="kmb-section kmb-section-dark kmb-section-river">
+  <div class="kmb-container kmb-grid-2col">
 
-    <div class="intro-text scroll-reveal">
-      <div class="badge">
-        <span class="badge-dot"></span>
-        Living Heritage
+    <div class="kmb-intro-text scroll-reveal">
+      <div class="kmb-badge">
+        <span class="kmb-badge-dot"></span>
+        Living Royal Heritage
       </div>
 
-      <h2 class="section-title">
-        The Ceremony of the <em class="gold">Floods</em>
+      <h2 class="kmb-section-title">
+        The Migration of the <em class="kmb-gold">Litunga</em>
       </h2>
 
-      <p class="body-text">
-        Kuomboka, meaning "to get out of water," is one of Africa's most spectacular
-        traditional ceremonies. When the Zambezi River floods the Bulozi plains, the
-        Litunga (King of the Lozi people) embarks on a sacred journey from Lealui to
-        Limulunga aboard the royal barge, Nalikwanda.
+      <p class="kmb-body-text">
+        Kuomboka, meaning "to move out of water," is one of Zambia's most celebrated
+        traditional ceremonies. Held by the Lozi people of Barotseland in Western
+        Province, it marks the moment the Litunga — the Lozi king — leaves his flood-season
+        palace at Lealui for the safety of higher ground at Limulunga, escorted across
+        the swollen Zambezi plains by the royal barge, the Nalikwanda.
       </p>
 
-      <div class="stats-row">
-        <div class="stat">
-          <span class="stat-num">300+</span>
-          <span class="stat-label">Years of Tradition</span>
+      <div class="kmb-stats-row">
+        <div class="kmb-stat">
+          <span class="kmb-stat-num">1</span>
+          <span class="kmb-stat-label">Royal Barge</span>
         </div>
-        <div class="stat stat-border">
-          <span class="stat-num">300+</span>
-          <span class="stat-label">Paddlers</span>
+        <div class="kmb-stat kmb-stat-border">
+          <span class="kmb-stat-num">100+</span>
+          <span class="kmb-stat-label">Royal Paddlers</span>
         </div>
-        <div class="stat">
-          <span class="stat-num">20km</span>
-          <span class="stat-label">Royal Journey</span>
+        <div class="kmb-stat">
+          <span class="kmb-stat-num">Mar/Apr</span>
+          <span class="kmb-stat-label">Annual Gathering</span>
         </div>
       </div>
     </div>
 
-    <div class="intro-image scroll-reveal" style="--delay: 0.2s">
-      <div class="img-frame img-frame-tilt">
-        <img src="/images/Kuomboka_PBentley-20.jpg" alt="Zambezi River flood plains" loading="lazy" />
-        <div class="img-overlay">
-          <p class="img-label">THE FLOOD PLAINS</p>
-          <p class="img-caption">Barotseland, Western Zambia</p>
+    <div class="kmb-intro-image scroll-reveal" style="--delay: 0.2s">
+      <div class="kmb-img-frame kmb-img-frame-tilt">
+        <img src="/images/kuomboka/kuomboka_logo.png"
+             class="kmb-img-content"
+             alt="Nalikwanda royal barge at Kuomboka"
+             loading="lazy" />
+        <div class="kmb-img-overlay">
+          <p class="kmb-img-label">THE NALIKWANDA</p>
+          <p class="kmb-img-caption">Zambezi Floodplain, Western Province</p>
         </div>
       </div>
 
-      <div class="float-card float-card-tr scroll-reveal" style="--delay: 0.4s">
-        <span class="float-icon">📅</span>
-        <span class="float-meta">When</span>
-        <strong>March 28th, 2026</strong>
+      <div class="kmb-float-card kmb-float-card-tr scroll-reveal" style="--delay: 0.4s">
+        <span class="kmb-float-icon">📅</span>
+        <span class="kmb-float-meta">When</span>
+        <strong>Announced Annually · Late March</strong>
       </div>
 
-      <div class="float-card float-card-bl scroll-reveal" style="--delay: 0.6s">
-        <span class="float-icon">
-          <i class="fi fi-ts-marker"></i>
-        </span>
-        <span class="float-meta">Where</span>
-        <strong>Lealui → mongu → Limulunga, Zambia</strong>
+      <div class="kmb-float-card kmb-float-card-bl scroll-reveal" style="--delay: 0.6s">
+        <span class="kmb-float-icon">📍</span>
+        <span class="kmb-float-meta">Where</span>
+        <strong>Lealui to Limulunga, Western Zambia</strong>
       </div>
     </div>
 
@@ -137,36 +153,42 @@
 <%!-- ============================
   TIMELINE / CEREMONY
 ============================= --%>
-<section id="ceremony" class="section section-mid">
-  <div class="container">
-    <div class="section-header scroll-reveal">
-      <h2 class="section-title text-center">
-        The Royal <em class="gold">Procession</em>
+<section id="ceremony" class="kmb-section kmb-section-mid kmb-section-earth">
+  <div class="kmb-container">
+    <div class="kmb-section-header scroll-reveal">
+      <h2 class="kmb-section-title kmb-text-center">
+        A Day on the <em class="kmb-gold">River</em>
       </h2>
-      <p class="section-sub">Follow the sacred steps of the Kuomboka ceremony from dawn till dusk</p>
+      <p class="kmb-section-sub">
+        Follow the royal migration from dawn preparations at Lealui to the firelit
+        celebrations at Limulunga
+      </p>
     </div>
 
-    <div class="timeline">
-      <div class="timeline-spine" aria-hidden="true"></div>
+    <div class="kmb-timeline">
+      <div class="kmb-timeline-spine" aria-hidden="true"></div>
 
       <%= for {event, idx} <- Enum.with_index(@timeline_events) do %>
-        <div class={["timeline-item", if(rem(idx, 2) == 0, do: "align-right", else: "align-left"), "scroll-reveal"]}
+        <div class={["kmb-timeline-item",
+                     if(rem(idx, 2) == 0, do: "kmb-align-right", else: "kmb-align-left"),
+                     "scroll-reveal"]}
              style={"--delay: #{idx * 0.15}s"}>
 
-          <div class="timeline-text">
-            <span class="timeline-time">
-              <span class="timeline-icon-sm">◆</span>
+          <div class="kmb-timeline-text">
+            <span class="kmb-timeline-time">
+              <span class="kmb-timeline-icon-sm">◈</span>
               <%= event.time %>
             </span>
-            <h3 class="timeline-title"><%= event.title %></h3>
-            <p class="timeline-desc"><%= event.description %></p>
+            <h3 class="kmb-timeline-title"><%= event.title %></h3>
+            <p class="kmb-timeline-desc"><%= event.description %></p>
           </div>
 
-          <div class="timeline-card">
-            <div class="timeline-card-inner">
-              <img src={event.image} alt={event.image_alt} loading="lazy" class="timeline-img" />
+          <div class="kmb-timeline-card">
+            <div class="kmb-timeline-card-inner">
+              <img src={event.image} alt={event.image_alt}
+                   loading="lazy" class="kmb-timeline-img" />
             </div>
-            <div class="timeline-dot" aria-hidden="true"></div>
+            <div class="kmb-timeline-dot" aria-hidden="true"></div>
           </div>
 
         </div>
@@ -176,85 +198,91 @@
 </section>
 
 <%!-- ============================
-  NALIKWANDA BARGE
+  ROYAL BARGE (mirrors the Makishi / masked spirits section)
 ============================= --%>
-<section id="barge" class="section section-dark barge-section">
-  <div class="dot-grid" aria-hidden="true"></div>
+<section id="regalia" class="kmb-section kmb-section-dark kmb-section-barge">
+  <div class="kmb-dot-grid" aria-hidden="true"></div>
 
-  <div class="container">
-    <div class="section-header scroll-reveal">
-      <h2 class="section-title text-center">
-        The <em class="gold">Nalikwanda</em>
+  <div class="kmb-container">
+    <div class="kmb-section-header scroll-reveal">
+      <h2 class="kmb-section-title kmb-text-center">
+        The <em class="kmb-gold">Nalikwanda</em>
       </h2>
-      <p class="section-sub">The magnificent elephant-shaped royal barge, symbolizing strength and wisdom</p>
+      <p class="kmb-section-sub">
+        A black-and-white striped royal barge, royal drums, and a hundred paddlers —
+        the living vessel that carries the Litunga above the rising Zambezi
+      </p>
     </div>
 
-    <div class="barge-grid">
-      <%!-- Main image with hotspots --%>
-      <div class="barge-main scroll-reveal">
-        <div class="barge-img-wrap">
-          <img src="/images/Kuomboka_2022-5.jpg" alt="Nalikwanda barge" loading="lazy" class="barge-img" />
-          <div class="barge-overlay"></div>
+    <div class="kmb-barge-grid">
 
-          <button class="hotspot hotspot-masthead"
-            phx-click="show_detail" phx-value-type="masthead"
-            title="Elephant Masthead">
-            <span class="hotspot-pulse"></span>
-            <span class="hotspot-label">Elephant Masthead</span>
+      <%!-- Main barge image with hotspots --%>
+      <div class="kmb-barge-main scroll-reveal">
+        <div class="kmb-barge-wrap">
+          <img src="/images/kuomboka/kuomboka_barge.jpg"
+               alt="Nalikwanda royal barge" loading="lazy" class="kmb-barge-img" />
+          <div class="kmb-barge-vignette"></div>
+
+          <button class="kmb-hotspot kmb-hotspot-nalikwanda"
+            phx-click="show_regalia" phx-value-type="nalikwanda"
+            title="Nalikwanda">
+            <span class="kmb-hotspot-pulse"></span>
+            <span class="kmb-hotspot-label">Nalikwanda</span>
           </button>
 
-          <button class="hotspot hotspot-paddlers"
-            phx-click="show_detail" phx-value-type="paddlers"
-            title="Paddlers">
-            <span class="hotspot-pulse"></span>
-            <span class="hotspot-label">100+ Paddlers</span>
+          <button class="kmb-hotspot kmb-hotspot-maoma"
+            phx-click="show_regalia" phx-value-type="maoma"
+            title="Maoma Drums">
+            <span class="kmb-hotspot-pulse"></span>
+            <span class="kmb-hotspot-label">Maoma Drums</span>
           </button>
 
-          <button class="hotspot hotspot-cabin"
-            phx-click="show_detail" phx-value-type="cabin"
-            title="Royal Cabin">
-            <span class="hotspot-pulse"></span>
-            <span class="hotspot-label">Royal Cabin</span>
+          <button class="kmb-hotspot kmb-hotspot-njamba"
+            phx-click="show_regalia" phx-value-type="njamba"
+            title="Njamba Paddlers">
+            <span class="kmb-hotspot-pulse"></span>
+            <span class="kmb-hotspot-label">Njamba Paddlers</span>
           </button>
 
-          <div class="barge-caption">
-            <h3>Interactive Barge Map</h3>
-            <p>Click the hotspots to explore the Nalikwanda's features</p>
+          <div class="kmb-barge-caption">
+            <h3>The Royal Vessel</h3>
+            <p>Tap each element to learn its role in the migration</p>
           </div>
         </div>
       </div>
 
       <%!-- Detail panels --%>
-      <div class="barge-details scroll-reveal" style="--delay: 0.2s">
-        <%= for detail <- @barge_details do %>
-          <div class={"detail-card #{if @active_detail == detail.id, do: "active"}"}>
-            <div class="detail-icon-wrap">
-              <span class="detail-icon">
+      <div class="kmb-barge-details scroll-reveal" style="--delay: 0.2s">
+        <%= for detail <- @regalia_details do %>
+          <div class={"kmb-detail-card #{if @active_regalia == detail.id, do: "active"}"}>
+            <div class="kmb-detail-icon-wrap">
+              <span class="kmb-detail-icon">
                 <%= case detail.icon do
-                  "crown"  -> "♛"
-                  "users"  -> "👥"
-                  "castle" -> "🏰"
-                  _ -> "◆"
+                  "power"    -> "◈"
+                  "ceremony" -> "⬡"
+                  "grace"    -> "◎"
+                  _          -> "◆"
                 end %>
               </span>
             </div>
             <div>
-              <h4 class="detail-title"><%= detail.title %></h4>
-              <p class="detail-desc"><%= detail.description %></p>
+              <h4 class="kmb-detail-title"><%= detail.title %></h4>
+              <p class="kmb-detail-desc"><%= detail.description %></p>
             </div>
           </div>
         <% end %>
 
-        <div class="barge-specs scroll-reveal" style="--delay: 0.4s">
-          <h4 class="specs-title">Barge Specifications</h4>
-          <ul class="specs-list">
-            <li><span>Length</span><span class="gold">20 meters</span></li>
-            <li><span>Capacity</span><span class="gold">120 people</span></li>
-            <li><span>Construction</span><span class="gold">Mahogany wood</span></li>
-            <li><span>Colors</span><span class="gold">White & Gold</span></li>
+        <div class="kmb-royal-facts scroll-reveal" style="--delay: 0.4s">
+          <h4 class="kmb-specs-title">Royal Facts</h4>
+          <ul class="kmb-specs-list">
+            <li><span>Route</span><span class="kmb-gold">Lealui → Limulunga</span></li>
+            <li><span>Barge Colours</span><span class="kmb-gold">Black &amp; white stripes</span></li>
+            <li><span>Crest</span><span class="kmb-gold">Carved elephant statue</span></li>
+            <li><span>Paddlers</span><span class="kmb-gold">Selected royal Njamba men</span></li>
           </ul>
         </div>
       </div>
+
     </div>
   </div>
 </section>
@@ -262,60 +290,76 @@
 <%!-- ============================
   CULTURAL SIGNIFICANCE
 ============================= --%>
-<section id="culture" class="section section-mid">
-  <div class="container grid-2col">
+<section id="culture" class="kmb-section kmb-section-mid kmb-section-culture">
+  <div class="kmb-container kmb-grid-2col">
 
-    <div class="culture-mosaic order-2 scroll-reveal">
-      <div class="mosaic-col mosaic-col-offset">
-        <div class="mosaic-img tall">
-          <img src="/images/the_race.webp" alt="Traditional activities" loading="lazy" />
+    <div class="kmb-culture-mosaic kmb-order-2 scroll-reveal">
+      <div class="kmb-mosaic-col kmb-mosaic-col-offset">
+        <div class="kmb-mosaic-img kmb-tall">
+          <img src="/images/kuomboka/kuomboka_departure.jpg"
+               alt="Departure from Lealui" loading="lazy" />
         </div>
-        <div class="mosaic-img medium">
-          <img src="/images/addressers.jpg" alt="Royal regalia" loading="lazy" />
+        <div class="kmb-mosaic-img kmb-medium">
+          <img src="/images/kuomboka/kuomboka_elders.jpg"
+               alt="Lozi elders and Indunas" loading="lazy" />
         </div>
       </div>
-      <div class="mosaic-col">
-        <div class="mosaic-img short">
-          <img src="/images/Kuomboka-2022-1.jpg" alt="Zambezi River" loading="lazy" />
+      <div class="kmb-mosaic-col">
+        <div class="kmb-mosaic-img kmb-short">
+          <img src="/images/kuomboka/kuomboka_drums.jpg"
+               alt="Maoma royal drums" loading="lazy" />
         </div>
-        <div class="mosaic-img tall">
-          <img src="/images/at the palace.jpg" alt="Palace ceremony" loading="lazy" />
+        <div class="kmb-mosaic-img kmb-tall">
+          <img src="/images/kuomboka/kuomboka_regalia.jpg"
+               alt="Royal regalia and paddle craft" loading="lazy" />
         </div>
       </div>
     </div>
 
-    <div class="culture-text order-1 scroll-reveal" style="--delay: 0.2s">
-      <h2 class="section-title">
-        Living <em class="gold">Heritage</em>
+    <div class="kmb-culture-text kmb-order-1 scroll-reveal" style="--delay: 0.2s">
+      <h2 class="kmb-section-title">
+        Living <em class="kmb-gold">Heritage</em>
       </h2>
 
-      <div class="culture-points">
-        <div class="culture-point">
-          <div class="point-icon">♥</div>
+      <div class="kmb-culture-points">
+        <div class="kmb-culture-point">
+          <div class="kmb-point-icon">◎</div>
           <div>
-            <h3>Unity &amp; Identity</h3>
-            <p>The ceremony reinforces Lozi cultural identity and brings together the over 20 tribes of Barotseland in a display of unity and tradition.</p>
+            <h3>A Migration Shaped by the River</h3>
+            <p>
+              Kuomboka is a direct response to the Zambezi's seasonal floods — a
+              centuries-old act of adaptation that carries the entire royal
+              establishment, its regalia, and its people to safer ground each year.
+            </p>
           </div>
         </div>
 
-        <div class="culture-point">
-          <div class="point-icon">〰</div>
+        <div class="kmb-culture-point">
+          <div class="kmb-point-icon">◈</div>
           <div>
-            <h3>Connection to Nature</h3>
-            <p>Kuomboka celebrates the relationship between the Lozi people and the Zambezi River, acknowledging its life-giving floods and the need to adapt to its rhythms.</p>
+            <h3>Royal Authority &amp; Continuity</h3>
+            <p>
+              The Litunga's procession aboard the Nalikwanda is a public affirmation
+              of the Barotse monarchy — a living institution whose authority and
+              rituals have endured through generations of Lozi leadership.
+            </p>
           </div>
         </div>
 
-        <div class="culture-point">
-          <div class="point-icon">📜</div>
+        <div class="kmb-culture-point">
+          <div class="kmb-point-icon">⬡</div>
           <div>
-            <h3>Historical Continuity</h3>
-            <p>Dating back over 300 years, the ceremony maintains ancient traditions of governance, spirituality, and community organization.</p>
+            <h3>A National Cultural Icon</h3>
+            <p>
+              Kuomboka draws visitors from across Zambia and abroad, standing today
+              as one of the country's most recognised traditional ceremonies and a
+              vivid expression of Barotseland's distinct cultural identity.
+            </p>
           </div>
         </div>
       </div>
 
-      <a href="#" class="btn-outline-gold mt-8 inline-flex items-center gap-2">
+      <a href="#" class="kmb-btn-outline-gold kmb-mt-8 inline-flex items-center gap-2">
         Explore Full History <span>→</span>
       </a>
     </div>
@@ -326,34 +370,114 @@
 <%!-- ============================
   AUDIO EXPERIENCE
 ============================= --%>
-<section class="section section-dark audio-section">
-  <div class="container narrow text-center">
-    <span class="audio-icon-lg">♪</span>
-    <h2 class="section-title">Immersive Audio Experience</h2>
-    <p class="section-sub">
-      Listen to the traditional Maoma drums and Lozi songs that accompany the royal voyage
+<section class="kmb-section kmb-section-dark kmb-audio-section">
+  <div class="kmb-container kmb-narrow kmb-text-center">
+    <span class="kmb-audio-icon-lg">♩</span>
+    <h2 class="kmb-section-title">The Beat of the Maoma</h2>
+    <p class="kmb-section-sub">
+      Listen to the traditional Lozi royal drums and paddling songs that carry the
+      Nalikwanda across the Zambezi floodplain during Kuomboka
     </p>
 
-    <div class="player scroll-reveal" id="player-hook" phx-hook="Player">
-      <div class="player-controls">
-        <button class="ctrl-btn" id="skip-back" aria-label="Skip backward">⏮</button>
-        <button class="ctrl-btn ctrl-play" id="play-btn" aria-label="Play/Pause">▶</button>
-        <button class="ctrl-btn" id="skip-fwd" aria-label="Skip forward">⏭</button>
+    <div class="kmb-player scroll-reveal" id="player-hook" phx-hook="Player">
+      <div class="kmb-player-controls">
+        <button class="kmb-ctrl-btn" id="skip-back" aria-label="Skip backward">⏮</button>
+        <button class="kmb-ctrl-btn kmb-ctrl-play" id="play-btn" aria-label="Play/Pause">▶</button>
+        <button class="kmb-ctrl-btn" id="skip-fwd" aria-label="Skip forward">⏭</button>
       </div>
 
-      <div class="player-progress">
-        <span id="current-time" class="time-label">0:00</span>
-        <div class="progress-track" id="progress-track" role="progressbar">
-          <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+      <div class="kmb-player-progress">
+        <span id="current-time" class="kmb-time-label">0:00</span>
+        <div class="kmb-progress-track" id="progress-track" role="progressbar">
+          <div class="kmb-progress-fill" id="progress-fill" style="width: 0%"></div>
         </div>
-        <span class="time-label">3:45</span>
+        <span class="kmb-time-label">4:12</span>
       </div>
 
-      <div class="player-volume">
+      <div class="kmb-player-volume">
         <span>🔈</span>
         <input type="range" min="0" max="100" value="70" id="volume-range" aria-label="Volume" />
       </div>
     </div>
   </div>
 </section>
+
+<%!-- ============================
+  VISITOR GUIDE
+============================= --%>
+<section id="visit" class="kmb-section kmb-section-mid kmb-section-visit">
+  <div class="kmb-container">
+    <div class="kmb-section-header scroll-reveal">
+      <h2 class="kmb-section-title kmb-text-center">
+        Plan Your <em class="kmb-gold">Journey</em>
+      </h2>
+      <p class="kmb-section-sub">Everything you need to experience Kuomboka</p>
+    </div>
+
+    <div class="kmb-guide-grid scroll-reveal" style="--delay: 0.1s">
+
+      <div class="kmb-guide-card">
+        <div class="kmb-guide-icon">🗓</div>
+        <h3>When to Visit</h3>
+        <p>
+          Kuomboka is typically held in late March or early April, but the exact date
+          is announced by the Litunga once the floodwaters have risen sufficiently.
+          Check local sources close to the date before travelling.
+        </p>
+      </div>
+
+      <div class="kmb-guide-card">
+        <div class="kmb-guide-icon">👗</div>
+        <h3>What to Wear</h3>
+        <p>
+          Dress modestly and be prepared for wet, muddy ground near the riverbanks.
+          Traditional chitenge fabric is welcomed; light, breathable clothing suits
+          the Western Province heat.
+        </p>
+      </div>
+
+      <div class="kmb-guide-card">
+        <div class="kmb-guide-icon">📷</div>
+        <h3>Photography</h3>
+        <p>
+          Always seek permission before photographing individuals, particularly
+          Indunas and royal paddlers. Follow the instructions of ceremony marshals
+          when the Nalikwanda is departing or arriving.
+        </p>
+      </div>
+
+      <div class="kmb-guide-card">
+        <div class="kmb-guide-icon">🏕</div>
+        <h3>Accommodation</h3>
+        <p>
+          Mongu town offers the closest lodges and guesthouses to Lealui and
+          Limulunga. Book well in advance, as rooms fill quickly in the days
+          surrounding the ceremony.
+        </p>
+      </div>
+
+      <div class="kmb-guide-card">
+        <div class="kmb-guide-icon">🍲</div>
+        <h3>Food &amp; Drink</h3>
+        <p>
+          Try buhobe (a stiff maize or millet porridge) served with dried Zambezi
+          fish, alongside other Lozi dishes available from stalls near the
+          ceremonial grounds.
+        </p>
+      </div>
+
+      <div class="kmb-guide-card">
+        <div class="kmb-guide-icon">🤝</div>
+        <h3>Cultural Etiquette</h3>
+        <p>
+          Remain respectful and quiet as the Nalikwanda passes, and follow the lead
+          of Indunas and marshals at all times. Never attempt to enter the water or
+          approach the royal barge without invitation.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 </Layouts.unauth_app>

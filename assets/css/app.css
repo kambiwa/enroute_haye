@@ -13,7 +13,7 @@
 @source "../js";
 @source "../../lib/**/*.{ex,heex,eex}";
 
-@plugin "../vendor/heroicons";
+@plugin "../vendor/heroicons"; 
 
 @plugin "../vendor/daisyui" {
   themes: false;

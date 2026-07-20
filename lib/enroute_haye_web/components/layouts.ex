@@ -32,8 +32,8 @@ defmodule EnrouteHayeWeb.Layouts do
 
             <%!-- CENTER LINKS --%>
               <ul class="hidden lg:flex items-center gap-9 font-medium text-sm text-zm-body">
-                <li><.nav_link href={~p"/#barge"}   label="Destinations"   active={@current_page == :destinations} /></li>
-                <li><.nav_link href="#"             label="Experiences"    active={@current_page == :experiences} /></li>
+                <li><.nav_link href={~p"/#destinations"}   label="Destinations"   active={@current_page == :destinations} /></li>
+                <li><.nav_link href={~p"/#expirience"}     label="Experiences"    active={@current_page == :experiences} /></li>
                 <li>
                   <.nav_dropdown href={~p"/#ceremony"} label="Ceremony" active={@current_page == :ceremony}>
                     <:item href={~p"/mize"}>Mize . Luvale people</:item>
@@ -193,8 +193,8 @@ defmodule EnrouteHayeWeb.Layouts do
 
             <.sidebar_group label="Trips" />
             <.sidebar_link href={~p"/admin/trips"}     icon="hero-map"               label="Trips"          active={@current_page == :trips} />
-            <.sidebar_link href={~p"/admin/roads"}     icon="hero-map"               label="Roads"          active={@current_page == :roads} />
-            <.sidebar_link href={~p"/admin/airline"}     icon="hero-map"               label="Airline"          active={@current_page == :airline} />
+            <.sidebar_link href={~p"/admin/roads"}     icon="hero-map"               label="Road Operators"          active={@current_page == :roads} />
+            <.sidebar_link href={~p"/admin/airline"}     icon="hero-map"               label="Airlines"          active={@current_page == :airline} />
 
 
             <.sidebar_group label="Accommodation" />
