@@ -8,6 +8,20 @@ defmodule EnrouteHaye.Accounts do
 
   alias EnrouteHaye.Accounts.{User, UserToken, UserNotifier}
 
+  def list_users(table_params \\ %{}, filters \\ %{}) do
+    page        = EnrouteHayeWeb.Pagination.param_value(table_params, "page", 1)
+    page_size   = EnrouteHayeWeb.Pagination.param_value(table_params, "page_size", 10)
+    order_by    = table_params["order_by"] || %{"sort_field" => "id", "sort_direction" => "desc"}
+    search      = get_in(table_params, ["filter", "isearch"]) || ""
+    status      = filters[:status_filter] || filters["status_filter"] || ""
+
+    User
+    |> apply_search(search)
+    |> apply_status(status)
+    |> apply_order(order_by)
+    |> Repo.paginate(page: page, page_size: page_size)
+  end
+
   ## ======================
   ## DATABASE GETTERS
   ## ======================
@@ -27,10 +41,19 @@ defmodule EnrouteHaye.Accounts do
   ## ======================
   ## REGISTRATION
   ## ======================
+    #  EnrouteHaye.Accounts.register_user(
+
+    #    user = %{
+    #       email: "dev@dev.com",
+    #       password: "dev@dev.com",
+    #        job_id: 1
+    #    }
+    # )
 
   def register_user(attrs) do
+    IO.inspect(attrs, label: "===0909==0909")
     %User{}
-    |> User.registration_changeset(attrs)   # ✅ CHANGED
+    |> User.registration_changeset(attrs)
     |> Repo.insert()
   end
 
@@ -38,17 +61,6 @@ defmodule EnrouteHaye.Accounts do
     User.registration_changeset(user, attrs)
   end
 
-  ## ======================
-  ## SETTINGS
-  ## ======================
-
-  def sudo_mode?(user, minutes \\ -20)
-
-  def sudo_mode?(%User{authenticated_at: ts}, minutes) when is_struct(ts, DateTime) do
-    DateTime.after?(ts, DateTime.utc_now() |> DateTime.add(minutes, :minute))
-  end
-
-  def sudo_mode?(_user, _minutes), do: false
 
   ## ======================
   ## EMAIL (OPTIONAL KEEP)
@@ -139,4 +151,34 @@ defmodule EnrouteHaye.Accounts do
       end
     end)
   end
+
+
+  # ── Private query helpers ────────────────────────────────────────────
+
+  defp apply_search(query, ""), do: query
+  defp apply_search(query, nil), do: query
+  defp apply_search(query, search) do
+    term = "%#{search}%"
+    where(query, [f], ilike(f.name, ^term) or ilike(f.description, ^term))
+  end
+
+  defp apply_status(query, ""), do: query
+  defp apply_status(query, nil), do: query
+  defp apply_status(query, status) do
+    where(query, [f], f.status == ^status)
+  end
+
+  defp apply_order(query, %{"sort_field" => field, "sort_direction" => direction}) do
+    order = if direction == "asc", do: :asc, else: :desc
+
+    case field do
+      "name"        -> order_by(query, [f], [{^order, f.name}])
+      "status"      -> order_by(query, [f], [{^order, f.status}])
+      "inserted_at" -> order_by(query, [f], [{^order, f.inserted_at}])
+      _             -> order_by(query, [f], [{^order, f.id}])
+    end
+  end
+
+  defp apply_order(query, _), do: order_by(query, [f], desc: f.id)
+
 end

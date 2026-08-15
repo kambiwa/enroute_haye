@@ -4,6 +4,45 @@ defmodule EnrouteHaye.Repo.Migrations.CreateEnrouteHayeTables do
   def change do
     execute "CREATE EXTENSION IF NOT EXISTS citext", ""
 
+
+     # ========================
+       #workflow, department, roles, jobs, notification
+    # ========================
+      create_if_not_exists table(:workflow) do
+        add :name, :string
+        add :status, :string
+        add :flow, {:array, :map}
+        add :description, :string
+        add :is_active, :boolean, default: true
+
+        timestamps()
+    end
+     create_if_not_exists table(:departments) do
+      add :name, :string
+      add :description, :string
+      add :is_active, :boolean
+      timestamps()
+    end
+
+    create_if_not_exists table(:job_types) do
+      add :title, :string
+      add :is_active, :boolean
+      # add :approval_work_flow_id, references(:approval_work_flows, on_delete: :nothing)
+
+      timestamps()
+    end
+
+    create_if_not_exists table(:jobs) do
+      add :title, :string
+      add :description, :string
+      add :job_type_id, references(:job_types, on_delete: :nothing)
+      add :department_id, references(:departments, on_delete: :delete_all), null: false
+      add :is_active, :boolean
+      # add :approval_work_flow_id, references(:approval_work_flows, on_delete: :nothing)
+
+      timestamps()
+    end
+
     # ========================
     # USERS
     # ========================
@@ -15,10 +54,11 @@ defmodule EnrouteHaye.Repo.Migrations.CreateEnrouteHayeTables do
 
       # Profile fields
       add :name, :string
-      add :role, :string, default: "tourist"
       add :avatar, :string
       add :country, :string
       add :bio, :text
+      add :job_id, references(:jobs, on_delete: :delete_all)
+      add :role, :string
 
       timestamps(type: :utc_datetime)
     end
@@ -237,6 +277,23 @@ defmodule EnrouteHaye.Repo.Migrations.CreateEnrouteHayeTables do
       add :site_id, references(:sites, on_delete: :delete_all)
 
       timestamps(type: :utc_datetime)
+    end
+
+
+    create_if_not_exists table(:notifications) do
+        add :status, :string
+        add :type, :string
+        add :message, :string
+        add :read, :boolean
+        add :action_url, :string
+        add :sender_name, :string
+        add :document_name, :string
+        add :document_id, :string
+        add :comments, :string
+
+        add :user_id, references(:users, on_delete: :delete_all), null: false
+        add :sender_id, references(:users, on_delete: :delete_all), null: false
+        timestamps()
     end
   end
 end

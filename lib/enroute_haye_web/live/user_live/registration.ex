@@ -101,24 +101,25 @@ defmodule EnrouteHayeWeb.UserLive.Registration do
               <p class="text-xs text-zm-body/60 mb-6">
                 Minimum 12 characters.
               </p>
-              <p class="text-sm text-zm-body/80 mb-7 leading-relaxed">
+               <%!-- Submit --%>
+              <button
+                type="submit"
+                phx-disable-with="Creating account..."
+                class="zm-btn-primary w-full flex items-center justify-center bg-zm-soft-gray gap-2 text-sm bg-grey-900"
+              >
+                Create account
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                </svg>
+              </button><br>
+              <p class="text-sm text-zm-body/80 bg-zm-soft-gray mb-7 leading-relaxed">
                 Already have an account?
                 <.link navigate={~p"/users/log-in"} class="text-zm-terracotta font-semibold hover:underline">
                   Sign in →
                 </.link>
               </p>
 
-              <%!-- Submit --%>
-              <button
-                type="submit"
-                phx-disable-with="Creating account..."
-                class="zm-btn-primary w-full flex items-center justify-center gap-2 text-sm"
-              >
-                Create account
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                </svg>
-              </button>
+
 
             </.form>
 
@@ -217,6 +218,7 @@ defmodule EnrouteHayeWeb.UserLive.Registration do
 
   @impl true
   def handle_event("save", %{"user" => user_params}, socket) do
+    IO.inspect(user_params, label: "======090909")
     case Accounts.register_user(user_params) do
       {:ok, _user} ->
         {:noreply,

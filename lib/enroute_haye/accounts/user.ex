@@ -3,11 +3,15 @@ defmodule EnrouteHaye.Accounts.User do
   import Ecto.Changeset
 
   schema "users" do
+    field :name, :string
     field :email, :string
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
 
-    # Optional (can keep or remove)
+
+    # belongs_to :role, EnrouteHaye.User.Role
+    belongs_to :job, EnrouteHaye.Schema.Job
+
     field :confirmed_at, :utc_datetime
 
     field :authenticated_at, :utc_datetime, virtual: true
@@ -21,11 +25,18 @@ defmodule EnrouteHaye.Accounts.User do
 
   def registration_changeset(user, attrs) do
     user
-    |> cast(attrs, [:email, :password])
+    |> cast(attrs, [
+                      :name,
+                      :email,
+                      :job_id,
+                      :password
+                      ])
     |> validate_required([:email, :password])
     |> validate_email()
     |> validate_password()
     |> unique_constraint(:email)
+    |> unsafe_validate_unique(:job_id, EnrouteHaye.Repo)
+
   end
 
   ## ======================
@@ -51,6 +62,8 @@ defmodule EnrouteHaye.Accounts.User do
       changeset
       |> unsafe_validate_unique(:email, EnrouteHaye.Repo)
       |> unique_constraint(:email)
+      |> validate_required([:job_id])
+
     else
       changeset
     end

@@ -5,9 +5,6 @@ defmodule EnrouteHayeWeb.Auth.Foods.Index do
   alias EnrouteHaye.Schema.Food
   alias EnrouteHaye.Context.CxtFood
   alias EnrouteHayeWeb.Pagination
-  alias EnrouteHayeWeb.PaginationComponent
-  alias EnrouteHayeWeb.Accounts
-  alias EnrouteHayeWeb.Repo
 
   @impl true
   def mount(_params, _session, socket) do

@@ -99,7 +99,7 @@ defmodule EnrouteHayeWeb.UserLive.Login do
                 type="submit"
                 name={f[:remember_me].name}
                 value="true"
-                class="zm-btn-primary w-full flex items-center justify-center gap-2 text-sm mb-2.5"
+                class="zm-btn-primary w-full flex items-center bg-zm-soft-gray justify-center gap-2 text-sm mb-2.5"
               >
                 Sign in
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -109,9 +109,9 @@ defmodule EnrouteHayeWeb.UserLive.Login do
             </.form>
 
             <%!-- Footer link --%>
-            <div class="mt-6 text-center text-sm text-zm-body/70">
+            <div class="mt-8 text-center bg-zm-soft-gray text-md text-zm-body/70">
               <%= if @current_scope do %>
-                Reauthenticate to continue with sensitive actions.
+                Reauthenticate to continue.
               <% else %>
                 Don't have an account?
                 <.link navigate={~p"/users/register"} class="text-zm-terracotta font-semibold hover:underline">
