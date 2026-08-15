@@ -183,6 +183,33 @@ defmodule EnrouteHayeWeb.Layouts do
           <nav style="flex: 1; padding: 1.25rem 0.75rem; overflow-y: auto;">
             <.sidebar_group label="Overview" />
             <.sidebar_link href={~p"/admin/dashboard"} icon="hero-squares-2x2"      label="Dashboard"      active={@current_page == :dashboard} />
+            <%!-- USER MANAGEMENT — expandable group --%>
+            <%
+              um_active? = @current_page in [:users, :roles, :department, :jobs, :page_access]
+              um_color   = if um_active?, do: "#8B1A1A", else: "#4b5563"
+              um_bg      = if um_active?, do: "#FBEAEA", else: "transparent"
+            %>
+            <details open={um_active?} style="margin-bottom: 0.15rem;">
+              <summary
+                style={"display: flex; align-items: center; gap: 0.75rem; padding: 0.55rem 0.75rem; border-radius: 0.5rem; font-size: 0.82rem; font-weight: 500; cursor: pointer; list-style: none; color: #{um_color}; background: #{um_bg}; transition: background 0.15s, color 0.15s;"}
+                onmouseover="this.style.background='#F9F7F4'"
+                onmouseout={"this.style.background='#{um_bg}'"}
+              >
+                <.icon name="hero-users" class="size-4" style="flex-shrink: 0;" />
+                <span style="flex: 1;">Users Management</span>
+                <.icon name="hero-chevron-down" class="size-3.5" style="flex-shrink: 0; color: #9ca3af; transition: transform 0.15s;" />
+              </summary>
+
+              <div style="padding: 0.2rem 0 0.2rem 1.9rem; display: flex; flex-direction: column; gap: 0.1rem;">
+                <.sidebar_sublink href={~p"/admin/users"}       label="Users"       active={@current_page == :users} />
+                <.sidebar_sublink href={~p"/admin/roles"}       label="Roles"       active={@current_page == :roles} />
+                <.sidebar_sublink href={~p"/admin/department"} label="Department"  active={@current_page == :department} />
+                <.sidebar_sublink href={~p"/admin/jobs"}        label="Jobs"        active={@current_page == :jobs} />
+                <.sidebar_sublink href={~p"/admin/page_access"} label="Page Access" active={@current_page == :page_access} />
+              </div>
+            </details>
+
+
 
             <.sidebar_group label="Content" />
             <.sidebar_link href={~p"/admin/sites"}     icon="hero-map-pin"           label="Sites"          active={@current_page == :sites} />
@@ -203,7 +230,7 @@ defmodule EnrouteHayeWeb.Layouts do
             <.sidebar_link href={~p"/admin/reviews"}       icon="hero-star"              label="Reviews"        active={@current_page == :reviews} />
 
             <.sidebar_group label="System" />
-            <.sidebar_link href={~p"/admin/users"}    icon="hero-users"              label="Users & Roles"  active={@current_page == :users} />
+
             <.sidebar_link href={~p"/admin/settings"} icon="hero-cog-6-tooth"        label="Settings"       active={@current_page == :settings} />
           </nav>
 
@@ -370,6 +397,32 @@ defmodule EnrouteHayeWeb.Layouts do
   # ───────────────────────────────────────────────
   #  ADMIN SIDEBAR SUB-COMPONENTS
   # ───────────────────────────────────────────────
+
+    attr :href, :string, required: true
+    attr :label, :string, required: true
+    attr :active, :boolean, default: false
+
+    def sidebar_sublink(assigns) do
+      ~H"""
+      <%
+        color = if @active, do: "#8B1A1A", else: "#6b7280"
+        bg    = if @active, do: "#FBEAEA", else: "transparent"
+        fw    = if @active, do: "600", else: "400"
+      %>
+      <.link
+        navigate={@href}
+        style={"display: flex; align-items: center; gap: 0.5rem; padding: 0.45rem 0.75rem; border-radius: 0.5rem; font-size: 0.78rem; text-decoration: none; color: #{color}; background: #{bg}; font-weight: #{fw}; transition: background 0.15s, color 0.15s;"}
+        onmouseover="if(this.dataset.active !== 'true') this.style.background='#F9F7F4'"
+        onmouseout={"this.style.background='#{bg}'"}
+        data-active={to_string(@active)}
+      >
+        <span style="width: 4px; height: 4px; border-radius: 50%; background: currentColor; flex-shrink: 0; opacity: 0.6;"></span>
+        <span>{@label}</span>
+      </.link>
+      """
+    end
+
+
   attr :label, :string, required: true
 
   defp sidebar_group(assigns) do

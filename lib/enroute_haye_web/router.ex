@@ -64,6 +64,9 @@ defmodule EnrouteHayeWeb.Router do
       live "/dashboard", Auth.Admin.Dashboard, :index
 
       live "/users", Auth.Admin.Users, :index
+      live "/department", Auth.Admin.Departments, :index
+      live "/jobs", Auth.Admin.Jobs, :index
+
 
       live "/accomodations", Auth.Accommodations.Index, :index
       live "/accomodations/new", Auth.Accommodations.New, :new

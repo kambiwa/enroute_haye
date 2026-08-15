@@ -17,9 +17,10 @@ defmodule EnrouteHaye.Repo.Migrations.CreateEnrouteHayeTables do
 
         timestamps()
     end
-     create_if_not_exists table(:departments) do
+     create_if_not_exists table(:department) do
       add :name, :string
       add :description, :string
+      add :status, :string
       add :is_active, :boolean
       timestamps()
     end
@@ -35,8 +36,9 @@ defmodule EnrouteHaye.Repo.Migrations.CreateEnrouteHayeTables do
     create_if_not_exists table(:jobs) do
       add :title, :string
       add :description, :string
+      add :status, :string
       add :job_type_id, references(:job_types, on_delete: :nothing)
-      add :department_id, references(:departments, on_delete: :delete_all), null: false
+      add :department_id, references(:department, on_delete: :delete_all), null: false
       add :is_active, :boolean
       # add :approval_work_flow_id, references(:approval_work_flows, on_delete: :nothing)
 

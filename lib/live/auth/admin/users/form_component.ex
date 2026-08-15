@@ -1,11 +1,11 @@
-defmodule EnrouteHayeWeb.Foods.FormComponent do
+defmodule EnrouteHayeWeb.User.FormComponent do
   use EnrouteHayeWeb, :live_component
 
   alias EnrouteHaye.Context.CxtFood
 
   @impl true
-  def update(%{food: food} = assigns, socket) do
-    changeset = CxtFood.change_food(food)
+  def update(%{user: user} = assigns, socket) do
+    changeset = CxtFood.change_user(user)
 
     {:ok,
      socket
@@ -33,7 +33,7 @@ defmodule EnrouteHayeWeb.Foods.FormComponent do
         <div>
           <h2 style="font-size: 0.92rem; font-weight: 600; color: #fff; margin: 0;">{@title}</h2>
           <p style="font-size: 0.72rem; color: rgba(255,255,255,0.65); margin: 0;">
-            Fill in the details below to {if @action == :new, do: "create a new food item", else: "update the food item"}.
+            Fill in the details below to {if @action == :new, do: "create a new user item", else: "update the user item"}.
           </p>
         </div>
       </div>
@@ -51,13 +51,13 @@ defmodule EnrouteHayeWeb.Foods.FormComponent do
           <%!-- LEFT COLUMN — form fields --%>
           <div style="display: flex; flex-direction: column; gap: 1.25rem;">
 
-            <%!-- Section: Food Info --%>
+            <%!-- Section: User Info --%>
             <div>
               <p style="font-size: 0.7rem; font-weight: 700; color: #8B1A1A;
                         text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem;
                         display: flex; align-items: center; gap: 0.4rem;">
                 <span style="display: inline-block; width: 2rem; height: 1px; background: #8B1A1A;"></span>
-                Food Info
+                User Info
               </p>
               <div style="display: grid; grid-template-columns: 1fr; gap: 0.75rem;">
                 <.input
@@ -187,7 +187,7 @@ defmodule EnrouteHayeWeb.Foods.FormComponent do
                    display: inline-flex; align-items: center; gap: 0.35rem;"
           >
             <.icon name="hero-check" style="width: 0.85rem; height: 0.85rem;" />
-            {if @action == :new, do: "Create Food", else: "Save Changes"}
+            {if @action == :new, do: "Create User", else: "Save Changes"}
           </button>
         </div>
       </.form>
@@ -201,17 +201,17 @@ defmodule EnrouteHayeWeb.Foods.FormComponent do
   end
 
   @impl true
-  def handle_event("validate", %{"food" => params}, socket) do
+  def handle_event("validate", %{"user" => params}, socket) do
     changeset =
-      socket.assigns.food
-      |> CxtFood.change_food(params)
+      socket.assigns.user
+      |> CxtFood.change_user(params)
       |> Map.put(:action, :validate)
 
     {:noreply, assign(socket, form: to_form(changeset))}
   end
 
   @impl true
-  def handle_event("save", %{"food" => params}, socket) do
+  def handle_event("save", %{"user" => params}, socket) do
     image_url =
       consume_uploaded_entries(socket, :image, fn %{path: path}, entry ->
         dest = Path.join([:code.priv_dir(:enroute_haye), "static", "uploads", entry.client_name])
@@ -223,19 +223,19 @@ defmodule EnrouteHayeWeb.Foods.FormComponent do
     params = if image_url, do: Map.put(params, "image_url", image_url), else: params
 
     case socket.assigns.action do
-      :new -> create_food(socket, params)
-      :edit -> update_food(socket, params)
+      :new -> create_user(socket, params)
+      :edit -> update_user(socket, params)
     end
   end
 
-  defp create_food(socket, params) do
-    case CxtFood.create_food(params) do
-      {:ok, food} ->
-        notify_parent({:saved, food})
+  defp create_user(socket, params) do
+    case CxtFood.create_user(params) do
+      {:ok, user} ->
+        notify_parent({:saved, user})
 
         {:noreply,
          socket
-         |> put_flash(:info, "Food created successfully")
+         |> put_flash(:info, "User created successfully")
          |> push_patch(to: socket.assigns.patch)}
 
       {:error, changeset} ->
@@ -243,14 +243,14 @@ defmodule EnrouteHayeWeb.Foods.FormComponent do
     end
   end
 
-  defp update_food(socket, params) do
-    case CxtFood.update_food(socket.assigns.food, params) do
-      {:ok, food} ->
-        notify_parent({:saved, food})
+  defp update_user(socket, params) do
+    case CxtFood.update_user(socket.assigns.user, params) do
+      {:ok, user} ->
+        notify_parent({:saved, user})
 
         {:noreply,
          socket
-         |> put_flash(:info, "Food updated successfully")
+         |> put_flash(:info, "User updated successfully")
          |> push_patch(to: socket.assigns.patch)}
 
       {:error, changeset} ->

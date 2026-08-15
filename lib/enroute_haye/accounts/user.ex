@@ -23,32 +23,26 @@ defmodule EnrouteHaye.Accounts.User do
   ## REGISTRATION
   ## ======================
 
-  def registration_changeset(user, attrs) do
+    def registration_changeset(user, attrs) do
     user
-    |> cast(attrs, [
-                      :name,
-                      :email,
-                      :job_id,
-                      :password
-                      ])
+    |> cast(attrs, [:name, :email, :job_id, :password])
     |> validate_required([:email, :password])
     |> validate_email()
     |> validate_password()
     |> unique_constraint(:email)
-    |> unsafe_validate_unique(:job_id, EnrouteHaye.Repo)
-
+    # remove unless you truly want job_id unique per user:
+    # |> unsafe_validate_unique(:job_id, EnrouteHaye.Repo)
   end
 
   ## ======================
   ## EMAIL
   ## ======================
 
-  def email_changeset(user, attrs, opts \\ []) do
-    user
-    |> cast(attrs, [:email])
-    |> validate_email(opts)
-  end
-
+ def email_changeset(user, attrs, opts \\ []) do
+      user
+      |> cast(attrs, [:email])
+      |> validate_email(opts)
+    end
   defp validate_email(changeset, opts \\ []) do
     changeset =
       changeset
@@ -62,8 +56,7 @@ defmodule EnrouteHaye.Accounts.User do
       changeset
       |> unsafe_validate_unique(:email, EnrouteHaye.Repo)
       |> unique_constraint(:email)
-      |> validate_required([:job_id])
-
+      # removed: |> validate_required([:job_id])
     else
       changeset
     end

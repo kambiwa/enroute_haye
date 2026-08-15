@@ -49,21 +49,21 @@ defmodule EnrouteHayeWeb.Auth.Admin.Users do
 
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, "Foods")
+    |> assign(:page_title, "Users")
     |> assign(:user, nil)
-    |> fetch_filtered_foods()
+    |> fetch_filtered_users()
   end
 
   @impl true
   def handle_info(
-        {EnrouteHayeWeb.Foods.FormComponent, {:saved, _food}},
+        {EnrouteHayeWeb.Users.FormComponent, {:saved, _user}},
         socket
       ) do
-    {:noreply, fetch_filtered_foods(socket)}
+    {:noreply, fetch_filtered_users(socket)}
   end
 
   @impl true
-  def handle_event("add_food", _params, socket) do
+  def handle_event("add_user", _params, socket) do
     {:noreply,
      socket
      |> assign(:page_title, "New User")
@@ -95,10 +95,10 @@ defmodule EnrouteHayeWeb.Auth.Admin.Users do
      socket
      |> assign(:status_filter, filters["status_filter"])
      |> assign(:search_filter, filters["search_filter"])
-     |> fetch_filtered_foods()}
+     |> fetch_filtered_users()}
   end
 
-  defp fetch_filtered_foods(socket) do
+  defp fetch_filtered_users(socket) do
     filters = %{
       search_filter: socket.assigns.search_filter,
       status_filter: socket.assigns.status_filter
@@ -129,7 +129,7 @@ defmodule EnrouteHayeWeb.Auth.Admin.Users do
         <div style="display: flex; align-items: center; justify-content: space-between;">
           <div>
             <h1 style="font-size: 1.1rem; font-weight: 700; color: #1a1a1a; margin-bottom: 0.2rem;">
-              Foods
+              User Management
             </h1>
             <p style="font-size: 0.82rem; color: #9ca3af;">
               Manage user listings and their details.
@@ -152,7 +152,7 @@ defmodule EnrouteHayeWeb.Auth.Admin.Users do
 
             <%!-- New user --%>
             <button
-              phx-click="add_food"
+              phx-click="add_user"
               style="display: inline-flex; align-items: center; gap: 0.4rem;
                      padding: 0.45rem 1rem; font-size: 0.82rem; font-weight: 500;
                      color: #fff; background: #8B1A1A; border: none;
@@ -268,7 +268,7 @@ defmodule EnrouteHayeWeb.Auth.Admin.Users do
             on_cancel={JS.push("close")}
           >
             <.live_component
-              module={EnrouteHayeWeb.Foods.FormComponent}
+              module={EnrouteHayeWeb.Users.FormComponent}
               id={(@user && @user.id) || :new}
               title={@page_title}
               action={@live_action}
