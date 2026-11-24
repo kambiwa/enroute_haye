@@ -9,6 +9,7 @@ defmodule EnrouteHaye.Accounts.UserToken do
   # since someone with access to the email may take over the account.
   @change_email_validity_in_days 7
   @session_validity_in_days 14
+  @magic_link_validity_in_minutes 15
 
   schema "users_tokens" do
     field :token, :binary

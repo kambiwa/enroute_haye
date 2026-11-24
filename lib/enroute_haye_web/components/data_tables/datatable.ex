@@ -26,7 +26,6 @@ defmodule EnrouteHayeWeb.Datatable.Table do
     >
       <div style="overflow-x: auto;">
         <table style="width: 100%; border-collapse: collapse; font-size: 0.83rem;">
-
           <%!-- ── Header ── --%>
           <thead>
             <tr style="background: #FAF8F5;">
@@ -37,7 +36,7 @@ defmodule EnrouteHayeWeb.Datatable.Table do
                        letter-spacing: 0.08em; white-space: nowrap;
                        border-bottom: 1px solid #E8E2D9;"
               >
-                <%= col[:label] %>
+                {col[:label]}
               </th>
 
               <%= if @has_actions? do %>
@@ -88,7 +87,6 @@ defmodule EnrouteHayeWeb.Datatable.Table do
               </tr>
             <% end %>
           </tbody>
-
         </table>
       </div>
     </div>

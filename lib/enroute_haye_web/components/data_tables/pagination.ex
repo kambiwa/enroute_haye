@@ -2,6 +2,8 @@ defmodule EnrouteHayeWeb.Pagination do
   @moduledoc false
   use EnrouteHayeWeb, :live_view
 
+  alias EnrouteHaye.Repo
+
   @impl true
   def render(assigns) do
     ~H"""

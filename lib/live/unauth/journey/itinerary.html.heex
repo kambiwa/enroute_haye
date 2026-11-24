@@ -1,4 +1,3 @@
-
 <%= if @step == 6 do %>
   <% sel_hotel = hotel_by_id(@hotels, @hotel) %>
   <% total = estimated_cost(@hotels, @hotel, @duration) %>
@@ -12,15 +11,15 @@
     <div class="summary-grid">
       <div class="sum-item">
         <div class="sum-label">Departure</div>
-        <div class="sum-val">📍 <%= if @district == "", do: "Lusaka", else: @district %></div>
+        <div class="sum-val">📍 {if @district == "", do: "Lusaka", else: @district}</div>
       </div>
       <div class="sum-item">
         <div class="sum-label">Duration</div>
-        <div class="sum-val">📅 <%= @duration %> Days</div>
+        <div class="sum-val">📅 {@duration} Days</div>
       </div>
       <div class="sum-item">
         <div class="sum-label">Transport</div>
-        <div class="sum-val">🚗 <%= String.capitalize(@transport) %></div>
+        <div class="sum-val">🚗 {String.capitalize(@transport)}</div>
       </div>
       <div class="sum-item">
         <div class="sum-label">Ceremony</div>
@@ -28,19 +27,19 @@
       </div>
       <div class="sum-item">
         <div class="sum-label">Sites</div>
-        <div class="sum-val">📍 <%= length(@active_pins) %> pinned</div>
+        <div class="sum-val">📍 {length(@active_pins)} pinned</div>
       </div>
       <div class="sum-item">
         <div class="sum-label">Accommodation</div>
-        <div class="sum-val">🏨 <%= if sel_hotel, do: sel_hotel.name, else: "Not selected" %></div>
+        <div class="sum-val">🏨 {if sel_hotel, do: sel_hotel.name, else: "Not selected"}</div>
       </div>
       <div class="sum-item">
         <div class="sum-label">Foods</div>
-        <div class="sum-val">🍽️ <%= length(@selected_foods) %> dishes</div>
+        <div class="sum-val">🍽️ {length(@selected_foods)} dishes</div>
       </div>
       <div class="sum-item">
         <div class="sum-label">Music</div>
-        <div class="sum-val">🎵 <%= length(@selected_music) %> tracks</div>
+        <div class="sum-val">🎵 {length(@selected_music)} tracks</div>
       </div>
     </div>
 
@@ -48,18 +47,18 @@
     <div class="cost-box">
       <div class="cost-label">Estimated Total Budget</div>
       <div class="cost-num" id="cost-counter" phx-hook="CountUp" data-target={total}>
-        $<%= total |> :erlang.integer_to_binary() %>
+        ${total |> :erlang.integer_to_binary()}
       </div>
       <div class="cost-range">
-        Range: $<%= Number.Delimit.number_to_delimited(low, precision: 0) %> –
-               $<%= Number.Delimit.number_to_delimited(high, precision: 0) %>
+        Range: ${Number.Delimit.number_to_delimited(low, precision: 0)} –
+        ${Number.Delimit.number_to_delimited(high, precision: 0)}
       </div>
     </div>
 
     <%!-- PDF error --%>
     <%= if @pdf_error do %>
       <div class="error-box">
-        ⚠️ <%= @pdf_error %>
+        ⚠️ {@pdf_error}
       </div>
     <% end %>
 
@@ -84,7 +83,9 @@
         id="pdf-btn"
         phx-hook="PDFDownload"
       >
-        <%= if @pdf_ready, do: "🔄 Re-Download Itinerary PDF", else: "📥 Preview & Download Itinerary PDF" %>
+        {if @pdf_ready,
+          do: "🔄 Re-Download Itinerary PDF",
+          else: "📥 Preview & Download Itinerary PDF"}
       </button>
     <% end %>
 

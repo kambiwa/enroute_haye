@@ -2,7 +2,6 @@ defmodule EnrouteHaye.Schema.Audio do
   use Ecto.Schema
   import Ecto.Changeset
 
-
   schema "audio" do
     field :title, :string
     field :artist, :string

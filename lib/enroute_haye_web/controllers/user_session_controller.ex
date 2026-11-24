@@ -5,7 +5,11 @@ defmodule EnrouteHayeWeb.UserSessionController do
   alias EnrouteHayeWeb.UserAuth
 
   def create(conn, %{"_action" => "confirmed"} = params) do
-    create(conn, params, "User confirmed successfully.")
+    create_magic_link(conn, params, "User confirmed successfully.")
+  end
+
+  def create(conn, %{"user" => %{"token" => _token}} = params) do
+    create_magic_link(conn, params, "Welcome back!")
   end
 
   def create(conn, params) do
@@ -28,6 +32,22 @@ defmodule EnrouteHayeWeb.UserSessionController do
   #       |> redirect(to: ~p"/users/log-in")
   #   end
   # end
+
+  defp create_magic_link(conn, %{"user" => %{"token" => token} = user_params}, info) do
+    case Accounts.login_user_by_magic_link(token) do
+      {:ok, {user, tokens_to_disconnect}} ->
+        UserAuth.disconnect_sessions(tokens_to_disconnect)
+
+        conn
+        |> put_flash(:info, info)
+        |> UserAuth.log_in_user(user, user_params)
+
+      _ ->
+        conn
+        |> put_flash(:error, "The link is invalid or it has expired.")
+        |> redirect(to: ~p"/users/log-in")
+    end
+  end
 
   # email + password login
   defp create(conn, %{"user" => user_params}, info) do
@@ -55,7 +75,7 @@ defmodule EnrouteHayeWeb.UserSessionController do
     UserAuth.disconnect_sessions(expired_tokens)
 
     conn
-    |> put_session(:user_return_to, ~p"/admin/users/settings")
+    |> put_session(:user_return_to, ~p"/users/settings")
     |> create(params, "Password updated successfully!")
   end
 

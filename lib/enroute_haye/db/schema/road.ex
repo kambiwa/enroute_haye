@@ -4,13 +4,13 @@ defmodule EnrouteHaye.Schema.Road do
   import Ecto.Changeset
 
   schema "roads" do
-    field :operator,         :string
-    field :route,            :string
-    field :departure_point,  :string
-    field :arrival_point,    :string
-    field :departure_time,   :naive_datetime
-    field :arrival_time,     :naive_datetime
-    field :price,            :decimal
+    field :operator, :string
+    field :route, :string
+    field :departure_point, :string
+    field :arrival_point, :string
+    field :departure_time, :naive_datetime
+    field :arrival_time, :naive_datetime
+    field :price, :decimal
     field :operator_contact, :string
 
     timestamps()

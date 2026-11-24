@@ -18,9 +18,8 @@ defmodule EnrouteHayeWeb.Auth.Admin.Dashboard do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.admin_app flash={@flash} current_page={:dashboard}>
+    <Layouts.admin_app flash={@flash} current_scope={@current_scope} current_page={:dashboard}>
       <div style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem;">
-
         <div style="display: flex; align-items: center; justify-content: space-between;">
           <div>
             <h1 style="font-size: 1.1rem; font-weight: 700; color: #1a1a1a; margin-bottom: 0.2rem;">
@@ -37,48 +36,63 @@ defmodule EnrouteHayeWeb.Auth.Admin.Dashboard do
 
         <%!-- ══ STAT CARDS — 4 columns ══ --%>
         <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;">
-          <.stat_card label="Total Users"      value={@stats.users}          icon="hero-users"              color="#8B1A1A" />
-          <.stat_card label="Active Trips"     value={@stats.trips}          icon="hero-map"                color="#0d9488" />
-          <.stat_card label="Bookings"         value={@stats.bookings}       icon="hero-bookmark"           color="#d97706" />
-          <.stat_card label="Accommodations"   value={@stats.accommodations} icon="hero-building-office-2"  color="#2563eb" />
+          <.stat_card label="Total Users" value={@stats.users} icon="hero-users" color="#8B1A1A" />
+          <.stat_card label="Active Trips" value={@stats.trips} icon="hero-map" color="#0d9488" />
+          <.stat_card label="Bookings" value={@stats.bookings} icon="hero-bookmark" color="#d97706" />
+          <.stat_card
+            label="Accommodations"
+            value={@stats.accommodations}
+            icon="hero-building-office-2"
+            color="#2563eb"
+          />
         </div>
 
         <%!-- ══ CHART + QUICK STATS ══ --%>
         <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; align-items: start;">
-
           <%!-- Bookings chart — spans 2 cols --%>
           <div style="grid-column: span 2; background: #fff; border: 1px solid #E8E2D9;
                       border-top: 3px solid #8B1A1A; border-radius: 0.75rem; padding: 1.25rem;">
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
-              <h2 style="font-size: 0.85rem; font-weight: 600; color: #374151;">Bookings this year</h2>
-              <span style="font-size: 0.72rem; color: #9ca3af; letter-spacing: 0.08em; text-transform: uppercase;">Monthly</span>
+              <h2 style="font-size: 0.85rem; font-weight: 600; color: #374151;">
+                Bookings this year
+              </h2>
+              <span style="font-size: 0.72rem; color: #9ca3af; letter-spacing: 0.08em; text-transform: uppercase;">
+                Monthly
+              </span>
             </div>
-            <div id="bookings-chart"
-                 phx-hook="BookingsChart"
-                 data-monthly={Jason.encode!(@monthly_bookings)}
-                 style="height: 180px;">
+            <div
+              id="bookings-chart"
+              phx-hook="BookingsChart"
+              data-monthly={Jason.encode!(@monthly_bookings)}
+              style="height: 180px;"
+            >
             </div>
           </div>
 
           <%!-- Quick stats — 1 col --%>
           <div style="display: flex; flex-direction: column; gap: 1rem;">
-            <.quick_stat label="Sites"            value={@stats.sites}            sub="Tourist locations" />
-            <.quick_stat label="Events"           value={@stats.events}           sub="Upcoming & past" />
-            <.quick_stat label="Pending bookings" value={@stats.pending_bookings} sub="Awaiting confirmation" accent={true} />
+            <.quick_stat label="Sites" value={@stats.sites} sub="Tourist locations" />
+            <.quick_stat label="Events" value={@stats.events} sub="Upcoming & past" />
+            <.quick_stat
+              label="Pending bookings"
+              value={@stats.pending_bookings}
+              sub="Awaiting confirmation"
+              accent={true}
+            />
           </div>
-
         </div>
 
         <%!-- ══ RECENT BOOKINGS TABLE ══ --%>
         <div style="background: #fff; border: 1px solid #E8E2D9; border-radius: 0.75rem; overflow: hidden;">
-
           <div style="padding: 1rem 1.25rem; border-bottom: 1px solid #E8E2D9;
                       display: flex; align-items: center; justify-content: space-between;">
             <h2 style="font-size: 0.85rem; font-weight: 600; color: #374151;">Recent bookings</h2>
-            <a href={~p"/admin/bookings"}
-               style="font-size: 0.75rem; color: #8B1A1A; font-weight: 500; text-decoration: none;"
-               onmouseover="this.style.textDecoration='underline'"
-               onmouseout="this.style.textDecoration='none'">
+            <a
+              href={~p"/admin/bookings"}
+              style="font-size: 0.75rem; color: #8B1A1A; font-weight: 500; text-decoration: none;"
+              onmouseover="this.style.textDecoration='underline'"
+              onmouseout="this.style.textDecoration='none'"
+            >
               View all →
             </a>
           </div>
@@ -97,9 +111,11 @@ defmodule EnrouteHayeWeb.Auth.Admin.Dashboard do
               </thead>
               <tbody>
                 <%= for booking <- @recent_bookings do %>
-                  <tr style="border-top: 1px solid #E8E2D9;"
-                      onmouseover="this.style.background='#FAF8F5'"
-                      onmouseout="this.style.background='transparent'">
+                  <tr
+                    style="border-top: 1px solid #E8E2D9;"
+                    onmouseover="this.style.background='#FAF8F5'"
+                    onmouseout="this.style.background='transparent'"
+                  >
                     <td style={td_style()}>
                       <div style="display: flex; align-items: center; gap: 0.6rem;">
                         <div style="width: 28px; height: 28px; border-radius: 50%;
@@ -111,10 +127,18 @@ defmodule EnrouteHayeWeb.Auth.Admin.Dashboard do
                         <span style="color: #374151; font-weight: 500;">{booking.user_name}</span>
                       </div>
                     </td>
-                    <td style={td_style()}><span style="color: #4b5563;">{booking.accommodation_name}</span></td>
-                    <td style={td_style()}><span style="color: #6b7280;">{booking.check_in}</span></td>
-                    <td style={td_style()}><span style="color: #6b7280;">{booking.check_out}</span></td>
-                    <td style={td_style()}><span style="color: #374151; font-weight: 500;">ZMW {booking.total_price}</span></td>
+                    <td style={td_style()}>
+                      <span style="color: #4b5563;">{booking.accommodation_name}</span>
+                    </td>
+                    <td style={td_style()}>
+                      <span style="color: #6b7280;">{booking.check_in}</span>
+                    </td>
+                    <td style={td_style()}>
+                      <span style="color: #6b7280;">{booking.check_out}</span>
+                    </td>
+                    <td style={td_style()}>
+                      <span style="color: #374151; font-weight: 500;">ZMW {booking.total_price}</span>
+                    </td>
                     <td style={td_style()}>
                       <span style={booking_badge_style(booking.status)}>
                         {booking.status}
@@ -125,7 +149,10 @@ defmodule EnrouteHayeWeb.Auth.Admin.Dashboard do
 
                 <%= if Enum.empty?(@recent_bookings) do %>
                   <tr>
-                    <td colspan="6" style="padding: 2.5rem; text-align: center; color: #9ca3af; font-size: 0.85rem;">
+                    <td
+                      colspan="6"
+                      style="padding: 2.5rem; text-align: center; color: #9ca3af; font-size: 0.85rem;"
+                    >
                       No bookings yet
                     </td>
                   </tr>
@@ -134,7 +161,6 @@ defmodule EnrouteHayeWeb.Auth.Admin.Dashboard do
             </table>
           </div>
         </div>
-
       </div>
     </Layouts.admin_app>
     """
@@ -143,8 +169,8 @@ defmodule EnrouteHayeWeb.Auth.Admin.Dashboard do
   # ── Stat card ────────────────────────────────────────────────────────
   attr :label, :string, required: true
   attr :value, :integer, required: true
-  attr :icon,  :string,  required: true
-  attr :color, :string,  default: "#8B1A1A"
+  attr :icon, :string, required: true
+  attr :color, :string, default: "#8B1A1A"
 
   defp stat_card(assigns) do
     ~H"""
@@ -164,16 +190,19 @@ defmodule EnrouteHayeWeb.Auth.Admin.Dashboard do
   end
 
   # ── Quick stat ───────────────────────────────────────────────────────
-  attr :label,  :string,  required: true
-  attr :value,  :integer, required: true
-  attr :sub,    :string,  required: true
+  attr :label, :string, required: true
+  attr :value, :integer, required: true
+  attr :sub, :string, required: true
   attr :accent, :boolean, default: false
 
   defp quick_stat(assigns) do
     ~H"""
     <div style="background: #fff; border: 1px solid #E8E2D9; border-radius: 0.75rem; padding: 1.1rem 1.25rem;">
       <p style="font-size: 0.72rem; color: #9ca3af; margin-bottom: 0.25rem;">{@label}</p>
-      <p style={"font-size: 1.6rem; font-weight: 700; line-height: 1; margin-bottom: 0.25rem; color: #{if @accent, do: "#8B1A1A", else: "#111827"}"}}>
+      <p
+        style={"font-size: 1.6rem; font-weight: 700; line-height: 1; margin-bottom: 0.25rem; color: #{if @accent, do: "#8B1A1A", else: "#111827"}"}
+        }
+      >
         {@value}
       </p>
       <p style="font-size: 0.72rem; color: #9ca3af;">{@sub}</p>
@@ -209,22 +238,27 @@ defmodule EnrouteHayeWeb.Auth.Admin.Dashboard do
 
   defp load_stats do
     %{
-      users:            safe_count("users"),
-      trips:            safe_count("trips"),
-      bookings:         safe_count("bookings"),
+      users: safe_count("users"),
+      trips: safe_count("trips"),
+      bookings: safe_count("bookings"),
       pending_bookings: safe_count("bookings", where: "status = 'pending'"),
-      accommodations:   safe_count("accommodations"),
-      sites:            safe_count("sites"),
-      events:           safe_count("events")
+      accommodations: safe_count("accommodations"),
+      sites: safe_count("sites"),
+      events: safe_count("events")
     }
   end
 
   defp safe_count(table, opts \\ []) do
     where = Keyword.get(opts, :where)
-    sql   = if where, do: "SELECT COUNT(*) FROM #{table} WHERE #{where}", else: "SELECT COUNT(*) FROM #{table}"
+
+    sql =
+      if where,
+        do: "SELECT COUNT(*) FROM #{table} WHERE #{where}",
+        else: "SELECT COUNT(*) FROM #{table}"
+
     case Repo.query(sql) do
       {:ok, %{rows: [[count]]}} -> count
-      _                         -> 0
+      _ -> 0
     end
   end
 
@@ -251,6 +285,7 @@ defmodule EnrouteHayeWeb.Auth.Admin.Dashboard do
           |> Enum.zip(row)
           |> Map.new(fn {k, v} -> {String.to_atom(k), v} end)
         end)
+
       _ ->
         []
     end
@@ -267,11 +302,12 @@ defmodule EnrouteHayeWeb.Auth.Admin.Dashboard do
     ORDER BY month
     """
 
-    base   = Enum.map(1..12, &{&1, 0}) |> Map.new()
+    base = Enum.map(1..12, &{&1, 0}) |> Map.new()
+
     counts =
       case Repo.query(sql) do
         {:ok, %{rows: rows}} -> Map.new(rows, fn [m, c] -> {m, c} end)
-        _                    -> %{}
+        _ -> %{}
       end
 
     Map.merge(base, counts)

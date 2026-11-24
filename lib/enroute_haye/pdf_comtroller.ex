@@ -21,9 +21,9 @@ defmodule EnrouteHayeWeb.PDFController do
       payload ->
         case render_pdf(payload) do
           {:ok, pdf_bytes} ->
-            name      = payload.traveller_name
+            name = payload.traveller_name
             name_slug = if name, do: "_#{slug(name)}", else: ""
-            filename  = "kuomboka_itinerary_#{slug(payload.district)}#{name_slug}.pdf"
+            filename = "kuomboka_itinerary_#{slug(payload.district)}#{name_slug}.pdf"
 
             conn
             |> put_resp_content_type("application/pdf")
@@ -39,37 +39,37 @@ defmodule EnrouteHayeWeb.PDFController do
   end
 
   # ── Private: render via ChromicPDF ────────────────────────────────────────
-    defp render_pdf(payload) do
-      html = build_html(payload)
+  defp render_pdf(payload) do
+    html = build_html(payload)
 
-      case ChromicPDF.print_to_pdf(
-        {:html, html},
-        print_to_pdf: %{
-          paperWidth: 8.27,
-          paperHeight: 11.69,
-          marginTop: 0.59,
-          marginBottom: 0.59,
-          marginLeft: 0.59,
-          marginRight: 0.59,
-          printBackground: true
-        }
-      ) do
-        {:ok, base64_pdf} -> {:ok, Base.decode64!(base64_pdf)}
-        {:error, reason}  -> {:error, inspect(reason)}
-      end
+    case ChromicPDF.print_to_pdf(
+           {:html, html},
+           print_to_pdf: %{
+             paperWidth: 8.27,
+             paperHeight: 11.69,
+             marginTop: 0.59,
+             marginBottom: 0.59,
+             marginLeft: 0.59,
+             marginRight: 0.59,
+             printBackground: true
+           }
+         ) do
+      {:ok, base64_pdf} -> {:ok, Base.decode64!(base64_pdf)}
+      {:error, reason} -> {:error, inspect(reason)}
     end
+  end
 
   # ── HTML template ─────────────────────────────────────────────────────────
   # (unchanged — full template below)
 
   defp build_html(p) do
-    foods  = names_for(p.foods_all, p.selected_foods)
-    music  = names_for(p.music_all, p.selected_music)
-    hotel  = p.hotel_name || "Not selected"
-    district   = p.district || "Lusaka"
-    date   = if p.start_date == "", do: "TBD", else: p.start_date
-    sites  = length(p.active_pins)
-    name   = p.traveller_name
+    foods = names_for(p.foods_all, p.selected_foods)
+    music = names_for(p.music_all, p.selected_music)
+    hotel = p.hotel_name || "Not selected"
+    district = p.district || "Lusaka"
+    date = if p.start_date == "", do: "TBD", else: p.start_date
+    sites = length(p.active_pins)
+    name = p.traveller_name
 
     greeting =
       if name, do: "Dear #{name},", else: nil
@@ -290,10 +290,10 @@ defmodule EnrouteHayeWeb.PDFController do
           <div class="cover-subtitle">#{subtitle}</div>
 
           #{if greeting do
-            ~s(<div class="cover-greeting">#{greeting}</div><div class="cover-badge">✦ Traveller Itinerary</div>)
-          else
-            ""
-          end}
+      ~s(<div class="cover-greeting">#{greeting}</div><div class="cover-badge">✦ Traveller Itinerary</div>)
+    else
+      ""
+    end}
         </div>
       </div>
       <div class="cover-rule"></div>

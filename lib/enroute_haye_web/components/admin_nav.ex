@@ -28,7 +28,7 @@ defmodule EnrouteHayeWeb.AdminNav do
     :trips | :accommodations | :bookings | :reviews | :users | :settings
   """
 
-  import Phoenix.LiveView
+  import Phoenix.Component, only: [assign: 3]
 
   @doc false
   def on_mount(page, _params, _session, socket) when is_atom(page) and page != :infer do
@@ -52,25 +52,20 @@ defmodule EnrouteHayeWeb.AdminNav do
     |> String.downcase()
     |> then(fn name ->
       cond do
-        String.contains?(name, "dashboard")     -> :dashboard
-        String.contains?(name, "site")          -> :sites
-        String.contains?(name, "event")         -> :events
-        String.contains?(name, "food")          -> :foods
-        String.contains?(name, "audio")         -> :audio
-        String.contains?(name, "media")         -> :media
-        String.contains?(name, "trip")          -> :trips
+        String.contains?(name, "dashboard") -> :dashboard
+        String.contains?(name, "site") -> :sites
+        String.contains?(name, "event") -> :events
+        String.contains?(name, "food") -> :foods
+        String.contains?(name, "audio") -> :audio
+        String.contains?(name, "media") -> :media
+        String.contains?(name, "trip") -> :trips
         String.contains?(name, "accommodation") -> :accommodations
-        String.contains?(name, "booking")       -> :bookings
-        String.contains?(name, "review")        -> :reviews
-        String.contains?(name, "user")          -> :users
-        String.contains?(name, "setting")       -> :settings
-        true                                    -> :dashboard
+        String.contains?(name, "booking") -> :bookings
+        String.contains?(name, "review") -> :reviews
+        String.contains?(name, "user") -> :users
+        String.contains?(name, "setting") -> :settings
+        true -> :dashboard
       end
     end)
-  end
-
-
-  defp assign(socket, key, value) do
-    Phoenix.LiveView.assign(socket, key, value)
   end
 end

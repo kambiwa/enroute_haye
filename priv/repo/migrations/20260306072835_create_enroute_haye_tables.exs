@@ -4,20 +4,20 @@ defmodule EnrouteHaye.Repo.Migrations.CreateEnrouteHayeTables do
   def change do
     execute "CREATE EXTENSION IF NOT EXISTS citext", ""
 
-
-     # ========================
-       #workflow, department, roles, jobs, notification
     # ========================
-      create_if_not_exists table(:workflow) do
-        add :name, :string
-        add :status, :string
-        add :flow, {:array, :map}
-        add :description, :string
-        add :is_active, :boolean, default: true
+    # workflow, department, roles, jobs, notification
+    # ========================
+    create_if_not_exists table(:workflow) do
+      add :name, :string
+      add :status, :string
+      add :flow, {:array, :map}
+      add :description, :string
+      add :is_active, :boolean, default: true
 
-        timestamps()
+      timestamps()
     end
-     create_if_not_exists table(:department) do
+
+    create_if_not_exists table(:department) do
       add :name, :string
       add :description, :string
       add :status, :string
@@ -192,8 +192,6 @@ defmodule EnrouteHaye.Repo.Migrations.CreateEnrouteHayeTables do
       timestamps(type: :utc_datetime)
     end
 
-
-
     # ========================
     # AUDIO
     # ========================
@@ -213,20 +211,20 @@ defmodule EnrouteHaye.Repo.Migrations.CreateEnrouteHayeTables do
     # MEDIA
     # ========================
     create table(:media) do
-        add :title, :string
-        add :media_type, :string
-        add :author, :string
-        add :category, :string
-        add :description, :string
-        add :location, :string
-        add :file_path, :string
-        add :minutes, :integer
-        add :poster_path, :string
+      add :title, :string
+      add :media_type, :string
+      add :author, :string
+      add :category, :string
+      add :description, :string
+      add :location, :string
+      add :file_path, :string
+      add :minutes, :integer
+      add :poster_path, :string
 
       timestamps(type: :utc_datetime)
     end
 
-     # ========================
+    # ========================
     # ROAD TRANSPORT
     # ========================
     create table(:roads) do
@@ -242,7 +240,7 @@ defmodule EnrouteHaye.Repo.Migrations.CreateEnrouteHayeTables do
       timestamps(type: :utc_datetime)
     end
 
-     # ========================
+    # ========================
     # Air TRANSPORT
     # ========================
     create table(:airline) do
@@ -281,21 +279,20 @@ defmodule EnrouteHaye.Repo.Migrations.CreateEnrouteHayeTables do
       timestamps(type: :utc_datetime)
     end
 
-
     create_if_not_exists table(:notifications) do
-        add :status, :string
-        add :type, :string
-        add :message, :string
-        add :read, :boolean
-        add :action_url, :string
-        add :sender_name, :string
-        add :document_name, :string
-        add :document_id, :string
-        add :comments, :string
+      add :status, :string
+      add :type, :string
+      add :message, :string
+      add :read, :boolean
+      add :action_url, :string
+      add :sender_name, :string
+      add :document_name, :string
+      add :document_id, :string
+      add :comments, :string
 
-        add :user_id, references(:users, on_delete: :delete_all), null: false
-        add :sender_id, references(:users, on_delete: :delete_all), null: false
-        timestamps()
+      add :user_id, references(:users, on_delete: :delete_all), null: false
+      add :sender_id, references(:users, on_delete: :delete_all), null: false
+      timestamps()
     end
   end
 end

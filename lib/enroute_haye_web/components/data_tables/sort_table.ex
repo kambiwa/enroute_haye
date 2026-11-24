@@ -40,7 +40,10 @@ defmodule EnrouteHayeWeb.SortTable.DataTable do
   attr :params, :map, required: true
   attr :text, :string, required: true
   attr :field, :atom, required: true
-  attr :class, :string, default: "flex items-center gap-2 hover:text-blue-600 transition-colors cursor-pointer"
+
+  attr :class, :string,
+    default: "flex items-center gap-2 hover:text-blue-600 transition-colors cursor-pointer"
+
   attr :show_icon, :boolean, default: true
 
   def table_link(assigns) do
@@ -51,10 +54,11 @@ defmodule EnrouteHayeWeb.SortTable.DataTable do
 
     new_direction = if is_active, do: reverse(current_direction), else: "desc"
 
-    querystring = querystring(assigns.params,
-      sort_field: assigns.field,
-      sort_direction: new_direction
-    )
+    querystring =
+      querystring(assigns.params,
+        sort_field: assigns.field,
+        sort_direction: new_direction
+      )
 
     assigns =
       assigns
@@ -64,15 +68,15 @@ defmodule EnrouteHayeWeb.SortTable.DataTable do
 
     ~H"""
     <.link patch={"?#{@querystring}"} class={@class}>
-      <%= @text %>
+      {@text}
       <%= if @show_icon && @is_active do %>
         <%= if @current_direction == "asc" do %>
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
           </svg>
         <% else %>
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
           </svg>
         <% end %>
       <% end %>
@@ -97,7 +101,8 @@ defmodule EnrouteHayeWeb.SortTable.DataTable do
     params =
       params
       |> normalize_params()
-      |> Map.drop(["_csrf_token", "_format"])  # Remove framework params
+      # Remove framework params
+      |> Map.drop(["_csrf_token", "_format"])
 
     # Build opts map with defaults
     opts_map = %{

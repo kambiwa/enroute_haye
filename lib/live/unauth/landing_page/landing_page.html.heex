@@ -1,7 +1,9 @@
-  <div class="enroute-landing">
-   <Layouts.unauth_app flash={@flash} current_scope={@current_scope}  mobile_menu_open={@mobile_menu_open}>
-
-
+<div class="enroute-landing">
+  <Layouts.unauth_app
+    flash={@flash}
+    current_scope={@current_scope}
+    mobile_menu_open={@mobile_menu_open}
+  >
     <%!-- ============================ HERO ============================ --%>
     <section id="top" class="relative min-h-screen flex items-center overflow-hidden pt-20">
       <div class="zm-hero-bg"></div>
@@ -14,15 +16,18 @@
       <div class="zm-mint-node" style="left: 20%; top: 44%;"></div>
 
       <%!-- Drifting binary particles --%>
-      <div :for={i <- 1..10} class="zm-binary-particle" style={"left: #{18 + i * 3}%; bottom: #{5 + rem(i * 7, 20)}%; animation-delay: #{i * 0.8}s;"}>
+      <div
+        :for={i <- 1..10}
+        class="zm-binary-particle"
+        style={"left: #{18 + i * 3}%; bottom: #{5 + rem(i * 7, 20)}%; animation-delay: #{i * 0.8}s;"}
+      >
         {if rem(i, 2) == 0, do: "1010", else: "0101"}
       </div>
 
       <div class="relative z-10 mx-auto max-w-7xl px-6 lg:px-10 w-full">
         <div class="max-w-2xl zm-reveal">
           <span class="inline-flex items-center gap-2 text-xs font-semibold tracking-wide uppercase text-zm-copper bg-white/70 border border-zm-silver rounded-full px-4 py-1.5 mb-6">
-            <span class="w-1.5 h-1.5 rounded-full bg-zm-emerald"></span>
-            Digital Tour Guide
+            <span class="w-1.5 h-1.5 rounded-full bg-zm-emerald"></span> Digital Tour Guide
           </span>
 
           <h1 class="font-zm-display text-5xl sm:text-6xl lg:text-7xl font-extrabold leading-[1.05] text-zm-ink mb-6">
@@ -68,9 +73,15 @@
     <section id="explore" class="relative py-28 zm-weave-texture">
       <div class="mx-auto max-w-7xl px-6 lg:px-10">
         <div class="max-w-2xl mb-16 zm-reveal" phx-hook="Reveal" id="explore-heading">
-          <span class="text-sm font-semibold uppercase tracking-wide text-zm-copper">Explore</span>
-          <h2 class="font-zm-display text-4xl lg:text-5xl font-bold text-zm-ink mt-3">Zambia by Province</h2>
-          <p class="text-zm-body mt-4 text-lg">Ten provinces. Ten distinct cultures. Every one carries its own landscapes, ceremonies, and stories.</p>
+          <span class="text-sm font-semibold uppercase tracking-wide text-zm-copper">
+            Explore
+          </span>
+          <h2 class="font-zm-display text-4xl lg:text-5xl font-bold text-zm-ink mt-3">
+            Zambia by Province
+          </h2>
+          <p class="text-zm-body mt-4 text-lg">
+            Ten provinces. Ten distinct cultures. Every one carries its own landscapes, ceremonies, and stories.
+          </p>
         </div>
 
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -82,13 +93,22 @@
             phx-mouseout="unhover_province"
           >
             <div class="relative aspect-[4/5] rounded-[1.75rem] overflow-hidden bg-zm-soft-gray">
-              <img src={province.image} alt={province.name} class="w-full h-full object-cover" loading="lazy" />
+              <img
+                src={province.image}
+                alt={province.name}
+                class="w-full h-full object-cover"
+                loading="lazy"
+              />
               <div class="zm-circuit-overlay"></div>
-              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent">
+              </div>
               <div class="absolute inset-x-0 bottom-0 p-6 text-white">
                 <h3 class="font-zm-display text-xl font-bold">{province.name}</h3>
                 <div class="mt-4 pt-4 border-t border-white/20 text-xs space-y-1 text-white/80">
-                  <p><span class="text-zm-mint font-medium">Attractions</span> — {province.attractions}</p>
+                  <p>
+                    <span class="text-zm-mint font-medium">Attractions</span>
+                    — {province.attractions}
+                  </p>
                 </div>
               </div>
             </div>
@@ -101,15 +121,26 @@
     <section id="experiences" class="py-28 bg-zm-soft-gray">
       <div class="mx-auto max-w-7xl px-6 lg:px-10">
         <div class="max-w-2xl mb-16 zm-reveal" phx-hook="Reveal" id="experiences-heading">
-          <span class="text-sm font-semibold uppercase tracking-wide text-zm-copper">Experiences</span>
-          <h2 class="font-zm-display text-4xl lg:text-5xl font-bold text-zm-ink mt-3">Iconic Experiences</h2>
-          <p class="text-zm-body mt-4 text-lg">Curated moments that put you inside Zambia's landscapes and living traditions.</p>
+          <span class="text-sm font-semibold uppercase tracking-wide text-zm-copper">
+            Experiences
+          </span>
+          <h2 class="font-zm-display text-4xl lg:text-5xl font-bold text-zm-ink mt-3">
+            Iconic Experiences
+          </h2>
+          <p class="text-zm-body mt-4 text-lg">
+            Curated moments that put you inside Zambia's landscapes and living traditions.
+          </p>
         </div>
 
         <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <div :for={exp <- @experiences} class="zm-experience-card zm-glass-card overflow-hidden">
             <div class="relative aspect-[4/3]">
-              <img src={exp.image} alt={exp.name} class="w-full h-full object-cover" loading="lazy" />
+              <img
+                src={exp.image}
+                alt={exp.name}
+                class="w-full h-full object-cover"
+                loading="lazy"
+              />
               <span class="absolute top-3 left-3 text-xs font-semibold bg-white/85 backdrop-blur px-3 py-1 rounded-full text-zm-copper">
                 {exp.category}
               </span>
@@ -120,11 +151,15 @@
               <div class="flex items-center justify-between mt-3 text-xs text-zm-muted">
                 <span>{exp.duration}</span>
                 <span class="flex items-center gap-1 text-zm-ink font-medium">
-                  <svg viewBox="0 0 24 24" class="w-3.5 h-3.5 fill-zm-gold"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14l-5-4.87 6.91-1.01z"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-3.5 h-3.5 fill-zm-gold">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14l-5-4.87 6.91-1.01z" />
+                  </svg>
                   {exp.rating}
                 </span>
               </div>
-              <button class="zm-btn-primary w-full text-center text-sm mt-4 py-2.5">Book Experience</button>
+              <button class="zm-btn-primary w-full text-center text-sm mt-4 py-2.5">
+                Book Experience
+              </button>
             </div>
           </div>
         </div>
@@ -135,15 +170,38 @@
     <section id="journey" class="py-28">
       <div class="mx-auto max-w-7xl px-6 lg:px-10">
         <div class="max-w-2xl mb-16 zm-reveal" phx-hook="Reveal" id="journey-heading">
-          <span class="text-sm font-semibold uppercase tracking-wide text-zm-copper">Trip Planner</span>
-          <h2 class="font-zm-display text-4xl lg:text-5xl font-bold text-zm-ink mt-3">Plan Your Trip</h2>
-          <p class="text-zm-body mt-4 text-lg">Build an itinerary in six steps — Enroute maps the route, cost and timing for you.</p>
+          <span class="text-sm font-semibold uppercase tracking-wide text-zm-copper">
+            Trip Planner
+          </span>
+          <h2 class="font-zm-display text-4xl lg:text-5xl font-bold text-zm-ink mt-3">
+            Plan Your Trip
+          </h2>
+          <p class="text-zm-body mt-4 text-lg">
+            Build an itinerary in six steps — Enroute maps the route, cost and timing for you.
+          </p>
         </div>
 
         <div class="grid lg:grid-cols-5 gap-10 items-start">
           <div class="lg:col-span-2 zm-glass-card p-8">
             <ol class="space-y-6">
-              <li :for={{label, n} <- Enum.with_index(["Choose starting from", "Choose transport mode", "ceremony if any", "pin sites", "choose local delicacies","choose accomodation", "Generate Itinerary"], 1)} class="flex items-center gap-4">
+              <li
+                :for={
+                  {label, n} <-
+                    Enum.with_index(
+                      [
+                        "Choose starting from",
+                        "Choose transport mode",
+                        "ceremony if any",
+                        "pin sites",
+                        "choose local delicacies",
+                        "choose accomodation",
+                        "Generate Itinerary"
+                      ],
+                      1
+                    )
+                }
+                class="flex items-center gap-4"
+              >
                 <span class="w-9 h-9 rounded-full bg-white border border-zm-silver flex items-center justify-center font-zm-display text-sm font-bold text-zm-copper shrink-0">
                   {n}
                 </span>
@@ -156,9 +214,23 @@
           <div class="lg:col-span-3 zm-glass-card p-8 relative overflow-hidden min-h-[22rem]">
             <div class="absolute inset-0 zm-weave-texture opacity-60"></div>
             <div class="relative">
-              <p class="text-sm font-semibold text-zm-copper uppercase tracking-wide mb-4">Live preview</p>
+              <p class="text-sm font-semibold text-zm-copper uppercase tracking-wide mb-4">
+                Live preview
+              </p>
               <div class="flex items-center gap-3 text-sm text-zm-body mb-2">
-                <svg viewBox="0 0 24 24" class="w-4 h-4 text-zm-emerald" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
+                <svg
+                  viewBox="0 0 24 24"
+                  class="w-4 h-4 text-zm-emerald"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M12 22s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12z" /><circle
+                    cx="12"
+                    cy="10"
+                    r="2.5"
+                  />
+                </svg>
                 Lusaka → Livingstone → Victoria Falls
               </div>
               <div class="grid grid-cols-3 gap-4 mt-6">
@@ -188,30 +260,46 @@
     <section class="py-28 bg-zm-soft-gray">
       <div class="mx-auto max-w-7xl px-6 lg:px-10 grid lg:grid-cols-2 gap-16 items-center">
         <div class="zm-reveal" phx-hook="Reveal" id="culture-illustration">
-            <div class="relative aspect-square rounded-[2rem] overflow-hidden zm-glass-card">
-              <img
-                src={~p"/images/mize/basket_weave.png"}
-                alt="Woman weaving a traditional basket"
-                class="w-full h-full object-cover"
-              />
-
-              <!-- Optional soft overlay for premium look -->
-              <div class="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-white/5"></div>
+          <div class="relative aspect-square rounded-[2rem] overflow-hidden zm-glass-card">
+            <img
+              src={~p"/images/mize/basket_weave.png"}
+              alt="Woman weaving a traditional basket"
+              class="w-full h-full object-cover"
+            />
+            
+<!-- Optional soft overlay for premium look -->
+            <div class="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-white/5">
             </div>
           </div>
+        </div>
 
         <div class="zm-reveal" phx-hook="Reveal" id="culture-content">
-          <span class="text-sm font-semibold uppercase tracking-wide text-zm-copper">Our Purpose</span>
-          <h2 class="font-zm-display text-4xl lg:text-5xl font-bold text-zm-ink mt-3 mb-6">Preserving Culture Through Technology</h2>
+          <span class="text-sm font-semibold uppercase tracking-wide text-zm-copper">
+            Our Purpose
+          </span>
+          <h2 class="font-zm-display text-4xl lg:text-5xl font-bold text-zm-ink mt-3 mb-6">
+            Preserving Culture Through Technology
+          </h2>
           <p class="text-zm-body text-lg leading-relaxed mb-10">
             Enroute Home System uses digital archiving, interactive storytelling and community-sourced media to keep Zambia's living heritage alive for the next generation.
           </p>
 
           <div class="grid sm:grid-cols-2 gap-6">
-            <div :for={{label, icon} <- [
-              {"Languages", "🗣"}, {"Ceremonies", "🥁"}, {"Historical Sites", "🏛"}, {"Oral Storytelling", "📖"},
-              {"Local Artisans", "🧺"}, {"Music", "🎶"}, {"Dance", "💃"}, {"Cultural Archives", "🗂"}
-            ]} class="flex items-center gap-3">
+            <div
+              :for={
+                {label, icon} <- [
+                  {"Languages", "🗣"},
+                  {"Ceremonies", "🥁"},
+                  {"Historical Sites", "🏛"},
+                  {"Oral Storytelling", "📖"},
+                  {"Local Artisans", "🧺"},
+                  {"Music", "🎶"},
+                  {"Dance", "💃"},
+                  {"Cultural Archives", "🗂"}
+                ]
+              }
+              class="flex items-center gap-3"
+            >
               <span class="w-11 h-11 rounded-2xl bg-white border border-zm-silver flex items-center justify-center text-lg shadow-[0_0_18px_-4px_rgba(111,214,232,0.6)]">
                 {icon}
               </span>
@@ -222,119 +310,175 @@
       </div>
     </section>
 
-  <%!-- ==================== SECTION 5 — FEATURED CULTURAL STORIES ==================== --%>
-  <section id="stories" class="py-28">
-    <div class="mx-auto max-w-7xl px-6 lg:px-10">
-      <div class="max-w-2xl mb-16 zm-reveal" phx-hook="Reveal" id="stories-heading">
-        <span class="text-sm font-semibold uppercase tracking-wide text-zm-copper">Stories</span>
-        <h2 class="font-zm-display text-4xl lg:text-5xl font-bold text-zm-ink mt-3">Featured Cultural Stories</h2>
-        <p class="text-zm-body mt-4 text-lg">Told by the people who live them.</p>
+    <%!-- ==================== SECTION 5 — FEATURED CULTURAL STORIES ==================== --%>
+    <section id="stories" class="py-28">
+      <div class="mx-auto max-w-7xl px-6 lg:px-10">
+        <div class="max-w-2xl mb-16 zm-reveal" phx-hook="Reveal" id="stories-heading">
+          <span class="text-sm font-semibold uppercase tracking-wide text-zm-copper">
+            Stories
+          </span>
+          <h2 class="font-zm-display text-4xl lg:text-5xl font-bold text-zm-ink mt-3">
+            Featured Cultural Stories
+          </h2>
+          <p class="text-zm-body mt-4 text-lg">Told by the people who live them.</p>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-8">
+          <article :for={story <- @stories} class="group" data-video-src={story.video_url}>
+            <div class="story-video-wrap relative aspect-[16/10] rounded-2xl overflow-hidden mb-5 bg-zm-ink/5">
+              <video
+                class="story-video w-full h-full object-cover"
+                poster={story.image}
+                preload="none"
+                playsinline
+                muted
+              >
+                <source src={story.video_url} type="video/mp4" />
+              </video>
+
+              <%!-- Click-to-play overlay --%>
+              <button
+                type="button"
+                class="story-play-btn absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-opacity duration-300"
+                aria-label={"Play " <> story.title}
+              >
+                <span class="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                  <svg viewBox="0 0 24 24" class="w-6 h-6 text-zm-ink ml-1" fill="currentColor">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </span>
+              </button>
+
+              <%!-- Expand to full modal --%>
+              <button
+                type="button"
+                class="story-expand-btn absolute bottom-3 right-3 w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-sm flex items-center justify-center text-white transition-colors z-10"
+                aria-label={"Expand " <> story.title}
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M9 3H3v6M15 3h6v6M3 15v6h6M21 15v6h-6" />
+                </svg>
+              </button>
+            </div>
+
+            <p class="text-xs font-semibold uppercase tracking-wide text-zm-copper mb-2">
+              {story.province} · {story.minutes} min watch
+            </p>
+            <h3 class="font-zm-display text-xl font-bold text-zm-ink leading-snug mb-2 group-hover:text-zm-copper transition-colors">
+              {story.title}
+            </h3>
+            <p class="text-sm text-zm-body mb-3">By {story.author}</p>
+          </article>
+        </div>
       </div>
+    </section>
 
-      <div class="grid lg:grid-cols-3 gap-8">
-        <article :for={story <- @stories} class="group" data-video-src={story.video_url}>
-          <div class="story-video-wrap relative aspect-[16/10] rounded-2xl overflow-hidden mb-5 bg-zm-ink/5">
-            <video class="story-video w-full h-full object-cover" poster={story.image} preload="none" playsinline muted>
-              <source src={story.video_url} type="video/mp4" />
-            </video>
-
-            <%!-- Click-to-play overlay --%>
-            <button type="button"
-                    class="story-play-btn absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-opacity duration-300"
-                    aria-label={"Play " <> story.title}>
-              <span class="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                <svg viewBox="0 0 24 24" class="w-6 h-6 text-zm-ink ml-1" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-              </span>
-            </button>
-
-            <%!-- Expand to full modal --%>
-            <button type="button"
-                    class="story-expand-btn absolute bottom-3 right-3 w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-sm flex items-center justify-center text-white transition-colors z-10"
-                    aria-label={"Expand " <> story.title}>
-              <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H3v6M15 3h6v6M3 15v6h6M21 15v6h-6"/></svg>
-            </button>
-          </div>
-
-          <p class="text-xs font-semibold uppercase tracking-wide text-zm-copper mb-2">{story.province} · {story.minutes} min watch</p>
-          <h3 class="font-zm-display text-xl font-bold text-zm-ink leading-snug mb-2 group-hover:text-zm-copper transition-colors">{story.title}</h3>
-          <p class="text-sm text-zm-body mb-3">By {story.author}</p>
-        </article>
+    <%!-- Shared full-screen video modal --%>
+    <div
+      id="story-video-modal"
+      class="hidden fixed inset-0 z-[100] items-center justify-center bg-black/80 backdrop-blur-sm p-6"
+    >
+      <div class="relative w-full max-w-4xl aspect-video">
+        <video id="story-modal-video" class="w-full h-full rounded-2xl" controls></video>
+        <button
+          type="button"
+          id="story-modal-close"
+          class="absolute -top-10 right-0 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+          aria-label="Close video"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M6 6l12 12M18 6L6 18" />
+          </svg>
+        </button>
       </div>
     </div>
-  </section>
 
-  <%!-- Shared full-screen video modal --%>
-  <div id="story-video-modal" class="hidden fixed inset-0 z-[100] items-center justify-center bg-black/80 backdrop-blur-sm p-6">
-    <div class="relative w-full max-w-4xl aspect-video">
-      <video id="story-modal-video" class="w-full h-full rounded-2xl" controls></video>
-      <button type="button" id="story-modal-close"
-              class="absolute -top-10 right-0 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
-              aria-label="Close video">
-        <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
-      </button>
-    </div>
-  </div>
-
-  <script>
-    (function () {
-      document.querySelectorAll('.story-play-btn').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          var card = btn.closest('.story-video-wrap');
-          var video = card.querySelector('.story-video');
-          video.muted = false;
-          video.setAttribute('controls', '');
-          video.play();
-          btn.style.opacity = '0';
-          btn.style.pointerEvents = 'none';
+    <script>
+      (function () {
+        document.querySelectorAll('.story-play-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var card = btn.closest('.story-video-wrap');
+            var video = card.querySelector('.story-video');
+            video.muted = false;
+            video.setAttribute('controls', '');
+            video.play();
+            btn.style.opacity = '0';
+            btn.style.pointerEvents = 'none';
+          });
         });
-      });
 
-      document.querySelectorAll('.story-expand-btn').forEach(function (btn) {
-        btn.addEventListener('click', function (e) {
-          e.stopPropagation();
-          var article = btn.closest('[data-video-src]');
-          var src = article.getAttribute('data-video-src');
-          var modal = document.getElementById('story-video-modal');
-          var modalVideo = document.getElementById('story-modal-video');
-          modalVideo.src = src;
-          modal.classList.remove('hidden');
-          modal.classList.add('flex');
-          modalVideo.play();
+        document.querySelectorAll('.story-expand-btn').forEach(function (btn) {
+          btn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            var article = btn.closest('[data-video-src]');
+            var src = article.getAttribute('data-video-src');
+            var modal = document.getElementById('story-video-modal');
+            var modalVideo = document.getElementById('story-modal-video');
+            modalVideo.src = src;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            modalVideo.play();
+          });
         });
-      });
 
-      var modal = document.getElementById('story-video-modal');
-      var modalVideo = document.getElementById('story-modal-video');
+        var modal = document.getElementById('story-video-modal');
+        var modalVideo = document.getElementById('story-modal-video');
 
-      function closeModal() {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-        modalVideo.pause();
-        modalVideo.removeAttribute('src');
-        modalVideo.load();
-      }
+        function closeModal() {
+          modal.classList.add('hidden');
+          modal.classList.remove('flex');
+          modalVideo.pause();
+          modalVideo.removeAttribute('src');
+          modalVideo.load();
+        }
 
-      document.getElementById('story-modal-close').addEventListener('click', closeModal);
-      modal.addEventListener('click', function (e) {
-        if (e.target === modal) closeModal();
-      });
-    })();
-  </script>
+        document.getElementById('story-modal-close').addEventListener('click', closeModal);
+        modal.addEventListener('click', function (e) {
+          if (e.target === modal) closeModal();
+        });
+      })();
+    </script>
 
     <%!-- ==================== SECTION 6 — NEWSLETTER ==================== --%>
     <section class="py-28 relative overflow-hidden bg-zm-soft-gray">
-      <div :for={i <- 1..8} class="zm-binary-particle" style={"left: #{10 + i * 10}%; bottom: 10%; animation-delay: #{i * 0.5}s;"}>
+      <div
+        :for={i <- 1..8}
+        class="zm-binary-particle"
+        style={"left: #{10 + i * 10}%; bottom: 10%; animation-delay: #{i * 0.5}s;"}
+      >
         {if rem(i, 2) == 0, do: "1101", else: "0011"}
       </div>
 
       <div class="mx-auto max-w-3xl px-6 text-center relative z-10">
-        <div class="zm-glass-card zm-glow-border px-8 py-14 sm:px-16 zm-reveal" phx-hook="Reveal" id="newsletter-card">
-          <h2 class="font-zm-display text-3xl sm:text-4xl font-bold text-zm-ink mb-4">Stay Connected to Zambia</h2>
+        <div
+          class="zm-glass-card zm-glow-border px-8 py-14 sm:px-16 zm-reveal"
+          phx-hook="Reveal"
+          id="newsletter-card"
+        >
+          <h2 class="font-zm-display text-3xl sm:text-4xl font-bold text-zm-ink mb-4">
+            Stay Connected to Zambia
+          </h2>
           <p class="text-zm-body mb-8 max-w-md mx-auto">
             Travel inspiration, events, festivals, new destinations and cultural stories — straight to your inbox.
           </p>
 
-          <.form for={@newsletter_form} phx-submit="newsletter_submit" class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+          <.form
+            for={@newsletter_form}
+            phx-submit="newsletter_submit"
+            class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
+          >
             <input
               type="email"
               name="newsletter[email]"
@@ -349,7 +493,10 @@
           <p :if={@newsletter_status == :success} class="text-zm-emerald text-sm font-medium mt-4">
             You're subscribed. Welcome to the journey.
           </p>
-          <p :if={@newsletter_status == :error} class="text-zm-terracotta text-sm font-medium mt-4">
+          <p
+            :if={@newsletter_status == :error}
+            class="text-zm-terracotta text-sm font-medium mt-4"
+          >
             That doesn't look like a valid email — please try again.
           </p>
         </div>
@@ -360,7 +507,9 @@
     <section id="contact" class="py-28">
       <div class="mx-auto max-w-7xl px-6 lg:px-10 grid lg:grid-cols-2 gap-16">
         <div class="zm-reveal" phx-hook="Reveal" id="contact-info">
-          <span class="text-sm font-semibold uppercase tracking-wide text-zm-copper">Contact</span>
+          <span class="text-sm font-semibold uppercase tracking-wide text-zm-copper">
+            Contact
+          </span>
           <h2 class="font-zm-display text-4xl font-bold text-zm-ink mt-3 mb-8">Let's Talk</h2>
 
           <dl class="space-y-6">
@@ -383,7 +532,11 @@
           </dl>
 
           <div class="flex gap-3 mt-8">
-            <a :for={label <- ["IG", "X", "FB"]} href="#" class="w-10 h-10 rounded-full bg-white border border-zm-silver flex items-center justify-center text-xs font-semibold text-zm-body hover:text-zm-copper hover:border-zm-copper transition-colors">
+            <a
+              :for={label <- ["IG", "X", "FB"]}
+              href="#"
+              class="w-10 h-10 rounded-full bg-white border border-zm-silver flex items-center justify-center text-xs font-semibold text-zm-body hover:text-zm-copper hover:border-zm-copper transition-colors"
+            >
               {label}
             </a>
           </div>
@@ -391,14 +544,34 @@
 
         <div class="zm-glass-card p-8 zm-reveal" phx-hook="Reveal" id="contact-form">
           <.form for={@contact_form} phx-submit="contact_submit" class="space-y-4">
-            <input type="text" name="contact[name]" placeholder="Your name" required
-              class="w-full rounded-xl px-4 py-3 bg-white border border-zm-silver focus:outline-none focus:ring-2 focus:ring-zm-copper/40 text-sm" />
-            <input type="email" name="contact[email]" placeholder="Your email" required
-              class="w-full rounded-xl px-4 py-3 bg-white border border-zm-silver focus:outline-none focus:ring-2 focus:ring-zm-copper/40 text-sm" />
-            <input type="text" name="contact[subject]" placeholder="Subject" required
-              class="w-full rounded-xl px-4 py-3 bg-white border border-zm-silver focus:outline-none focus:ring-2 focus:ring-zm-copper/40 text-sm" />
-            <textarea name="contact[message]" rows="4" placeholder="Your message" required
-              class="w-full rounded-xl px-4 py-3 bg-white border border-zm-silver focus:outline-none focus:ring-2 focus:ring-zm-copper/40 text-sm resize-none"></textarea>
+            <input
+              type="text"
+              name="contact[name]"
+              placeholder="Your name"
+              required
+              class="w-full rounded-xl px-4 py-3 bg-white border border-zm-silver focus:outline-none focus:ring-2 focus:ring-zm-copper/40 text-sm"
+            />
+            <input
+              type="email"
+              name="contact[email]"
+              placeholder="Your email"
+              required
+              class="w-full rounded-xl px-4 py-3 bg-white border border-zm-silver focus:outline-none focus:ring-2 focus:ring-zm-copper/40 text-sm"
+            />
+            <input
+              type="text"
+              name="contact[subject]"
+              placeholder="Subject"
+              required
+              class="w-full rounded-xl px-4 py-3 bg-white border border-zm-silver focus:outline-none focus:ring-2 focus:ring-zm-copper/40 text-sm"
+            />
+            <textarea
+              name="contact[message]"
+              rows="4"
+              placeholder="Your message"
+              required
+              class="w-full rounded-xl px-4 py-3 bg-white border border-zm-silver focus:outline-none focus:ring-2 focus:ring-zm-copper/40 text-sm resize-none"
+            ></textarea>
             <button type="submit" class="zm-btn-primary w-full">Send Message</button>
           </.form>
           <p :if={@contact_status == :success} class="text-zm-emerald text-sm font-medium mt-4">
@@ -407,5 +580,5 @@
         </div>
       </div>
     </section>
-</Layouts.unauth_app>
- </div>
+  </Layouts.unauth_app>
+</div>

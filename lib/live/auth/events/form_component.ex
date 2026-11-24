@@ -22,7 +22,6 @@ defmodule EnrouteHayeWeb.Events.FormComponent do
   def render(assigns) do
     ~H"""
     <div style="background: #fff; border-radius: 0.75rem; width: 100%; box-sizing: border-box; font-family: 'Inter', sans-serif;">
-
       <%!-- ══ HEADER ══ --%>
       <div style="background: #8B1A1A; border-radius: 0.75rem 0.75rem 0 0;
                   padding: 1rem 1.5rem; display: flex; align-items: center; gap: 0.6rem;">
@@ -33,7 +32,9 @@ defmodule EnrouteHayeWeb.Events.FormComponent do
         <div>
           <h2 style="font-size: 0.92rem; font-weight: 600; color: #fff; margin: 0;">{@title}</h2>
           <p style="font-size: 0.72rem; color: rgba(255,255,255,0.65); margin: 0;">
-            Fill in the details below to {if @action == :new, do: "create a new event", else: "update the event"}.
+            Fill in the details below to {if @action == :new,
+              do: "create a new event",
+              else: "update the event"}.
           </p>
         </div>
       </div>
@@ -44,19 +45,18 @@ defmodule EnrouteHayeWeb.Events.FormComponent do
         phx-change="validate"
         phx-submit="save"
         style="padding: 1.25rem; width: 100%; box-sizing: border-box; overflow: hidden;"
-
       >
         <%!-- ══ MAIN GRID: form left | upload right ══ --%>
         <div style="display: grid; grid-template-columns: 1fr 180px; gap: 1rem; align-items: start; width: 100%; box-sizing: border-box;">
           <%!-- LEFT COLUMN — form fields --%>
           <div style="display: flex; flex-direction: column; gap: 1.25rem;">
-
             <%!-- Section: Event Info --%>
             <div>
               <p style="font-size: 0.7rem; font-weight: 700; color: #8B1A1A;
                         text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem;
                         display: flex; align-items: center; gap: 0.4rem;">
-                <span style="display: inline-block; width: 2rem; height: 1px; background: #8B1A1A;"></span>
+                <span style="display: inline-block; width: 2rem; height: 1px; background: #8B1A1A;">
+                </span>
                 Event Info
               </p>
               <div style="display: grid; grid-template-columns: 1fr; gap: 0.75rem;">
@@ -68,7 +68,14 @@ defmodule EnrouteHayeWeb.Events.FormComponent do
                   field={@form[:type]}
                   label="Event Type"
                   type="select"
-                  options={["Traditional ceremony","Conference", "Workshop", "Meetup", "Webinar", "Other"]}
+                  options={[
+                    "Traditional ceremony",
+                    "Conference",
+                    "Workshop",
+                    "Meetup",
+                    "Webinar",
+                    "Other"
+                  ]}
                 />
                 <.input
                   field={@form[:location]}
@@ -88,7 +95,8 @@ defmodule EnrouteHayeWeb.Events.FormComponent do
               <p style="font-size: 0.7rem; font-weight: 700; color: #8B1A1A;
                         text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem;
                         display: flex; align-items: center; gap: 0.4rem;">
-                <span style="display: inline-block; width: 2rem; height: 1px; background: #8B1A1A;"></span>
+                <span style="display: inline-block; width: 2rem; height: 1px; background: #8B1A1A;">
+                </span>
                 Schedule
               </p>
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
@@ -104,7 +112,6 @@ defmodule EnrouteHayeWeb.Events.FormComponent do
                 />
               </div>
             </div>
-
           </div>
 
           <%!-- RIGHT COLUMN — image upload panel --%>
@@ -112,7 +119,8 @@ defmodule EnrouteHayeWeb.Events.FormComponent do
             <p style="font-size: 0.7rem; font-weight: 700; color: #8B1A1A;
                       text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.1rem;
                       display: flex; align-items: center; gap: 0.4rem;">
-              <span style="display: inline-block; width: 2rem; height: 1px; background: #8B1A1A;"></span>
+              <span style="display: inline-block; width: 2rem; height: 1px; background: #8B1A1A;">
+              </span>
               Event Image
             </p>
 
@@ -124,8 +132,7 @@ defmodule EnrouteHayeWeb.Events.FormComponent do
                 display: flex; flex-direction: column; align-items: center;
                 justify-content: center; gap: 0.5rem; text-align: center; min-height: 140px;
                 width: 100%; box-sizing: border-box; transition: border-color 0.15s;"
-                >
-
+            >
               <div style="width: 2.5rem; height: 2.5rem; background: rgba(139,26,26,0.08);
                           border-radius: 50%; display: flex; align-items: center; justify-content: center;">
                 <.icon name="hero-photo" style="width: 1.25rem; height: 1.25rem; color: #8B1A1A;" />
@@ -142,8 +149,7 @@ defmodule EnrouteHayeWeb.Events.FormComponent do
               <label style="margin-top: 0.25rem; padding: 0.35rem 0.9rem; font-size: 0.75rem;
                             font-weight: 500; color: #8B1A1A; background: #fff;
                             border: 1px solid #8B1A1A; border-radius: 0.4rem; cursor: pointer;">
-                Browse
-                <.live_file_input upload={@uploads.image} style="display: none;" />
+                Browse <.live_file_input upload={@uploads.image} style="display: none;" />
               </label>
             </div>
 
@@ -152,14 +158,18 @@ defmodule EnrouteHayeWeb.Events.FormComponent do
               <div style="border: 1px solid #E8E2D9; border-radius: 0.5rem;
                           padding: 0.5rem 0.65rem; background: #fff;
                           display: flex; align-items: center; gap: 0.5rem;">
-                <.live_img_preview entry={entry} style="width: 2.25rem; height: 2.25rem; object-fit: cover; border-radius: 0.3rem;" />
+                <.live_img_preview
+                  entry={entry}
+                  style="width: 2.25rem; height: 2.25rem; object-fit: cover; border-radius: 0.3rem;"
+                />
                 <div style="flex: 1; min-width: 0;">
                   <p style="font-size: 0.7rem; font-weight: 500; color: #374151;
                             white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 0;">
                     {entry.client_name}
                   </p>
                   <div style="margin-top: 0.2rem; height: 3px; background: #E8E2D9; border-radius: 99px; overflow: hidden;">
-                    <div style={"width: #{entry.progress}%; height: 100%; background: #8B1A1A; transition: width 0.3s;"}></div>
+                    <div style={"width: #{entry.progress}%; height: 100%; background: #8B1A1A; transition: width 0.3s;"}>
+                    </div>
                   </div>
                 </div>
                 <button
@@ -181,7 +191,6 @@ defmodule EnrouteHayeWeb.Events.FormComponent do
             <%= for err <- upload_errors(@uploads.image) do %>
               <p style="font-size: 0.7rem; color: #dc2626; margin: 0;">{error_to_string(err)}</p>
             <% end %>
-
           </div>
         </div>
 

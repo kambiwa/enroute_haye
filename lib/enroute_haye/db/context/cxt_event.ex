@@ -7,11 +7,11 @@ defmodule EnrouteHaye.Context.CxtEvent do
   # ── Paginated list (used by the LiveView index) ──────────────────────
 
   def list_events(table_params \\ %{}, filters \\ %{}) do
-    page        = EnrouteHayeWeb.Pagination.param_value(table_params, "page", 1)
-    page_size   = EnrouteHayeWeb.Pagination.param_value(table_params, "page_size", 10)
-    order_by    = table_params["order_by"] || %{"sort_field" => "id", "sort_direction" => "desc"}
-    search      = get_in(table_params, ["filter", "isearch"]) || ""
-    status      = filters[:status_filter] || filters["status_filter"] || ""
+    page = EnrouteHayeWeb.Pagination.param_value(table_params, "page", 1)
+    page_size = EnrouteHayeWeb.Pagination.param_value(table_params, "page_size", 10)
+    order_by = table_params["order_by"] || %{"sort_field" => "id", "sort_direction" => "desc"}
+    search = get_in(table_params, ["filter", "isearch"]) || ""
+    status = filters[:status_filter] || filters["status_filter"] || ""
 
     Event
     |> apply_search(search)
@@ -20,13 +20,12 @@ defmodule EnrouteHaye.Context.CxtEvent do
     |> Repo.paginate(page: page, page_size: page_size)
   end
 
-
-
-   def list_ceremonies() do
+  def list_ceremonies() do
     Event
     |> where([e], e.type == "Traditional ceremony")
-    |> Repo.all() 
-   end
+    |> Repo.all()
+  end
+
   # ── Standard CRUD ────────────────────────────────────────────────────
 
   def get_event!(id), do: Repo.get!(Event, id)
@@ -54,14 +53,14 @@ defmodule EnrouteHaye.Context.CxtEvent do
   # ── Private query helpers ────────────────────────────────────────────
 
   defp apply_search(query, ""), do: query
-  defp apply_search(query, nil), do: query
+
   defp apply_search(query, search) do
     term = "%#{search}%"
     where(query, [f], ilike(f.name, ^term) or ilike(f.description, ^term))
   end
 
   defp apply_status(query, ""), do: query
-  defp apply_status(query, nil), do: query
+
   defp apply_status(query, status) do
     where(query, [f], f.status == ^status)
   end
@@ -70,10 +69,10 @@ defmodule EnrouteHaye.Context.CxtEvent do
     order = if direction == "asc", do: :asc, else: :desc
 
     case field do
-      "name"        -> order_by(query, [f], [{^order, f.name}])
-      "status"      -> order_by(query, [f], [{^order, f.status}])
+      "name" -> order_by(query, [f], [{^order, f.name}])
+      "status" -> order_by(query, [f], [{^order, f.status}])
       "inserted_at" -> order_by(query, [f], [{^order, f.inserted_at}])
-      _             -> order_by(query, [f], [{^order, f.id}])
+      _ -> order_by(query, [f], [{^order, f.id}])
     end
   end
 

@@ -17,7 +17,6 @@ defmodule EnrouteHayeWeb.Departments.FormComponent do
   def render(assigns) do
     ~H"""
     <div style="background: #fff; border-radius: 0.75rem; width: 100%; box-sizing: border-box; font-family: 'Inter', sans-serif;">
-
       <%!-- ══ HEADER ══ --%>
       <div style="background: #8B1A1A; border-radius: 0.75rem 0.75rem 0 0;
                   padding: 1rem 1.5rem; display: flex; align-items: center; gap: 0.6rem;">
@@ -28,7 +27,9 @@ defmodule EnrouteHayeWeb.Departments.FormComponent do
         <div>
           <h2 style="font-size: 0.92rem; font-weight: 600; color: #fff; margin: 0;">{@title}</h2>
           <p style="font-size: 0.72rem; color: rgba(255,255,255,0.65); margin: 0;">
-            Fill in the details below to {if @action == :new, do: "create a new department item", else: "update the department item"}.
+            Fill in the details below to {if @action == :new,
+              do: "create a new department item",
+              else: "update the department item"}.
           </p>
         </div>
       </div>
@@ -45,7 +46,8 @@ defmodule EnrouteHayeWeb.Departments.FormComponent do
           <p style="font-size: 0.7rem; font-weight: 700; color: #8B1A1A;
                     text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem;
                     display: flex; align-items: center; gap: 0.4rem;">
-            <span style="display: inline-block; width: 2rem; height: 1px; background: #8B1A1A;"></span>
+            <span style="display: inline-block; width: 2rem; height: 1px; background: #8B1A1A;">
+            </span>
             Department Info
           </p>
           <div style="display: grid; grid-template-columns: 1fr; gap: 0.75rem;">

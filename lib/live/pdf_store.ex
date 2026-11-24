@@ -2,9 +2,9 @@ defmodule EnrouteHaye.PDFStore do
   use GenServer
   require Logger
 
-  @table       :pdf_store
+  @table :pdf_store
   @ttl_seconds 300
-  @sweep_ms    60_000
+  @sweep_ms 60_000
 
   def start_link(_opts \\ []) do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)

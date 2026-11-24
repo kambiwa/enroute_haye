@@ -33,7 +33,7 @@ defmodule EnrouteHayeWeb.UserLive.Settings do
       <.form
         for={@password_form}
         id="password_form"
-        action={~p"/admin/users/update-password"}
+        action={~p"/users/update-password"}
         method="post"
         phx-change="validate_password"
         phx-submit="update_password"
@@ -121,7 +121,7 @@ defmodule EnrouteHayeWeb.UserLive.Settings do
         Accounts.deliver_user_update_email_instructions(
           Ecto.Changeset.apply_action!(changeset, :insert),
           user.email,
-          &url(~p"/admin/users/settings/confirm-email/#{&1}")
+          &url(~p"/users/settings/confirm-email/#{&1}")
         )
 
         info = "A link to confirm your email change has been sent to the new address."

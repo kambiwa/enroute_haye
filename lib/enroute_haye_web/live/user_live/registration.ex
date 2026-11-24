@@ -8,38 +8,38 @@ defmodule EnrouteHayeWeb.UserLive.Registration do
   def render(assigns) do
     ~H"""
     <Layouts.unauth_app flash={@flash} current_scope={@current_scope}>
-
       <%!-- ══════════════════════════════════════════════════════
            Page wrapper — light landing-page background
       ═══════════════════════════════════════════════════════════ --%>
       <div class="kuomboka-bg min-h-[calc(100vh-72px)] flex items-center justify-center px-6 py-10">
-
         <%!-- ══════════════════════════════════════════════════════
              Floating card
         ═══════════════════════════════════════════════════════════ --%>
         <div class="bg-white rounded-[1.75rem] overflow-hidden flex w-full max-w-[820px] min-h-[520px] shadow-2xl">
-
           <%!-- ══════════════════════════════════════════
                LEFT — form panel
           ══════════════════════════════════════════ --%>
           <div class="flex-1 px-11 py-12 flex flex-col justify-center bg-white">
-
             <%!-- Wordmark --%>
             <div class="flex items-center gap-2 mb-3">
               <span class="w-2 h-2 rounded-full bg-zm-copper inline-block"></span>
-              <span class="font-zm-display text-sm font-bold text-zm-ink tracking-wide">Discover Zambia</span>
+              <span class="font-zm-display text-sm font-bold text-zm-ink tracking-wide">
+                Discover Zambia
+              </span>
             </div>
 
             <%!-- Heading --%>
             <h1 class="font-zm-display text-3xl font-bold text-zm-ink leading-tight mb-2">
-              Create your<br/>
+              Create your<br />
               <span class="text-zm-copper">Heritage</span> account
             </h1>
 
             <%!-- Divider --%>
             <div class="flex items-center gap-2.5 mb-4">
               <span class="flex-1 h-px bg-zm-soft-gray"></span>
-              <span class="text-[0.62rem] tracking-[0.18em] uppercase text-zm-body/60">Enroute Home</span>
+              <span class="text-[0.62rem] tracking-[0.18em] uppercase text-zm-body/60">
+                Enroute Home
+              </span>
               <span class="flex-1 h-px bg-zm-soft-gray"></span>
             </div>
 
@@ -50,7 +50,6 @@ defmodule EnrouteHayeWeb.UserLive.Registration do
               phx-submit="save"
               phx-change="validate"
             >
-
               <%!-- Email --%>
               <div class="mb-3">
                 <input
@@ -70,7 +69,7 @@ defmodule EnrouteHayeWeb.UserLive.Registration do
                 />
                 <%= if msg = @form[:email].errors |> List.first() do %>
                   <p class="text-zm-terracotta text-xs mt-1.5">
-                    <%= translate_error(msg) %>
+                    {translate_error(msg)}
                   </p>
                 <% end %>
               </div>
@@ -92,7 +91,7 @@ defmodule EnrouteHayeWeb.UserLive.Registration do
                 />
                 <%= if msg = @form[:password].errors |> List.first() do %>
                   <p class="text-zm-terracotta text-xs mt-1.5">
-                    <%= translate_error(msg) %>
+                    {translate_error(msg)}
                   </p>
                 <% end %>
               </div>
@@ -101,7 +100,7 @@ defmodule EnrouteHayeWeb.UserLive.Registration do
               <p class="text-xs text-zm-body/60 mb-6">
                 Minimum 12 characters.
               </p>
-               <%!-- Submit --%>
+              <%!-- Submit --%>
               <button
                 type="submit"
                 phx-disable-with="Creating account..."
@@ -109,18 +108,24 @@ defmodule EnrouteHayeWeb.UserLive.Registration do
               >
                 Create account
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2.5"
+                    d="M17 8l4 4m0 0l-4 4m4-4H3"
+                  />
                 </svg>
-              </button><br>
+              </button>
+              <br />
               <p class="text-sm text-zm-body/80 bg-zm-soft-gray mb-7 leading-relaxed">
                 Already have an account?
-                <.link navigate={~p"/users/log-in"} class="text-zm-terracotta font-semibold hover:underline">
+                <.link
+                  navigate={~p"/users/log-in"}
+                  class="text-zm-terracotta font-semibold hover:underline"
+                >
                   Sign in →
                 </.link>
               </p>
-
-
-
             </.form>
 
             <%!-- Back to home --%>
@@ -129,7 +134,6 @@ defmodule EnrouteHayeWeb.UserLive.Registration do
                 ← Back to Discover Zambia
               </.link>
             </div>
-
           </div>
 
           <%!-- ══════════════════════════════════════════
@@ -137,7 +141,6 @@ defmodule EnrouteHayeWeb.UserLive.Registration do
                Hidden on mobile, shown on lg+
           ══════════════════════════════════════════ --%>
           <div class="hidden lg:block relative w-[46%] flex-shrink-0 m-4 mr-4 ml-0 rounded-2xl overflow-hidden bg-zm-ink">
-
             <%!-- Hero image --%>
             <img
               src={~p"/images/Kuomboka_2022-5.jpg"}
@@ -146,18 +149,22 @@ defmodule EnrouteHayeWeb.UserLive.Registration do
             />
 
             <%!-- Subtle grid overlay --%>
-            <div class="absolute inset-0 opacity-10"
-                 style="background-image:
+            <div
+              class="absolute inset-0 opacity-10"
+              style="background-image:
                    repeating-linear-gradient(90deg, rgba(255,255,255,.5) 0, rgba(255,255,255,.5) 1px, transparent 1px, transparent 44px),
-                   repeating-linear-gradient(0deg, rgba(255,255,255,.5) 0, rgba(255,255,255,.5) 1px, transparent 1px, transparent 44px);">
+                   repeating-linear-gradient(0deg, rgba(255,255,255,.5) 0, rgba(255,255,255,.5) 1px, transparent 1px, transparent 44px);"
+            >
             </div>
 
             <%!-- Bottom fade for text legibility --%>
             <div class="absolute inset-0 bg-gradient-to-t from-zm-ink/90 to-transparent to-55%"></div>
 
             <%!-- Copper radial glow accent --%>
-            <div class="absolute top-[15%] left-[10%] w-40 h-40 rounded-full pointer-events-none"
-                 style="background: radial-gradient(circle, rgba(201,109,58,0.25) 0%, transparent 70%);">
+            <div
+              class="absolute top-[15%] left-[10%] w-40 h-40 rounded-full pointer-events-none"
+              style="background: radial-gradient(circle, rgba(201,109,58,0.25) 0%, transparent 70%);"
+            >
             </div>
 
             <%!-- Heritage badge — top left --%>
@@ -171,16 +178,15 @@ defmodule EnrouteHayeWeb.UserLive.Registration do
 
             <%!-- Bottom text overlay --%>
             <div class="absolute bottom-0 left-0 right-0 px-7 pt-6 pb-8">
-
               <div class="flex items-center gap-1.5 text-zm-copper text-[0.6rem] font-bold tracking-[0.22em] uppercase mb-2">
                 <svg class="w-1.5 h-1.5 flex-shrink-0" viewBox="0 0 7 7" fill="currentColor">
-                  <polygon points="3.5,0 4.3,2.6 7,2.6 4.8,4.2 5.6,6.8 3.5,5.2 1.4,6.8 2.2,4.2 0,2.6 2.7,2.6"/>
+                  <polygon points="3.5,0 4.3,2.6 7,2.6 4.8,4.2 5.6,6.8 3.5,5.2 1.4,6.8 2.2,4.2 0,2.6 2.7,2.6" />
                 </svg>
                 Begin your journey
               </div>
 
               <h2 class="font-zm-display text-white text-xl font-bold leading-tight mb-2.5">
-                Join the living<br/>
+                Join the living<br />
                 <span class="text-zm-copper">heritage of Zambia.</span>
               </h2>
 
@@ -194,13 +200,10 @@ defmodule EnrouteHayeWeb.UserLive.Registration do
                 <span class="w-1.5 h-1.5 rounded-full bg-zm-terracotta block"></span>
                 <span class="block w-7 h-px bg-white/20"></span>
               </div>
-
             </div>
           </div>
-
         </div>
       </div>
-
     </Layouts.unauth_app>
     """
   end
@@ -219,6 +222,7 @@ defmodule EnrouteHayeWeb.UserLive.Registration do
   @impl true
   def handle_event("save", %{"user" => user_params}, socket) do
     IO.inspect(user_params, label: "======090909")
+
     case Accounts.register_user(user_params) do
       {:ok, _user} ->
         {:noreply,

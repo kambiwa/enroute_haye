@@ -9,11 +9,11 @@ defmodule EnrouteHaye.Accounts do
   alias EnrouteHaye.Accounts.{User, UserToken, UserNotifier}
 
   def list_users(table_params \\ %{}, filters \\ %{}) do
-    page        = EnrouteHayeWeb.Pagination.param_value(table_params, "page", 1)
-    page_size   = EnrouteHayeWeb.Pagination.param_value(table_params, "page_size", 10)
-    order_by    = table_params["order_by"] || %{"sort_field" => "id", "sort_direction" => "desc"}
-    search      = get_in(table_params, ["filter", "isearch"]) || ""
-    status      = filters[:status_filter] || filters["status_filter"] || ""
+    page = EnrouteHayeWeb.Pagination.param_value(table_params, "page", 1)
+    page_size = EnrouteHayeWeb.Pagination.param_value(table_params, "page_size", 10)
+    order_by = table_params["order_by"] || %{"sort_field" => "id", "sort_direction" => "desc"}
+    search = get_in(table_params, ["filter", "isearch"]) || ""
+    status = filters[:status_filter] || filters["status_filter"] || ""
 
     User
     |> apply_search(search)
@@ -38,20 +38,76 @@ defmodule EnrouteHaye.Accounts do
 
   def get_user!(id), do: Repo.get!(User, id)
 
+  def change_user(%User{} = user, attrs \\ %{}), do: User.admin_changeset(user, attrs)
+
+  def create_user(attrs) do
+    %User{}
+    |> User.admin_changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def update_user(%User{} = user, attrs) do
+    user
+    |> User.admin_changeset(attrs)
+    |> Repo.update()
+  end
+
+  def get_user_by_magic_link_token(token) do
+    with {:ok, query} <- UserToken.verify_magic_link_token_query(token),
+         {user, _token} <- Repo.one(query) do
+      user
+    else
+      _ -> nil
+    end
+  end
+
+  def login_user_by_magic_link(token) do
+    {:ok, query} = UserToken.verify_magic_link_token_query(token)
+
+    case Repo.one(query) do
+      {%User{confirmed_at: nil, hashed_password: hash}, _token} when not is_nil(hash) ->
+        raise "magic link log in is not allowed for unconfirmed users with a password set!"
+
+      {%User{confirmed_at: nil} = user, _token} ->
+        user |> User.confirm_changeset() |> update_user_and_delete_all_tokens()
+
+      {user, token} ->
+        Repo.delete!(token)
+        {:ok, {user, []}}
+
+      nil ->
+        {:error, :not_found}
+    end
+  end
+
+  def deliver_login_instructions(%User{} = user, magic_link_url_fun)
+      when is_function(magic_link_url_fun, 1) do
+    {encoded_token, user_token} = UserToken.build_email_token(user, "login")
+    Repo.insert!(user_token)
+    UserNotifier.deliver_login_instructions(user, magic_link_url_fun.(encoded_token))
+  end
+
+  def sudo_mode?(user, minutes \\ -20)
+
+  def sudo_mode?(%User{authenticated_at: %DateTime{} = authenticated_at}, minutes) do
+    DateTime.after?(authenticated_at, DateTime.add(DateTime.utc_now(), minutes, :minute))
+  end
+
+  def sudo_mode?(_user, _minutes), do: false
+
   ## ======================
   ## REGISTRATION
   ## ======================
-    #  EnrouteHaye.Accounts.register_user(
+  #  EnrouteHaye.Accounts.register_user(
 
-    #    user = %{
-    #       email: "dev@dev.com",
-    #       password: "dev@dev.com",
-    #        job_id: 1
-    #    }
-    # )
+  #    user = %{
+  #       email: "dev@dev.com",
+  #       password: "dev@dev.com",
+  #        job_id: 1
+  #    }
+  # )
 
   def register_user(attrs) do
-    IO.inspect(attrs, label: "===0909==0909")
     %User{}
     |> User.registration_changeset(attrs)
     |> Repo.insert()
@@ -60,7 +116,6 @@ defmodule EnrouteHaye.Accounts do
   def change_user_registration(user, attrs \\ %{}) do
     User.registration_changeset(user, attrs)
   end
-
 
   ## ======================
   ## EMAIL (OPTIONAL KEEP)
@@ -152,18 +207,17 @@ defmodule EnrouteHaye.Accounts do
     end)
   end
 
-
   # ── Private query helpers ────────────────────────────────────────────
 
   defp apply_search(query, ""), do: query
-  defp apply_search(query, nil), do: query
+
   defp apply_search(query, search) do
     term = "%#{search}%"
     where(query, [f], ilike(f.name, ^term) or ilike(f.description, ^term))
   end
 
   defp apply_status(query, ""), do: query
-  defp apply_status(query, nil), do: query
+
   defp apply_status(query, status) do
     where(query, [f], f.status == ^status)
   end
@@ -172,13 +226,12 @@ defmodule EnrouteHaye.Accounts do
     order = if direction == "asc", do: :asc, else: :desc
 
     case field do
-      "name"        -> order_by(query, [f], [{^order, f.name}])
-      "status"      -> order_by(query, [f], [{^order, f.status}])
+      "name" -> order_by(query, [f], [{^order, f.name}])
+      "status" -> order_by(query, [f], [{^order, f.status}])
       "inserted_at" -> order_by(query, [f], [{^order, f.inserted_at}])
-      _             -> order_by(query, [f], [{^order, f.id}])
+      _ -> order_by(query, [f], [{^order, f.id}])
     end
   end
 
   defp apply_order(query, _), do: order_by(query, [f], desc: f.id)
-
 end

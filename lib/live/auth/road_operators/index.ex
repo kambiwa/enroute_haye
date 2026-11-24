@@ -1,11 +1,10 @@
 defmodule EnrouteHayeWeb.Auth.Road.Index do
   use EnrouteHayeWeb, :live_view
 
-  alias EnrouteHayeWeb.Datatable.Table
   alias EnrouteHaye.Schema.Road
   alias EnrouteHaye.Context.CxtRoad
+  alias EnrouteHayeWeb.Datatable.Table
   alias EnrouteHayeWeb.Pagination
-  alias EnrouteHayeWeb.PaginationComponent
 
   @impl true
   def mount(_params, _session, socket) do
@@ -36,6 +35,7 @@ defmodule EnrouteHayeWeb.Auth.Road.Index do
   defp apply_action(socket, :edit, %{"id" => id}) do
     id = String.to_integer(id)
     road = CxtRoad.get_road_operator!(id)
+
     socket
     |> assign(:page_title, "Edit Road Operator")
     |> assign(:road, road)
@@ -71,19 +71,19 @@ defmodule EnrouteHayeWeb.Auth.Road.Index do
      |> assign(:live_action, :new)}
   end
 
-    @impl true
-    def handle_event("edit", %{"id" => id}, socket) do
-      road =
-        id
-        |> String.to_integer()
-        |> CxtRoad.get_road_operator!()
+  @impl true
+  def handle_event("edit", %{"id" => id}, socket) do
+    road =
+      id
+      |> String.to_integer()
+      |> CxtRoad.get_road_operator!()
 
-      {:noreply,
-      socket
-      |> assign(:road, road)
-      |> assign(:page_title, "Edit Road Operator")
-      |> assign(:live_action, :edit)}
-    end
+    {:noreply,
+     socket
+     |> assign(:road, road)
+     |> assign(:page_title, "Edit Road Operator")
+     |> assign(:live_action, :edit)}
+  end
 
   @impl true
   def handle_event("close", _params, socket) do
@@ -129,7 +129,6 @@ defmodule EnrouteHayeWeb.Auth.Road.Index do
     ~H"""
     <Layouts.admin_app flash={@flash} current_scope={@current_scope} current_page={:roads}>
       <div style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem;">
-
         <%!-- ══ PAGE HEADER ══ --%>
         <div style="display: flex; align-items: center; justify-content: space-between;">
           <div>
@@ -203,7 +202,6 @@ defmodule EnrouteHayeWeb.Auth.Road.Index do
 
         <%!-- ══ TABLE CARD ══ --%>
         <div style="background: #fff; border: 1px solid #E8E2D9; border-radius: 0.75rem; overflow: hidden;">
-
           <div style="padding: 1rem 1.25rem; border-bottom: 1px solid #E8E2D9;">
             <h2 style="font-size: 0.85rem; font-weight: 600; color: #374151;">All Road Operators</h2>
           </div>
@@ -255,14 +253,26 @@ defmodule EnrouteHayeWeb.Auth.Road.Index do
 
           <%= if @data_loader do %>
             <div style="padding: 2.5rem; text-align: center;">
-              <svg xmlns="http://www.w3.org/2000/svg"
-                   style="width: 2rem; height: 2rem; color: #8B1A1A; animation: spin 1s linear infinite; margin: 0 auto;"
-                   fill="none" viewBox="0 0 24 24">
-                <circle style="opacity: 0.25;" cx="12" cy="12" r="10"
-                        stroke="currentColor" stroke-width="4"/>
-                <path style="opacity: 0.75;" fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962
-                         7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                style="width: 2rem; height: 2rem; color: #8B1A1A; animation: spin 1s linear infinite; margin: 0 auto;"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  style="opacity: 0.25;"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                />
+                <path
+                  style="opacity: 0.75;"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962
+                         7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                />
               </svg>
             </div>
           <% end %>
@@ -275,7 +285,6 @@ defmodule EnrouteHayeWeb.Auth.Road.Index do
               pagination_data={@data_pagenations}
             />
           </div>
-
         </div>
 
         <%!-- ══ MODAL ══ --%>
@@ -295,7 +304,6 @@ defmodule EnrouteHayeWeb.Auth.Road.Index do
             />
           </.modal>
         <% end %>
-
       </div>
     </Layouts.admin_app>
     """

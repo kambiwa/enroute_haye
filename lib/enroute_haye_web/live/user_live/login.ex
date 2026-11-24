@@ -1,44 +1,42 @@
 defmodule EnrouteHayeWeb.UserLive.Login do
   use EnrouteHayeWeb, :live_view
 
-  alias EnrouteHaye.Accounts
-
-    @impl true
+  @impl true
   def render(assigns) do
     ~H"""
     <Layouts.unauth_app flash={@flash} current_scope={@current_scope}>
-
       <%!-- ══════════════════════════════════════════════════════
            Page wrapper — light landing-page background
       ═══════════════════════════════════════════════════════════ --%>
       <div class="kuomboka-bg min-h-[calc(100vh-64px)] flex items-center justify-center px-6 py-10">
-
         <%!-- ══════════════════════════════════════════════════════
              Floating card
         ═══════════════════════════════════════════════════════════ --%>
         <div class="bg-white rounded-[1.75rem] overflow-hidden flex w-full max-w-[820px] min-h-[520px] shadow-2xl">
-
           <%!-- ══════════════════════════════════════════
                LEFT — form panel
           ══════════════════════════════════════════ --%>
           <div class="flex-1 px-11 py-12 flex flex-col justify-center bg-white">
-
             <%!-- Wordmark --%>
             <div class="flex items-center gap-2 mb-3">
               <span class="w-2 h-2 rounded-full bg-zm-copper inline-block"></span>
-              <span class="font-zm-display text-sm font-bold text-zm-ink tracking-wide">Discover Zambia</span>
+              <span class="font-zm-display text-sm font-bold text-zm-ink tracking-wide">
+                Discover Zambia
+              </span>
             </div>
 
             <%!-- Heading --%>
             <h1 class="font-zm-display text-3xl font-bold text-zm-ink leading-tight mb-7">
-              Sign in to your<br/>
+              Sign in to your<br />
               <span class="text-zm-copper">Heritage</span> journey
             </h1>
 
             <%!-- Divider --%>
             <div class="flex items-center gap-2.5 mb-4">
               <span class="flex-1 h-px bg-zm-soft-gray"></span>
-              <span class="text-[0.62rem] tracking-[0.18em] uppercase text-zm-body/60">Enroute Home</span>
+              <span class="text-[0.62rem] tracking-[0.18em] uppercase text-zm-body/60">
+                Enroute Home
+              </span>
               <span class="flex-1 h-px bg-zm-soft-gray"></span>
             </div>
 
@@ -51,7 +49,6 @@ defmodule EnrouteHayeWeb.UserLive.Login do
               phx-submit="submit_password"
               phx-trigger-action={@trigger_submit}
             >
-
               <%!-- Email --%>
               <div class="mb-3">
                 <input
@@ -103,7 +100,12 @@ defmodule EnrouteHayeWeb.UserLive.Login do
               >
                 Sign in
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2.5"
+                    d="M17 8l4 4m0 0l-4 4m4-4H3"
+                  />
                 </svg>
               </button>
             </.form>
@@ -114,12 +116,14 @@ defmodule EnrouteHayeWeb.UserLive.Login do
                 Reauthenticate to continue.
               <% else %>
                 Don't have an account?
-                <.link navigate={~p"/users/register"} class="text-zm-terracotta font-semibold hover:underline">
+                <.link
+                  navigate={~p"/users/register"}
+                  class="text-zm-terracotta font-semibold hover:underline"
+                >
                   Create one →
                 </.link>
               <% end %>
             </div>
-
           </div>
 
           <%!-- ══════════════════════════════════════════
@@ -127,7 +131,6 @@ defmodule EnrouteHayeWeb.UserLive.Login do
                Hidden on mobile, shown on lg+
           ══════════════════════════════════════════ --%>
           <div class="hidden lg:block relative w-[46%] flex-shrink-0 m-4 ml-0 rounded-2xl overflow-hidden bg-zm-ink">
-
             <%!-- Hero image --%>
             <img
               src={~p"/images/sites/victoria_falls.jpg"}
@@ -136,18 +139,22 @@ defmodule EnrouteHayeWeb.UserLive.Login do
             />
 
             <%!-- Subtle grid overlay --%>
-            <div class="absolute inset-0 opacity-10"
-                 style="background-image:
+            <div
+              class="absolute inset-0 opacity-10"
+              style="background-image:
                    repeating-linear-gradient(90deg, rgba(255,255,255,.5) 0, rgba(255,255,255,.5) 1px, transparent 1px, transparent 44px),
-                   repeating-linear-gradient(0deg, rgba(255,255,255,.5) 0, rgba(255,255,255,.5) 1px, transparent 1px, transparent 44px);">
+                   repeating-linear-gradient(0deg, rgba(255,255,255,.5) 0, rgba(255,255,255,.5) 1px, transparent 1px, transparent 44px);"
+            >
             </div>
 
             <%!-- Bottom fade for text legibility --%>
             <div class="absolute inset-0 bg-gradient-to-t from-zm-ink/90 to-transparent to-55%"></div>
 
             <%!-- Copper radial glow accent --%>
-            <div class="absolute top-[15%] right-[10%] w-40 h-40 rounded-full pointer-events-none"
-                 style="background: radial-gradient(circle, rgba(201,109,58,0.25) 0%, transparent 70%);">
+            <div
+              class="absolute top-[15%] right-[10%] w-40 h-40 rounded-full pointer-events-none"
+              style="background: radial-gradient(circle, rgba(201,109,58,0.25) 0%, transparent 70%);"
+            >
             </div>
 
             <%!-- UNESCO badge — top left --%>
@@ -161,16 +168,15 @@ defmodule EnrouteHayeWeb.UserLive.Login do
 
             <%!-- Bottom text overlay --%>
             <div class="absolute bottom-0 left-0 right-0 px-7 pt-6 pb-8">
-
               <div class="flex items-center gap-1.5 text-zm-copper text-[0.6rem] font-bold tracking-[0.22em] uppercase mb-2">
                 <svg class="w-1.5 h-1.5 flex-shrink-0" viewBox="0 0 7 7" fill="currentColor">
-                  <polygon points="3.5,0 4.3,2.6 7,2.6 4.8,4.2 5.6,6.8 3.5,5.2 1.4,6.8 2.2,4.2 0,2.6 2.7,2.6"/>
+                  <polygon points="3.5,0 4.3,2.6 7,2.6 4.8,4.2 5.6,6.8 3.5,5.2 1.4,6.8 2.2,4.2 0,2.6 2.7,2.6" />
                 </svg>
                 Welcome to Zambia
               </div>
 
               <h2 class="font-zm-display text-white text-xl font-bold leading-tight mb-2.5">
-                Discover.<br/>
+                Discover.<br />
                 <span class="text-zm-copper">Live Our Heritage.</span>
               </h2>
 
@@ -180,13 +186,10 @@ defmodule EnrouteHayeWeb.UserLive.Login do
                 <span class="w-1.5 h-1.5 rounded-full bg-zm-terracotta block"></span>
                 <span class="block w-7 h-px bg-white/20"></span>
               </div>
-
             </div>
           </div>
-
         </div>
       </div>
-
     </Layouts.unauth_app>
     """
   end

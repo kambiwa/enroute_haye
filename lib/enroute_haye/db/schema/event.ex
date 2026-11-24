@@ -3,15 +3,15 @@ defmodule EnrouteHaye.Schema.Event do
   import Ecto.Changeset
 
   schema "events" do
-      field :title, :string
-      field :type, :string
-      field :description, :string
-      field :start_date, :naive_datetime
-      field :end_date, :naive_datetime
-      field :location, :string
-      field :latitude, :float
-      field :longitude, :float
-      field :image_url, :string
+    field :title, :string
+    field :type, :string
+    field :description, :string
+    field :start_date, :naive_datetime
+    field :end_date, :naive_datetime
+    field :location, :string
+    field :latitude, :float
+    field :longitude, :float
+    field :image_url, :string
 
     timestamps()
   end
@@ -19,7 +19,17 @@ defmodule EnrouteHaye.Schema.Event do
   @doc false
   def changeset(event, attrs) do
     event
-    |> cast(attrs, [:title, :type, :description, :start_date, :end_date, :location, :latitude, :longitude, :image_url])
+    |> cast(attrs, [
+      :title,
+      :type,
+      :description,
+      :start_date,
+      :end_date,
+      :location,
+      :latitude,
+      :longitude,
+      :image_url
+    ])
     |> validate_required([:title, :type, :start_date, :end_date])
   end
 end

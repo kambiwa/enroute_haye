@@ -17,7 +17,6 @@ defmodule EnrouteHayeWeb.Road.FormComponent do
   def render(assigns) do
     ~H"""
     <div style="background: #fff; border-radius: 0.75rem; width: 100%; box-sizing: border-box; font-family: 'Inter', sans-serif;">
-
       <%!-- ══ HEADER ══ --%>
       <div style="background: #8B1A1A; border-radius: 0.75rem 0.75rem 0 0;
                   padding: 1rem 1.5rem; display: flex; align-items: center; gap: 0.6rem;">
@@ -43,13 +42,13 @@ defmodule EnrouteHayeWeb.Road.FormComponent do
         style="padding: 1.25rem; width: 100%; box-sizing: border-box;"
       >
         <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-
           <%!-- ── SECTION: Operator Info ── --%>
           <div>
             <p style="font-size: 0.7rem; font-weight: 700; color: #8B1A1A;
                       text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem;
                       display: flex; align-items: center; gap: 0.4rem;">
-              <span style="display: inline-block; width: 2rem; height: 1px; background: #8B1A1A;"></span>
+              <span style="display: inline-block; width: 2rem; height: 1px; background: #8B1A1A;">
+              </span>
               Operator Info
             </p>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
@@ -71,7 +70,8 @@ defmodule EnrouteHayeWeb.Road.FormComponent do
             <p style="font-size: 0.7rem; font-weight: 700; color: #8B1A1A;
                       text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem;
                       display: flex; align-items: center; gap: 0.4rem;">
-              <span style="display: inline-block; width: 2rem; height: 1px; background: #8B1A1A;"></span>
+              <span style="display: inline-block; width: 2rem; height: 1px; background: #8B1A1A;">
+              </span>
               Route
             </p>
             <div style="display: flex; flex-direction: column; gap: 0.75rem;">
@@ -100,7 +100,8 @@ defmodule EnrouteHayeWeb.Road.FormComponent do
             <p style="font-size: 0.7rem; font-weight: 700; color: #8B1A1A;
                       text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem;
                       display: flex; align-items: center; gap: 0.4rem;">
-              <span style="display: inline-block; width: 2rem; height: 1px; background: #8B1A1A;"></span>
+              <span style="display: inline-block; width: 2rem; height: 1px; background: #8B1A1A;">
+              </span>
               Schedule & Pricing
             </p>
             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem;">
@@ -123,7 +124,6 @@ defmodule EnrouteHayeWeb.Road.FormComponent do
               />
             </div>
           </div>
-
         </div>
 
         <%!-- ══ ACTIONS ══ --%>
@@ -166,7 +166,7 @@ defmodule EnrouteHayeWeb.Road.FormComponent do
   @impl true
   def handle_event("save", %{"road" => params}, socket) do
     case socket.assigns.action do
-      :new  -> create_road(socket, params)
+      :new -> create_road(socket, params)
       :edit -> update_road(socket, params)
     end
   end

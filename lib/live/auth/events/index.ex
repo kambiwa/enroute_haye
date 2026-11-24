@@ -1,13 +1,10 @@
 defmodule EnrouteHayeWeb.Auth.Events.Index do
-   use EnrouteHayeWeb, :live_view
+  use EnrouteHayeWeb, :live_view
 
-  alias EnrouteHayeWeb.Datatable.Table
   alias EnrouteHaye.Schema.Event
   alias EnrouteHaye.Context.CxtEvent
+  alias EnrouteHayeWeb.Datatable.Table
   alias EnrouteHayeWeb.Pagination
-  alias EnrouteHayeWeb.PaginationComponent
-  alias EnrouteHayeWeb.Accounts
-  alias EnrouteHayeWeb.Repo
 
   @impl true
   def mount(_params, _session, socket) do
@@ -116,7 +113,6 @@ defmodule EnrouteHayeWeb.Auth.Events.Index do
     |> assign(data_loader: false)
   end
 
-
   # ── Render ───────────────────────────────────────────────────────────
 
   @impl true
@@ -124,7 +120,6 @@ defmodule EnrouteHayeWeb.Auth.Events.Index do
     ~H"""
     <Layouts.admin_app flash={@flash} current_scope={@current_scope} current_page={:events}>
       <div style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem;">
-
         <%!-- ══ PAGE HEADER ══ --%>
         <div style="display: flex; align-items: center; justify-content: space-between;">
           <div>
@@ -175,7 +170,6 @@ defmodule EnrouteHayeWeb.Auth.Events.Index do
             </p>
             <.form for={%{}} as={:filter} phx-change="filter">
               <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
-
                 <div style="display: flex; flex-direction: column; gap: 0.35rem;">
                   <label style="font-size: 0.75rem; font-weight: 500; color: #374151;">Search</label>
                   <.input
@@ -195,7 +189,6 @@ defmodule EnrouteHayeWeb.Auth.Events.Index do
                     value={@status_filter}
                   />
                 </div>
-
               </div>
             </.form>
           </div>
@@ -203,7 +196,6 @@ defmodule EnrouteHayeWeb.Auth.Events.Index do
 
         <%!-- ══ TABLE CARD ══ --%>
         <div style="background: #fff; border: 1px solid #E8E2D9; border-radius: 0.75rem; overflow: hidden;">
-
           <div style="padding: 1rem 1.25rem; border-bottom: 1px solid #E8E2D9;">
             <h2 style="font-size: 0.85rem; font-weight: 600; color: #374151;">All Events</h2>
           </div>
@@ -218,7 +210,7 @@ defmodule EnrouteHayeWeb.Auth.Events.Index do
             <:col :let={event} label="Description">
               <span style="color: #6b7280;">{event.description}</span>
             </:col>
-             <:col :let={event} label="Location">
+            <:col :let={event} label="Location">
               <span style="color: #6b7280;">{event.location}</span>
             </:col>
             <:col :let={event} label="Start Date and Time">
@@ -227,7 +219,6 @@ defmodule EnrouteHayeWeb.Auth.Events.Index do
             <:col :let={event} label="End Date and Time">
               <span style="color: #6b7280;">{event.end_date}</span>
             </:col>
-
 
             <:action :let={event}>
               <button
@@ -248,14 +239,26 @@ defmodule EnrouteHayeWeb.Auth.Events.Index do
           <%!-- Loading spinner --%>
           <%= if @data_loader do %>
             <div style="padding: 2.5rem; text-align: center;">
-              <svg xmlns="http://www.w3.org/2000/svg"
-                   style="width: 2rem; height: 2rem; color: #8B1A1A; animation: spin 1s linear infinite; margin: 0 auto;"
-                   fill="none" viewBox="0 0 24 24">
-                <circle style="opacity: 0.25;" cx="12" cy="12" r="10"
-                        stroke="currentColor" stroke-width="4"/>
-                <path style="opacity: 0.75;" fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962
-                         7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                style="width: 2rem; height: 2rem; color: #8B1A1A; animation: spin 1s linear infinite; margin: 0 auto;"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  style="opacity: 0.25;"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                />
+                <path
+                  style="opacity: 0.75;"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962
+                         7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                />
               </svg>
             </div>
           <% end %>
@@ -269,7 +272,6 @@ defmodule EnrouteHayeWeb.Auth.Events.Index do
               pagination_data={@data_pagenations}
             />
           </div>
-
         </div>
 
         <%!-- ══ MODAL ══ --%>
@@ -289,7 +291,6 @@ defmodule EnrouteHayeWeb.Auth.Events.Index do
             />
           </.modal>
         <% end %>
-
       </div>
     </Layouts.admin_app>
     """

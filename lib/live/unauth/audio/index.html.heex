@@ -1,21 +1,19 @@
 <%= if @current_track do %>
   <audio id="audio-player">
-    <source src={@current_track.file_url} type="audio/mpeg">
+    <source src={@current_track.file_url} type="audio/mpeg" />
   </audio>
 
   <section class="section section-dark audio-section">
     <div class="container narrow text-center">
-
       <span class="audio-icon-lg">♪</span>
 
-      <h2 class="section-title"><%= @current_track.title %></h2>
+      <h2 class="section-title">{@current_track.title}</h2>
 
       <p class="section-sub">
-        <%= @current_track.artist %>
+        {@current_track.artist}
       </p>
 
       <div class="player scroll-reveal" phx-hook="Player" id="player-hook">
-
         <div class="player-controls">
           <button class="ctrl-btn" id="skip-back">⏮</button>
           <button class="ctrl-btn ctrl-play" id="play-btn">▶</button>
@@ -29,14 +27,13 @@
             <div class="progress-fill" id="progress-fill"></div>
           </div>
 
-          <span class="time-label"><%= @current_track.duration %></span>
+          <span class="time-label">{@current_track.duration}</span>
         </div>
 
         <div class="player-volume">
           <span>🔈</span>
-          <input type="range" min="0" max="100" value="70" id="volume-range"/>
+          <input type="range" min="0" max="100" value="70" id="volume-range" />
         </div>
-
       </div>
     </div>
   </section>

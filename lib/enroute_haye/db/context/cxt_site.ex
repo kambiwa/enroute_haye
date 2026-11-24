@@ -7,11 +7,11 @@ defmodule EnrouteHaye.Context.CxtSite do
   # ── Paginated list (used by the LiveView index) ──────────────────────
 
   def list_sites(table_params \\ %{}, filters \\ %{}) do
-    page        = EnrouteHayeWeb.Pagination.param_value(table_params, "page", 1)
-    page_size   = EnrouteHayeWeb.Pagination.param_value(table_params, "page_size", 10)
-    order_by    = table_params["order_by"] || %{"sort_field" => "id", "sort_direction" => "desc"}
-    search      = get_in(table_params, ["filter", "isearch"]) || ""
-    status      = filters[:status_filter] || filters["status_filter"] || ""
+    page = EnrouteHayeWeb.Pagination.param_value(table_params, "page", 1)
+    page_size = EnrouteHayeWeb.Pagination.param_value(table_params, "page_size", 10)
+    order_by = table_params["order_by"] || %{"sort_field" => "id", "sort_direction" => "desc"}
+    search = get_in(table_params, ["filter", "isearch"]) || ""
+    status = filters[:status_filter] || filters["status_filter"] || ""
 
     Site
     |> apply_search(search)
@@ -54,20 +54,22 @@ defmodule EnrouteHaye.Context.CxtSite do
   # ── Private query helpers ────────────────────────────────────────────
 
   defp apply_search(query, ""), do: query
-  defp apply_search(query, nil), do: query
+
   defp apply_search(query, search) do
     term = "%#{search}%"
     where(query, [f], ilike(f.name, ^term) or ilike(f.description, ^term))
   end
 
   defp apply_status(query, ""), do: query
-  defp apply_status(query, nil), do: query
+
   defp apply_status(query, status) do
     where(query, [f], f.status == ^status)
   end
+
   defp apply_order(query, %{"sort_field" => field, "sort_direction" => "asc"}) do
     order_by(query, [f], asc: field(f, ^String.to_existing_atom(field)))
   end
+
   defp apply_order(query, %{"sort_field" => field, "sort_direction" => "desc"}) do
     order_by(query, [f], desc: field(f, ^String.to_existing_atom(field)))
   end

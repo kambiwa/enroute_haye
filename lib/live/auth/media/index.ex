@@ -5,26 +5,24 @@ defmodule EnrouteHayeWeb.Auth.MediaManager.Index do
   alias EnrouteHaye.Schema.Media
   alias EnrouteHayeWeb.Datatable.Table
   alias EnrouteHayeWeb.Pagination
-  alias EnrouteHayeWeb.PaginationComponent
-  alias EnrouteHayeWeb.Repo
 
   @impl true
   def mount(_params, _session, socket) do
-  socket =
-    socket
-    |> assign(:page_title, "Media")
-    |> assign(:data_loader, false)
-    |> assign(:data, [])
-    |> assign(:data_pagenations, [])
-    |> assign(filter_expanded: false)
-    |> assign(:status_filter, "")
-    |> assign(:search_filter, "")
-    |> assign(:media, %Media{})
-    |> assign(:preview_media, nil)
-    |> Pagination.order_by_composer()
-    |> Pagination.i_search_composer()
+    socket =
+      socket
+      |> assign(:page_title, "Media")
+      |> assign(:data_loader, false)
+      |> assign(:data, [])
+      |> assign(:data_pagenations, [])
+      |> assign(filter_expanded: false)
+      |> assign(:status_filter, "")
+      |> assign(:search_filter, "")
+      |> assign(:media, %Media{})
+      |> assign(:preview_media, nil)
+      |> Pagination.order_by_composer()
+      |> Pagination.i_search_composer()
 
-  {:ok, socket}
+    {:ok, socket}
   end
 
   @impl true
@@ -67,14 +65,6 @@ defmodule EnrouteHayeWeb.Auth.MediaManager.Index do
   end
 
   @impl true
-  def handle_info(
-        {EnrouteHayeWeb.Media.FormComponent, {:saved, _media}},
-        socket
-      ) do
-    {:noreply, fetch_filtered_media(socket)}
-  end
-
-  @impl true
   def handle_event("add_media", _params, socket) do
     {:noreply,
      socket
@@ -110,6 +100,11 @@ defmodule EnrouteHayeWeb.Auth.MediaManager.Index do
      |> fetch_filtered_media()}
   end
 
+  @impl true
+  def handle_info({EnrouteHayeWeb.Media.FormComponent, {:saved, _media}}, socket) do
+    {:noreply, fetch_filtered_media(socket)}
+  end
+
   defp fetch_filtered_media(socket) do
     filters = %{
       search_filter: socket.assigns.search_filter,
@@ -128,7 +123,6 @@ defmodule EnrouteHayeWeb.Auth.MediaManager.Index do
     |> assign(data_loader: false)
   end
 
-
   # ── Render ───────────────────────────────────────────────────────────
 
   @impl true
@@ -136,7 +130,6 @@ defmodule EnrouteHayeWeb.Auth.MediaManager.Index do
     ~H"""
     <Layouts.admin_app flash={@flash} current_scope={@current_scope} current_page={:media}>
       <div style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem;">
-
         <%!-- ══ PAGE HEADER ══ --%>
         <div style="display: flex; align-items: center; justify-content: space-between;">
           <div>
@@ -187,7 +180,6 @@ defmodule EnrouteHayeWeb.Auth.MediaManager.Index do
             </p>
             <.form for={%{}} as={:filter} phx-change="filter">
               <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
-
                 <div style="display: flex; flex-direction: column; gap: 0.35rem;">
                   <label style="font-size: 0.75rem; font-weight: 500; color: #374151;">Search</label>
                   <.input
@@ -207,7 +199,6 @@ defmodule EnrouteHayeWeb.Auth.MediaManager.Index do
                     value={@status_filter}
                   />
                 </div>
-
               </div>
             </.form>
           </div>
@@ -215,7 +206,6 @@ defmodule EnrouteHayeWeb.Auth.MediaManager.Index do
 
         <%!-- ══ TABLE CARD ══ --%>
         <div style="background: #fff; border: 1px solid #E8E2D9; border-radius: 0.75rem; overflow: hidden;">
-
           <div style="padding: 1rem 1.25rem; border-bottom: 1px solid #E8E2D9;">
             <h2 style="font-size: 0.85rem; font-weight: 600; color: #374151;">All media</h2>
           </div>
@@ -259,20 +249,31 @@ defmodule EnrouteHayeWeb.Auth.MediaManager.Index do
                 <.icon name="hero-pencil-square" class="size-3" /> Edit
               </button>
             </:action>
-
           </Table.table>
 
           <%!-- Loading spinner --%>
           <%= if @data_loader do %>
             <div style="padding: 2.5rem; text-align: center;">
-              <svg xmlns="http://www.w3.org/2000/svg"
-                   style="width: 2rem; height: 2rem; color: #8B1A1A; animation: spin 1s linear infinite; margin: 0 auto;"
-                   fill="none" viewBox="0 0 24 24">
-                <circle style="opacity: 0.25;" cx="12" cy="12" r="10"
-                        stroke="currentColor" stroke-width="4"/>
-                <path style="opacity: 0.75;" fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962
-                         7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                style="width: 2rem; height: 2rem; color: #8B1A1A; animation: spin 1s linear infinite; margin: 0 auto;"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  style="opacity: 0.25;"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                />
+                <path
+                  style="opacity: 0.75;"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962
+                         7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                />
               </svg>
             </div>
           <% end %>
@@ -286,7 +287,6 @@ defmodule EnrouteHayeWeb.Auth.MediaManager.Index do
               pagination_data={@data_pagenations}
             />
           </div>
-
         </div>
 
         <%!-- ══ MODAL ══ --%>
@@ -324,8 +324,10 @@ defmodule EnrouteHayeWeb.Auth.MediaManager.Index do
                 autoplay
                 style="width: 100%; max-height: 70vh; border-radius: 0.5rem; background: #000;"
               >
-                <source src={@preview_media.file_path} type={video_mime_type(@preview_media.file_path)} />
-                Your browser doesn't support embedded video.
+                <source
+                  src={@preview_media.file_path}
+                  type={video_mime_type(@preview_media.file_path)}
+                /> Your browser doesn't support embedded video.
               </video>
 
               <p style="font-size: 0.8rem; color: #6b7280; margin: 0;">
@@ -334,19 +336,17 @@ defmodule EnrouteHayeWeb.Auth.MediaManager.Index do
             </div>
           </.modal>
         <% end %>
-
       </div>
     </Layouts.admin_app>
     """
   end
 
-    defp video_mime_type(path) do
-      case Path.extname(path) do
-        ".mp4" -> "video/mp4"
-        ".webm" -> "video/webm"
-        ".mov" -> "video/quicktime"
-        _ -> "video/mp4"
-      end
+  defp video_mime_type(path) do
+    case Path.extname(path) do
+      ".mp4" -> "video/mp4"
+      ".webm" -> "video/webm"
+      ".mov" -> "video/quicktime"
+      _ -> "video/mp4"
     end
-
+  end
 end

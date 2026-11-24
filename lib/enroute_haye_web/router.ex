@@ -55,62 +55,47 @@ defmodule EnrouteHayeWeb.Router do
 
   ## Authentication routes
 
-  scope "/admin", EnrouteHayeWeb do
+  scope "/", EnrouteHayeWeb do
     pipe_through [:browser, :require_authenticated_user]
 
     live_session :require_authenticated_user,
       on_mount: [{EnrouteHayeWeb.UserAuth, :require_authenticated}] do
+      live "/admin/dashboard", Auth.Admin.Dashboard, :index
 
-      live "/dashboard", Auth.Admin.Dashboard, :index
+      live "/admin/users", Auth.Admin.Users, :index
+      live "/admin/department", Auth.Admin.Departments, :index
+      live "/admin/jobs", Auth.Admin.Jobs, :index
 
-      live "/users", Auth.Admin.Users, :index
-      live "/department", Auth.Admin.Departments, :index
-      live "/jobs", Auth.Admin.Jobs, :index
+      live "/admin/accomodations", Auth.Accommodations.Index, :index
 
+      live "/admin/reviews", Auth.Review.Index, :index
+      live "/admin/bookings", Auth.Bookings.Index, :index
 
-      live "/accomodations", Auth.Accommodations.Index, :index
-      live "/accomodations/new", Auth.Accommodations.New, :new
-      live "/accomodations/:id/edit", Auth.Accommodations.Edit, :edit
+      live "/admin/events", Auth.Events.Index, :index
+      live "/admin/events/new", Auth.Events.Index, :new
+      live "/admin/events/:id/edit", Auth.Events.Index, :edit
 
-      live "/reviews", Auth.Review.Index, :index
-      live "/bookings", Auth.Bookings.Index, :index
+      live "/admin/foods", Auth.Foods.Index, :index
+      live "/admin/foods/new", Auth.Foods.Index, :new
+      live "/admin/foods/:id/edit", Auth.Foods.Index, :edit
 
-      live "/events", Auth.Events.Index, :index
-      live "/events/new", Auth.Events.New, :new
-      live "/events/:id/edit", Auth.Events.Edit, :edit
+      live "/admin/audio", Auth.AudioManager.Index, :index
+      live "/admin/audio/new", Auth.AudioManager.Index, :new
+      live "/admin/audio/:id/edit", Auth.AudioManager.Index, :edit
 
-      live "/foods", Auth.Foods.Index, :index
-      live "/foods/new", Auth.Foods.New, :new
-      live "/foods/:id/edit", Auth.Foods.Edit, :edit
+      live "/admin/media", Auth.MediaManager.Index, :index
+      live "/admin/media/new", Auth.MediaManager.Index, :new
+      live "/admin/media/:id/edit", Auth.MediaManager.Index, :edit
 
-      live "/audio", Auth.AudioManager.Index, :index
-      live "/audio/new", Auth.AudioManager.New, :new
-      live "/audio/:id/edit", Auth.AudioManager.Edit, :edit
+      live "/admin/trips", Auth.Trips.Index, :index
 
-      live "/media", Auth.MediaManager.Index, :index
-      live "/media/new", Auth.MediaManager.Index, :new
-      live "/media/:id/edit", Auth.MediaManager.Index, :edit
+      live "/admin/sites", Auth.Sites.Index, :index
+      live "/admin/sites/new", Auth.Sites.Index, :new
+      live "/admin/sites/:id/edit", Auth.Sites.Index, :edit
 
-
-      live "/trips", Auth.Trips.Index, :index
-      live "/trips/new", Auth.Trips.New, :new
-      live "/trips/:id/edit", Auth.Trips.Edit, :edit
-
-
-
-      live "/sites", Auth.Sites.Index, :index
-      live "/sites/new", Auth.Sites.New, :new
-      live "/sites/:id/edit", Auth.Sites.Edit, :edit
-
-
-      live "/trips", Auth.Trips.Index, :index
-      live "/trips/new", Auth.Trips.New, :new
-      live "/trips/:id/edit", Auth.Trips.Edit, :edit
-
-      live "/roads", Auth.Road.Index, :index
-      live "/roads/new", Auth.Road.New, :new
-      live "/roads/:id/edit", Auth.Road.Edit, :edit
-
+      live "/admin/roads", Auth.Road.Index, :index
+      live "/admin/roads/new", Auth.Road.Index, :new
+      live "/admin/roads/:id/edit", Auth.Road.Index, :edit
 
       live "/users/settings", UserLive.Settings, :edit
       live "/users/settings/confirm-email/:token", UserLive.Settings, :confirm_email

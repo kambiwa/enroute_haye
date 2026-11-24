@@ -8,7 +8,6 @@ defmodule EnrouteHaye.Accounts.User do
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
 
-
     # belongs_to :role, EnrouteHaye.User.Role
     belongs_to :job, EnrouteHaye.Schema.Job
 
@@ -23,13 +22,14 @@ defmodule EnrouteHaye.Accounts.User do
   ## REGISTRATION
   ## ======================
 
-    def registration_changeset(user, attrs) do
+  def registration_changeset(user, attrs) do
     user
     |> cast(attrs, [:name, :email, :job_id, :password])
-    |> validate_required([:email, :password])
+    |> validate_required([:email])
     |> validate_email()
-    |> validate_password()
+    |> validate_password_if_present()
     |> unique_constraint(:email)
+
     # remove unless you truly want job_id unique per user:
     # |> unsafe_validate_unique(:job_id, EnrouteHaye.Repo)
   end
@@ -38,11 +38,12 @@ defmodule EnrouteHaye.Accounts.User do
   ## EMAIL
   ## ======================
 
- def email_changeset(user, attrs, opts \\ []) do
-      user
-      |> cast(attrs, [:email])
-      |> validate_email(opts)
-    end
+  def email_changeset(user, attrs, opts \\ []) do
+    user
+    |> cast(attrs, [:email])
+    |> validate_email(opts)
+  end
+
   defp validate_email(changeset, opts \\ []) do
     changeset =
       changeset
@@ -56,10 +57,23 @@ defmodule EnrouteHaye.Accounts.User do
       changeset
       |> unsafe_validate_unique(:email, EnrouteHaye.Repo)
       |> unique_constraint(:email)
+
       # removed: |> validate_required([:job_id])
     else
       changeset
     end
+  end
+
+  def confirm_changeset(user) do
+    change(user, confirmed_at: DateTime.utc_now(:second))
+  end
+
+  def admin_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:name, :email])
+    |> validate_required([:email])
+    |> validate_email()
+    |> unique_constraint(:email)
   end
 
   ## ======================
@@ -75,8 +89,12 @@ defmodule EnrouteHaye.Accounts.User do
   defp validate_password(changeset, opts \\ []) do
     changeset
     |> validate_required([:password])
-    |> validate_length(:password, min: 6, max: 72)
+    |> validate_length(:password, min: 12, max: 72)
     |> maybe_hash_password(opts)
+  end
+
+  defp validate_password_if_present(changeset) do
+    if get_change(changeset, :password), do: validate_password(changeset), else: changeset
   end
 
   defp maybe_hash_password(changeset, opts) do

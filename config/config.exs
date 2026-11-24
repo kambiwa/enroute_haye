@@ -54,7 +54,7 @@ config :esbuild,
     env: %{"NODE_PATH" => [Path.expand("../deps", __DIR__), Mix.Project.build_path()]}
   ]
 
-  config :chromic_pdf,
+config :chromic_pdf,
   chrome_executable: "/usr/bin/chromium-browser",
   chrome_args: ["--no-sandbox", "--disable-setuid-sandbox"]
 
@@ -77,8 +77,7 @@ config :logger, :default_formatter,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
-
-#for Anthropic API
+# for Anthropic API
 config :enroute_haye, anthropic_api_key: System.get_env("ANTHROPIC_API_KEY")
 
 # Import environment specific config. This must remain at the bottom

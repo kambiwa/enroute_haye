@@ -1,22 +1,20 @@
 defmodule EnrouteHayeWeb.Auth.Accommodations.Index do
-   use EnrouteHayeWeb, :live_view
+  use EnrouteHayeWeb, :live_view
 
-
-
-   def mount(_params, _session, socket) do
-
+  def mount(_params, _session, socket) do
     socket =
       socket
       |> assign(:page_title, "Accommodations")
-      # |> assign(:accommodations, EnrouteHaye.Accommodations.list_accommodations())
+
+    # |> assign(:accommodations, EnrouteHaye.Accommodations.list_accommodations())
 
     {:ok, socket}
-   end
+  end
 
-   def render(assigns) do
+  def render(assigns) do
     ~H"""
     <Layouts.admin_app flash={@flash} current_scope={@current_scope} current_page={:accommodations}>
-        <%!-- <div class="container mx-auto px-4 py-8">
+      <%!-- <div class="container mx-auto px-4 py-8">
 
           <div class="bg-white shadow-md rounded-lg p-6">
             <h1 class="text-2xl font-bold mb-4">Accommodations</h1>
@@ -55,8 +53,5 @@ defmodule EnrouteHayeWeb.Auth.Accommodations.Index do
         </div> --%>
     </Layouts.admin_app>
     """
-end
-
-
-
+  end
 end

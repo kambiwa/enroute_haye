@@ -5,13 +5,9 @@ defmodule EnrouteHaye.Schema.JobType do
   schema "job_types" do
     field :title, :string
     field :is_active, :boolean, default: true
-    has_many :approval_work_flow, EnrouteHaye.ApprovalWorkFlows.ApprovalWorkFlow
-    has_one :job, EnrouteHaye.Jobs.Job
+    has_many :jobs, EnrouteHaye.Schema.Job
 
-    timestamps(
-      type: :naive_datetime,
-      autogenerate: {EnrouteHaye.LocalTimestamp, :autogenerate, []}
-    )
+    timestamps()
   end
 
   @doc false

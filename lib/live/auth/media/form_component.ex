@@ -22,8 +22,13 @@ defmodule EnrouteHayeWeb.Media.FormComponent do
         auto_upload: true
       )
 
-    IO.inspect(socket.assigns.uploads.video, label: "======[mount] video upload config registered")
-    IO.inspect(socket.assigns.uploads.poster, label: "======[mount] poster upload config registered")
+    IO.inspect(socket.assigns.uploads.video,
+      label: "======[mount] video upload config registered"
+    )
+
+    IO.inspect(socket.assigns.uploads.poster,
+      label: "======[mount] poster upload config registered"
+    )
 
     {:ok, socket}
   end
@@ -76,12 +81,16 @@ defmodule EnrouteHayeWeb.Media.FormComponent do
       label: "======[render] poster entries snapshot"
     )
 
-    IO.inspect(upload_errors(assigns.uploads.video), label: "======[render] top-level video upload errors")
-    IO.inspect(upload_errors(assigns.uploads.poster), label: "======[render] top-level poster upload errors")
+    IO.inspect(upload_errors(assigns.uploads.video),
+      label: "======[render] top-level video upload errors"
+    )
+
+    IO.inspect(upload_errors(assigns.uploads.poster),
+      label: "======[render] top-level poster upload errors"
+    )
 
     ~H"""
     <div style="background: #fff; border-radius: 0.75rem; width: 100%; box-sizing: border-box; font-family: 'Inter', sans-serif;">
-
       <%!-- ══ HEADER ══ --%>
       <div style="background: #8B1A1A; border-radius: 0.75rem 0.75rem 0 0;
                   padding: 1rem 1.5rem; display: flex; align-items: center; gap: 0.6rem;">
@@ -92,7 +101,9 @@ defmodule EnrouteHayeWeb.Media.FormComponent do
         <div>
           <h2 style="font-size: 0.92rem; font-weight: 600; color: #fff; margin: 0;">{@title}</h2>
           <p style="font-size: 0.72rem; color: rgba(255,255,255,0.65); margin: 0;">
-            Fill in the details below to {if @action == :new, do: "create a new media item", else: "update the media item"}.
+            Fill in the details below to {if @action == :new,
+              do: "create a new media item",
+              else: "update the media item"}.
           </p>
         </div>
       </div>
@@ -106,16 +117,15 @@ defmodule EnrouteHayeWeb.Media.FormComponent do
       >
         <%!-- ══ MAIN GRID: form left | upload right ══ --%>
         <div style="display: grid; grid-template-columns: 1fr 200px; gap: 1rem; align-items: start; width: 100%; box-sizing: border-box;">
-
           <%!-- LEFT COLUMN — form fields --%>
           <div style="display: flex; flex-direction: column; gap: 1.25rem;">
-
             <%!-- Section: Media Info --%>
             <div>
               <p style="font-size: 0.7rem; font-weight: 700; color: #8B1A1A;
                         text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem;
                         display: flex; align-items: center; gap: 0.4rem;">
-                <span style="display: inline-block; width: 2rem; height: 1px; background: #8B1A1A;"></span>
+                <span style="display: inline-block; width: 2rem; height: 1px; background: #8B1A1A;">
+                </span>
                 Media Info
               </p>
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
@@ -137,7 +147,8 @@ defmodule EnrouteHayeWeb.Media.FormComponent do
               <p style="font-size: 0.7rem; font-weight: 700; color: #8B1A1A;
                         text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem;
                         display: flex; align-items: center; gap: 0.4rem;">
-                <span style="display: inline-block; width: 2rem; height: 1px; background: #8B1A1A;"></span>
+                <span style="display: inline-block; width: 2rem; height: 1px; background: #8B1A1A;">
+                </span>
                 Details
               </p>
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
@@ -159,17 +170,16 @@ defmodule EnrouteHayeWeb.Media.FormComponent do
                 <.input type="number" field={@form[:minutes]} label="Duration (minutes)" min="0" />
               </div>
             </div>
-
           </div>
 
           <%!-- RIGHT COLUMN — upload panel --%>
           <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-
             <%!-- ── Video upload ── --%>
             <p style="font-size: 0.7rem; font-weight: 700; color: #8B1A1A;
                       text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.1rem;
                       display: flex; align-items: center; gap: 0.4rem;">
-              <span style="display: inline-block; width: 2rem; height: 1px; background: #8B1A1A;"></span>
+              <span style="display: inline-block; width: 2rem; height: 1px; background: #8B1A1A;">
+              </span>
               Media File
             </p>
 
@@ -183,7 +193,10 @@ defmodule EnrouteHayeWeb.Media.FormComponent do
             >
               <div style="width: 2.5rem; height: 2.5rem; background: rgba(139,26,26,0.08);
                           border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                <.icon name="hero-video-camera" style="width: 1.25rem; height: 1.25rem; color: #8B1A1A;" />
+                <.icon
+                  name="hero-video-camera"
+                  style="width: 1.25rem; height: 1.25rem; color: #8B1A1A;"
+                />
               </div>
               <div>
                 <p style="font-size: 0.75rem; font-weight: 500; color: #374151; margin: 0;">
@@ -196,8 +209,7 @@ defmodule EnrouteHayeWeb.Media.FormComponent do
               <label style="margin-top: 0.25rem; padding: 0.35rem 0.9rem; font-size: 0.75rem;
                             font-weight: 500; color: #8B1A1A; background: #fff;
                             border: 1px solid #8B1A1A; border-radius: 0.4rem; cursor: pointer;">
-                Browse
-                <.live_file_input upload={@uploads.video} style="display: none;" />
+                Browse <.live_file_input upload={@uploads.video} style="display: none;" />
               </label>
             </div>
 
@@ -212,7 +224,8 @@ defmodule EnrouteHayeWeb.Media.FormComponent do
                     {entry.client_name}
                   </p>
                   <div style="margin-top: 0.2rem; height: 3px; background: #E8E2D9; border-radius: 99px; overflow: hidden;">
-                    <div style={"width: #{entry.progress}%; height: 100%; background: #8B1A1A; transition: width 0.3s;"}></div>
+                    <div style={"width: #{entry.progress}%; height: 100%; background: #8B1A1A; transition: width 0.3s;"}>
+                    </div>
                   </div>
                   <p style="font-size: 0.65rem; color: #16a34a; margin: 0.15rem 0 0;">
                     progress: {entry.progress}% · done?: {entry.done?}
@@ -243,9 +256,12 @@ defmodule EnrouteHayeWeb.Media.FormComponent do
             <p style="font-size: 0.7rem; font-weight: 700; color: #8B1A1A;
                       text-transform: uppercase; letter-spacing: 0.1em; margin: 0.75rem 0 0.1rem;
                       display: flex; align-items: center; gap: 0.4rem;">
-              <span style="display: inline-block; width: 2rem; height: 1px; background: #8B1A1A;"></span>
+              <span style="display: inline-block; width: 2rem; height: 1px; background: #8B1A1A;">
+              </span>
               Poster Image
-              <span style="font-weight: 400; text-transform: none; letter-spacing: 0; color: #9ca3af;">(optional)</span>
+              <span style="font-weight: 400; text-transform: none; letter-spacing: 0; color: #9ca3af;">
+                (optional)
+              </span>
             </p>
 
             <div
@@ -269,8 +285,7 @@ defmodule EnrouteHayeWeb.Media.FormComponent do
               <label style="margin-top: 0.15rem; padding: 0.3rem 0.8rem; font-size: 0.7rem;
                             font-weight: 500; color: #8B1A1A; background: #fff;
                             border: 1px solid #8B1A1A; border-radius: 0.4rem; cursor: pointer;">
-                Browse
-                <.live_file_input upload={@uploads.poster} style="display: none;" />
+                Browse <.live_file_input upload={@uploads.poster} style="display: none;" />
               </label>
             </div>
 
@@ -278,14 +293,18 @@ defmodule EnrouteHayeWeb.Media.FormComponent do
               <div style="border: 1px solid #E8E2D9; border-radius: 0.5rem;
                           padding: 0.5rem 0.65rem; background: #fff;
                           display: flex; align-items: center; gap: 0.5rem;">
-                <.live_img_preview entry={entry} style="width: 2rem; height: 2rem; object-fit: cover; border-radius: 0.3rem;" />
+                <.live_img_preview
+                  entry={entry}
+                  style="width: 2rem; height: 2rem; object-fit: cover; border-radius: 0.3rem;"
+                />
                 <div style="flex: 1; min-width: 0;">
                   <p style="font-size: 0.7rem; font-weight: 500; color: #374151;
                             white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 0;">
                     {entry.client_name}
                   </p>
                   <div style="margin-top: 0.2rem; height: 3px; background: #E8E2D9; border-radius: 99px; overflow: hidden;">
-                    <div style={"width: #{entry.progress}%; height: 100%; background: #8B1A1A; transition: width 0.3s;"}></div>
+                    <div style={"width: #{entry.progress}%; height: 100%; background: #8B1A1A; transition: width 0.3s;"}>
+                    </div>
                   </div>
                   <p style="font-size: 0.65rem; color: #16a34a; margin: 0.15rem 0 0;">
                     progress: {entry.progress}% · done?: {entry.done?}
@@ -449,7 +468,9 @@ defmodule EnrouteHayeWeb.Media.FormComponent do
 
     File.cp!(path, dest)
 
-    IO.inspect(File.exists?(dest), label: "======[copy_entry:#{subdir}] file copied successfully?")
+    IO.inspect(File.exists?(dest),
+      label: "======[copy_entry:#{subdir}] file copied successfully?"
+    )
 
     {:ok, "/#{subdir}/#{filename}"}
   end

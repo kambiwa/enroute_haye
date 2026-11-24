@@ -54,8 +54,7 @@ defmodule EnrouteHayeWeb.Endpoint do
   plug EnrouteHayeWeb.Router
 
   plug Plug.Static,
-  at: "/uploads",
-  from: {:enroute_haye, "priv/static/uploads"},
-  gzip: false
-  
+    at: "/uploads",
+    from: {:enroute_haye, "priv/static/uploads"},
+    gzip: false
 end
