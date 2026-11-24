@@ -18,6 +18,10 @@ defmodule EnrouteHaye.Context.CxtAudio do
     |> Repo.paginate(page: page, page_size: page_size)
   end
 
+  def list_all_audio do
+    Audio |> order_by([a], asc: a.title) |> Repo.all()
+  end
+
   # ── Standard CRUD ────────────────────────────────────────────────────
 
   def get_audio!(id), do: Repo.get!(Audio, id)

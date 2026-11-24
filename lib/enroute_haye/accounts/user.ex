@@ -10,6 +10,7 @@ defmodule EnrouteHaye.Accounts.User do
 
     # belongs_to :role, EnrouteHaye.User.Role
     belongs_to :job, EnrouteHaye.Schema.Job
+    has_many :trips, EnrouteHaye.Trips.Trip
 
     field :confirmed_at, :utc_datetime
 

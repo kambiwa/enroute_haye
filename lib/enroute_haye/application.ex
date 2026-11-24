@@ -10,7 +10,6 @@ defmodule EnrouteHaye.Application do
       EnrouteHaye.Repo,
       {DNSCluster, query: Application.get_env(:enroute_haye, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: EnrouteHaye.PubSub},
-      EnrouteHaye.PDFStore,
       ChromicPDF,
       EnrouteHayeWeb.Endpoint
     ]

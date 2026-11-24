@@ -20,6 +20,10 @@ defmodule EnrouteHaye.Context.CxtFood do
     |> Repo.paginate(page: page, page_size: page_size)
   end
 
+  def list_all_foods do
+    Food |> order_by([f], asc: f.name) |> Repo.all()
+  end
+
   # ── Standard CRUD ────────────────────────────────────────────────────
 
   def get_food!(id), do: Repo.get!(Food, id)

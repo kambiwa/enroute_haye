@@ -1,279 +1,314 @@
 <Layouts.unauth_app flash={@flash} current_scope={@current_scope}>
   <div class="journey-root">
-    <br /><br /><br />
-    <div class="journey-logo">ENROUTE <span>HOME</span></div>
-    <div class="journey-tagline">Digital Tour Guide · Zambia Cultural Journeys</div>
-    <br />
+    <header class="journey-header">
+      <div class="journey-logo">ENROUTE <span>HOME</span></div>
+      <p class="journey-tagline">Plan a cultural journey across Zambia</p>
+      <p class="draft-status">Trip draft · {@trip.title || "Untitled"} · Saved as you plan</p>
+    </header>
 
-    <%!-- ── Progress Bar ─────────────────────────────────────── --%>
-    <div class="journey-progress">
+    <nav class="journey-progress" aria-label="Trip planning steps">
       <div class="journey-steps">
-        <%= for {step, idx} <- Enum.with_index(@steps) do %>
+        <%= for {step, index} <- Enum.with_index(@steps) do %>
           <div class={[
             "prog-step",
-            idx == @step && "prog-step--active",
-            idx < @step && "prog-step--done"
+            index == @step && "prog-step--active",
+            index < @step && "prog-step--done"
           ]}>
-            {step_label(step)}
+            <span class="step-index">{index + 1}</span> {step_label(step)}
           </div>
         <% end %>
       </div>
       <div class="progress-bar-bg">
         <div class="progress-bar-fill" style={"width: #{progress_pct(@step, @steps)}%"}></div>
       </div>
-    </div>
+    </nav>
 
-    <%!-- ── Step Container ───────────────────────────────────── --%>
     <div class="step-container" id={"step-#{@step}"} phx-hook="StepSlide">
-      <%!-- ═══════════════════════════════════════════
-         STEP 0 — BASICS
-    ═══════════════════════════════════════════ --%>
       <%= if @step == 0 do %>
-        <div class="step-card">
-          <div class="step-icon">🧳</div>
-          <h2 class="step-title">Plan Your Trip</h2>
-          <p class="step-sub">Where will your Zambia cultural adventure begin?</p>
+        <section class="step-card" aria-labelledby="basics-heading">
+          <div class="step-icon">🧭</div>
+          <h1 id="basics-heading" class="step-title">Trip basics</h1>
+          <p class="step-sub">
+            Create a draft, set your dates and tell us where you’re starting.
+          </p>
 
-          <%!-- Province ───────────────────────────────────────── --%>
-          <div class="field-group field-group--2col">
+          <.form for={@trip_form} id="journey-basics-form" phx-change="update_trip_details">
             <div class="field">
-              <label>Province</label>
-              <form phx-change="set_province">
-                <select name="province">
-                  <option value="">Select province…</option>
-                  <%= for p <- @provinces do %>
-                    <option value={p} selected={@province == p}>{p}</option>
-                  <% end %>
-                </select>
-              </form>
-            </div>
-
-            <%!-- District ───────────────────────────────────────── --%>
-            <div class="field">
-              <label>District</label>
-              <form phx-change="set_district">
-                <select name="district" disabled={@province == ""}>
-                  <option value="">
-                    {if @province == "", do: "Select province first", else: "Select district…"}
-                  </option>
-                  <%= for d <- @districts do %>
-                    <option value={d} selected={@district == d}>{d}</option>
-                  <% end %>
-                </select>
-              </form>
-            </div>
-          </div>
-
-          <%!-- Start Date ──────────────────────────────────────── --%>
-          <form phx-change="set_date" class="field field--full">
-            <label>Start Date</label>
-            <input
-              type="date"
-              name="date"
-              value={@start_date}
-              min={Date.utc_today() |> Date.to_iso8601()}
-            />
-          </form>
-
-          <%!-- Duration (slider) ───────────────────────────────── --%>
-          <div class="field field--full" style="margin-bottom: 20px;">
-            <label>
-              Duration: <strong style="color: var(--gold)">{@duration} days</strong>
-            </label>
-            <form phx-change="set_duration">
-              <input
-                type="range"
-                min="1"
-                max="30"
-                value={@duration}
-                name="duration"
-                class="range-gold"
+              <label for="trip_title">Trip title</label>
+              <.input
+                field={@trip_form[:title]}
+                type="text"
+                id="trip_title"
+                placeholder="A Zambia cultural journey"
               />
-            </form>
-            <div class="range-labels">
-              <span>1 day</span><span>30 days</span>
             </div>
-
-            <%!-- Duration (custom number input) ─────────────────── --%>
-            <div class="field" style="margin-top: 10px;">
-              <label style="font-size: 0.82rem; color: var(--color-text-secondary);">
-                Or enter exact days:
-              </label>
-              <form phx-change="set_duration_custom" phx-debounce="400">
-                <input
+            <div class="field">
+              <label for="trip_description">Trip notes (optional)</label>
+              <.input
+                field={@trip_form[:description]}
+                type="textarea"
+                id="trip_description"
+                placeholder="What would you like to experience?"
+              />
+            </div>
+            <div class="field-group field-group--2col">
+              <div class="field">
+                <label for="trip_start_date">Start date</label>
+                <.input field={@trip_form[:start_date]} type="date" id="trip_start_date" />
+              </div>
+              <div class="field">
+                <label for="trip_duration_days">Duration in days</label>
+                <.input
+                  field={@trip_form[:duration_days]}
                   type="number"
+                  id="trip_duration_days"
                   min="1"
                   max="365"
-                  value={@duration}
-                  name="duration"
-                  placeholder="e.g. 45"
-                  style="width: 110px;"
                 />
+              </div>
+            </div>
+            <p class="field-hint">
+              Calculated end date: {if @trip.end_date,
+                do: Date.to_iso8601(@trip.end_date),
+                else: "Choose a start date and duration"}
+            </p>
+            <div class="field-group field-group--2col">
+              <div class="field">
+                <label for="trip_traveller_count">Number of travellers</label>
+                <.input
+                  field={@trip_form[:traveller_count]}
+                  type="number"
+                  id="trip_traveller_count"
+                  min="1"
+                  max="100"
+                />
+              </div>
+              <div class="field">
+                <label for="trip_budget_estimate">Target budget (optional, ZMW)</label>
+                <.input
+                  field={@trip_form[:budget_estimate]}
+                  type="number"
+                  id="trip_budget_estimate"
+                  min="0"
+                  step="0.01"
+                />
+              </div>
+            </div>
+          </.form>
+
+          <div class="field-group field-group--2col">
+            <div class="field">
+              <label for="starting-province">Starting province</label>
+              <form id="starting-province-form" phx-change="set_province">
+                <select id="starting-province" name="province">
+                  <option value="">Choose province</option>
+                  <%= for province <- @provinces do %>
+                    <option value={province} selected={@province == province}>{province}</option>
+                  <% end %>
+                </select>
+              </form>
+            </div>
+            <div class="field">
+              <label for="starting-district">Starting district</label>
+              <form id="starting-district-form" phx-change="set_district">
+                <select id="starting-district" name="district" disabled={@province == ""}>
+                  <option value="">Choose district</option>
+                  <%= for district <- @districts do %>
+                    <option value={district} selected={@district == district}>{district}</option>
+                  <% end %>
+                </select>
               </form>
             </div>
           </div>
 
-          <%!-- Transport ───────────────────────────────────────── --%>
-          <div class="field field--full" style="margin-bottom: 20px;">
-            <label>Preferred Transport</label>
-            <div class="transport-btns">
-              <%= for {label, val} <- [
-              {"✈️ Air",       "air"},
-              {"🚗 Road",      "road"},
-              {"✈️🚗 Mixed",   "mixed"},
-              {"🚌 Bus",       "bus"},
-              {"🏍️ Solo Ride", "solo"}
-            ] do %>
-                <button
-                  type="button"
-                  phx-click="set_transport"
-                  phx-value-transport={val}
-                  class={["t-btn", @transport == val && "t-btn--active"]}
-                >
-                  {label}
-                </button>
-              <% end %>
+          <.form
+            for={@destination_form}
+            id="destination-location-form"
+            phx-change="set_destination_location"
+          >
+            <div class="field-group field-group--2col">
+              <div class="field">
+                <label for="destination-province">Destination province (optional)</label>
+                <select id="destination-province" name="province">
+                  <option value="">Choose province</option>
+                  <%= for province <- @provinces do %>
+                    <option value={province} selected={@trip.destination_province == province}>
+                      {province}
+                    </option>
+                  <% end %>
+                </select>
+              </div>
+              <div class="field">
+                <label for="destination-district">Destination district (optional)</label>
+                <select id="destination-district" name="district">
+                  <option value="">Choose district</option>
+                  <%= for district <- @destination_districts do %>
+                    <option value={district} selected={@trip.destination_district == district}>
+                      {district}
+                    </option>
+                  <% end %>
+                </select>
+              </div>
             </div>
+          </.form>
+
+          <div class="draft-actions">
+            <button id="save-trip-draft" type="button" phx-click="save_draft" class="btn-back">
+              Save draft
+            </button><span>Your draft is tied to this browser. Sign in to attach it to your account.</span>
           </div>
-
-          <%!-- Provider results ────────────────────────────────── --%>
-          <%= if @district != "" do %>
-            <%!-- Air providers --%>
-            <%= if @transport in ~w(air mixed) do %>
-              <%= if @air_providers != [] do %>
-                <div class="provider-section">
-                  <h4 class="provider-heading">✈️ Available Flights from {@district}</h4>
-                  <div class="provider-list">
-                    <%= for a <- @air_providers do %>
-                      <button
-                        type="button"
-                        phx-click="set_provider"
-                        phx-value-provider={a.id}
-                        class={[
-                          "provider-card",
-                          @selected_provider == to_string(a.id) && "provider-card--selected"
-                        ]}
-                      >
-                        <div class="provider-check">✓</div>
-                        <div class="provider-main">
-                          <strong>{a.airline_name}</strong>
-                          <span class="provider-meta">Flight {a.flight_number}</span>
-                        </div>
-                        <div class="provider-detail">
-                          <span>{a.departure_district} → {a.arrival}</span>
-                          <span class="provider-time">
-                            {format_time(a.departure_time)} → {format_time(a.arrival_time)}
-                          </span>
-                        </div>
-                        <div class="provider-price">${a.price}</div>
-                      </button>
-                    <% end %>
-                  </div>
-                </div>
-              <% else %>
-                <div class="no-providers">
-                  ℹ️ No flights found departing from <strong>{@district}</strong> yet.
-                </div>
-              <% end %>
-            <% end %>
-
-            <%!-- Road providers --%>
-            <%= if @transport in ~w(road bus solo mixed) do %>
-              <%= if @road_providers != [] do %>
-                <div class="provider-section">
-                  <h4 class="provider-heading">🚌 Road Operators from {@district}</h4>
-                  <div class="provider-list">
-                    <%= for r <- @road_providers do %>
-                      <button
-                        type="button"
-                        phx-click="set_provider"
-                        phx-value-provider={r.id}
-                        class={[
-                          "provider-card",
-                          @selected_provider == to_string(r.id) && "provider-card--selected"
-                        ]}
-                      >
-                        <div class="provider-check">✓</div>
-                        <div class="provider-main">
-                          <strong>{r.operator}</strong>
-                          <span class="provider-meta">{r.route}</span>
-                        </div>
-                        <div class="provider-detail">
-                          <span>{r.departure_point} → {r.arrival_point}</span>
-                          <span class="provider-time">
-                            {format_time(r.departure_time)} → {format_time(r.arrival_time)}
-                          </span>
-                        </div>
-                        <div class="provider-price">${r.price}</div>
-                      </button>
-                    <% end %>
-                  </div>
-                </div>
-              <% else %>
-                <div class="no-providers">
-                  ℹ️ No road operators found departing from <strong>{@district}</strong> yet.
-                </div>
-              <% end %>
-            <% end %>
-          <% end %>
-          <%!-- /provider results --%>
-
           <div class="btn-row">
             <div></div>
-            <button type="button" phx-click="next" class="btn-next">Next →</button>
+            <button type="button" phx-click="next" class="btn-next">
+              Continue to transport →
+            </button>
           </div>
-        </div>
+        </section>
       <% end %>
 
-      <%!-- ═══════════════════════════════════════════
-         STEP 1 — CEREMONY
-    ═══════════════════════════════════════════ --%>
       <%= if @step == 1 do %>
-        <div class="step-card">
-          <div class="step-icon">🪘</div>
-          <h2 class="step-title">Choose Your Ceremony</h2>
-          <p class="step-sub">Select the ceremonial heart of your cultural experience</p>
-
-          <div class="ceremony-cards">
-            <%= for ceremony <- @ceremonies do %>
+        <section class="step-card" aria-labelledby="transport-heading">
+          <div class="step-icon">🚐</div>
+          <h2 id="transport-heading" class="step-title">Choose transport</h2>
+          <p class="step-sub">
+            Operators and times are records in our database, not live availability or bookings.
+          </p>
+          <div class="transport-btns">
+            <%= for {label, mode} <- [{"Road operator", "road"}, {"Public bus", "bus"}, {"Air", "air"}, {"Mixed legs", "mixed"}, {"Private vehicle", "private_vehicle"}] do %>
               <button
                 type="button"
-                phx-click="set_ceremony"
-                phx-value-ceremony={ceremony.id}
-                class={["ceremony-card", @ceremony == ceremony.id && "ceremony-card--selected"]}
+                phx-click="set_transport"
+                phx-value-transport={mode}
+                class={["t-btn", @transport == mode && "t-btn--active"]}
               >
-                <div class="ceremony-check">✓</div>
-                <%= if ceremony.image_url do %>
-                  <img src={ceremony.image_url} class="ceremony-badge-img" alt={ceremony.title} />
-                <% else %>
-                  <div class="ceremony-badge">🪘</div>
-                <% end %>
-                <h3>{ceremony.title}</h3>
-                <p>{ceremony.description}</p>
-                <p>{ceremony.location}</p>
+                {label}
               </button>
             <% end %>
           </div>
-
+          <%= if @transport == "private_vehicle" do %>
+            <form
+              id="private-vehicle-estimate"
+              phx-submit="set_transport_estimate"
+              class="field transport-estimate"
+            >
+              <label for="transport-estimate">Estimated fuel and transport cost (ZMW)</label>
+              <input id="transport-estimate" name="amount" type="number" min="0" step="0.01" />
+              <button class="btn-back" type="submit">Save estimate</button>
+            </form>
+          <% end %>
+          <%= if @district == "" and @transport in ["road", "bus", "air", "mixed"] do %>
+            <p class="field-hint">
+              Choose a starting district in Trip Basics to find matching provider records.
+            </p>
+          <% end %>
+          <%= if @transport in ["road", "bus", "mixed"] and @district != "" do %>
+            <h3 class="provider-heading">Road operators from {@district}</h3>
+            <div class="provider-list">
+              <%= for road <- @road_providers do %>
+                <button
+                  type="button"
+                  phx-click="set_provider"
+                  phx-value-provider={road.id}
+                  phx-value-kind="road"
+                  class="provider-card"
+                >
+                  <strong>{road.operator}</strong><span>{road.route || "Route not recorded"}</span><span>{road.departure_point || @district} → {road.arrival_point || "Arrival not recorded"}</span>
+                  <span>
+                    {format_time(road.departure_time)} → {format_time(road.arrival_time)}
+                  </span><span>{if road.price, do: money(road.price), else: "Price unavailable"}</span>
+                  <small class="recorded-note">Recorded details · not live availability</small>
+                </button>
+              <% end %>
+              <%= if @road_providers == [] do %>
+                <p class="field-hint">No matching road provider records.</p>
+              <% end %>
+            </div>
+          <% end %>
+          <%= if @transport in ["air", "mixed"] and @district != "" do %>
+            <h3 class="provider-heading">Airlines from {@district}</h3>
+            <div class="provider-list">
+              <%= for airline <- @air_providers do %>
+                <button
+                  type="button"
+                  phx-click="set_provider"
+                  phx-value-provider={airline.id}
+                  phx-value-kind="air"
+                  class="provider-card"
+                >
+                  <strong>{airline.airline_name}</strong><span>Flight {airline.flight_number || "not recorded"}</span><span>{airline.departure_district} → {airline.arrival}</span>
+                  <span>
+                    {format_time(airline.departure_time)} → {format_time(airline.arrival_time)}
+                  </span><span>{if airline.price, do: money(airline.price), else: "Price unavailable"}</span>
+                  <small class="recorded-note">Recorded details · not live availability</small>
+                </button>
+              <% end %>
+              <%= if @air_providers == [] do %>
+                <p class="field-hint">No matching airline records.</p>
+              <% end %>
+            </div>
+          <% end %>
           <div class="btn-row">
-            <button type="button" phx-click="back" class="btn-back">← Back</button>
-            <button type="button" phx-click="next" class="btn-next">Next →</button>
+            <button type="button" phx-click="back" class="btn-back">← Basics</button><button
+              type="button"
+              phx-click="next"
+              class="btn-next"
+            >Continue to ceremonies →</button>
           </div>
-        </div>
+        </section>
       <% end %>
 
-      <%!-- ═══════════════════════════════════════════
-         STEP 2 — MAP
-    ═══════════════════════════════════════════ --%>
-      <%!-- ═══════════════════════════════════════════
-     STEP 2 — MAP
-═══════════════════════════════════════════ --%>
       <%= if @step == 2 do %>
-        <div class="step-card">
-          <div class="step-icon">🗺️</div>
-          <h2 class="step-title">Map Your Route</h2>
-          <p class="step-sub">Pin the sites you want to visit — toggle to add or remove</p>
+        <section class="step-card" aria-labelledby="ceremony-heading">
+          <div class="step-icon">🥁</div>
+          <h2 id="ceremony-heading" class="step-title">Ceremonies and events</h2>
+          <p class="step-sub">Choose an event only if it is part of your trip.</p>
+          <div class="ceremony-cards">
+            <%= for event <- @ceremonies do %>
+              <button
+                type="button"
+                phx-click="set_ceremony"
+                phx-value-ceremony={event.id}
+                class={["ceremony-card", @ceremony == event.id && "ceremony-card--selected"]}
+              >
+                <%= if event.image_url do %>
+                  <img src={event.image_url} alt={event.title} class="ceremony-image" />
+                <% end %>
+                <h3>{event.title}</h3>
+                <p>{event.description}</p>
+                <p>{event.location}</p>
+                <p>
+                  {if event.start_date,
+                    do: NaiveDateTime.to_date(event.start_date),
+                    else: "Dates unavailable"}
+                </p>
+              </button>
+            <% end %>
+          </div>
+          <button
+            type="button"
+            phx-click="set_ceremony"
+            phx-value-ceremony="none"
+            class="btn-back"
+          >
+            Skip ceremony or event
+          </button>
+          <div class="btn-row">
+            <button type="button" phx-click="back" class="btn-back">← Transport</button><button
+              type="button"
+              phx-click="next"
+              class="btn-next"
+            >Explore destinations →</button>
+          </div>
+        </section>
+      <% end %>
 
+      <%= if @step == 3 do %>
+        <section class="step-card" aria-labelledby="destinations-heading">
+          <div class="step-icon">🗺️</div>
+          <h2 id="destinations-heading" class="step-title">Destinations and route</h2>
+          <p class="step-sub">
+            Add places and drag them into the order you want to visit them. The planner never optimises or reorders your route.
+          </p>
           <div class="map-area">
             <div
               id="zambia-map"
@@ -281,295 +316,444 @@
               phx-update="ignore"
               data-pins={Jason.encode!(@map_pins)}
               data-active-pins={Jason.encode!(@active_pins)}
-              style="width: 100%; height: 420px; border-radius: 12px;"
+              data-sequence={Jason.encode!(@active_pins)}
             >
             </div>
-
-            <div class="map-legend">
-              🟡 Active &nbsp; ⚪ Available · Click a site below to toggle
-            </div>
           </div>
-
-          <%!-- ── Pin / site list with viewing info + estimated price ── --%>
+          <form id="site-filters" phx-change="filter_sites" class="field-group field-group--2col">
+            <div class="field">
+              <label for="site-search">Search destinations</label>
+              <input
+                id="site-search"
+                name="search"
+                type="search"
+                value={@site_search}
+                placeholder="Name, location or description"
+              />
+            </div>
+            <div class="field">
+              <label for="site-category">Category</label><select
+                id="site-category"
+                name="category"
+              ><option value="">All categories</option>
+              <%= for category <- @site_categories do %><option
+                value={category}
+                selected={@site_category == category}
+              >{category}</option><% end %>
+            </select>
+            </div>
+          </form>
+          <h3 class="provider-heading">Your selected sequence</h3>
+          <div id="selected-destinations" phx-hook="DestinationSort" class="selected-destinations">
+            <%= for {stop, index} <- Enum.with_index(@trip.trip_stops, 1) do %>
+              <article class="selected-destination" draggable="true" data-stop-id={stop.site_id}>
+                <span class="sequence-number">{index}</span>
+                <div class="selected-destination-info">
+                  <strong>{stop.site.name}</strong><span>{stop.site.location}</span>
+                  <%= if index > 1 do %>
+                    <small>
+                      {route_label(Enum.at(@trip.trip_stops, index - 2).site, stop.site)}
+                    </small>
+                  <% end %>
+                </div>
+                <form phx-change="assign_destination_day">
+                  <input type="hidden" name="site_id" value={stop.site_id} /><label
+                    class="sr-only"
+                    for={"day-#{stop.site_id}"}
+                  >
+                    Assign {stop.site.name} to day
+                  </label>
+                  <select id={"day-#{stop.site_id}"} name="day">
+                    <%= for day <- Enum.to_list(1..max(@duration, 1)) do %>
+                      <option value={day} selected={stop.day_number == day}>
+                        {"Day #{day}"}
+                      </option>
+                    <% end %>
+                  </select>
+                </form>
+                <form phx-change="update_destination_notes">
+                  <input type="hidden" name="site_id" value={stop.site_id} /><label
+                    class="sr-only"
+                    for={"notes-#{stop.site_id}"}
+                  >
+                    Notes for {stop.site.name}
+                  </label>
+                  <input
+                    id={"notes-#{stop.site_id}"}
+                    name="notes"
+                    value={stop.notes || ""}
+                    placeholder="Add a note"
+                  />
+                </form>
+                <button
+                  type="button"
+                  phx-click="toggle_pin"
+                  phx-value-pin={stop.site_id}
+                  aria-label={"Remove #{stop.site.name}"}
+                  class="remove-destination"
+                >
+                  Remove
+                </button>
+              </article>
+            <% end %>
+            <%= if @trip.trip_stops == [] do %>
+              <p class="empty-note">No destinations selected. Add destinations below.</p>
+            <% end %>
+          </div>
           <div class="cards-grid">
-            <%= for pin <- @pins do %>
-              <% active = pin.id in @active_pins %>
-              <div class={["item-card", active && "item-card--added"]}>
-                <div class="item-emoji">{pin.image_url}</div>
-                <h4 class="item-name">{pin.name}</h4>
-                <p class="item-desc">{pin.description}</p>
-                <p class="item-desc">📍 {pin.location}</p>
-                <p class="item-desc pin-price">
-                  {if Map.get(pin, :price) in [nil, 0],
-                    do: "Free entry",
-                    else: "Est. $#{pin.price} / visit"}
+            <%= for site <- filtered_sites(@pins, @site_search, @site_category) do %>
+              <% selected = site.id in @active_pins %>
+              <article class={["item-card", selected && "item-card--added"]}>
+                <%= if site.image_url do %>
+                  <img
+                    src={site.image_url}
+                    alt={site.name}
+                    class="destination-image"
+                    loading="lazy"
+                  />
+                <% end %>
+                <h3 class="item-name">{site.name}</h3>
+                <p class="item-desc">{site.description}</p>
+                <p class="item-desc">{site.location || "Location details unavailable"}</p>
+                <p class="item-desc">
+                  {if is_integer(site.price),
+                    do:
+                      if(site.price == 0,
+                        do: "Recorded as free entry",
+                        else: money(site.price) <> " per person (estimate)"
+                      ),
+                    else: "Entrance price unavailable"}
                 </p>
                 <button
                   type="button"
                   phx-click="toggle_pin"
-                  phx-value-pin={pin.id}
-                  class={["add-btn", active && "add-btn--added"]}
+                  phx-value-pin={site.id}
+                  class={["add-btn", selected && "add-btn--added"]}
                 >
-                  {if active, do: "✓ Pinned", else: "+ Pin Site"}
+                  {if selected, do: "✓ Added to route", else: "+ Add destination"}
                 </button>
-              </div>
+              </article>
             <% end %>
           </div>
-
-          <p class="map-count">
-            ✅ <strong>{length(@active_pins)} sites</strong>
-            added to your route
-            · estimated visiting cost
-            ${@pins
-            |> Enum.filter(&(&1.id in @active_pins))
-            |> Enum.map(&Map.get(&1, :price, 0))
-            |> Enum.sum()}
+          <p class="route-disclaimer">
+            Distances between sites are direct map distances, not driving distances. Travel times are unavailable because no route-time data is configured.
           </p>
-
           <div class="btn-row">
-            <button type="button" phx-click="back" class="btn-back">← Back</button>
-            <button type="button" phx-click="next" class="btn-next">Next →</button>
+            <button type="button" phx-click="back" class="btn-back">← Ceremonies</button><button
+              type="button"
+              phx-click="next"
+              class="btn-next"
+            >Choose food and music →</button>
           </div>
-        </div>
+        </section>
       <% end %>
 
-      <%!-- ═══════════════════════════════════════════
-         STEP 3 — FOOD
-    ═══════════════════════════════════════════ --%>
-      <%= if @step == 3 do %>
-        <div class="step-card">
+      <%= if @step == 4 do %>
+        <section class="step-card" aria-labelledby="food-heading">
           <div class="step-icon">🍲</div>
-          <h2 class="step-title">Local Foods to Savour</h2>
-          <p class="step-sub">Add must-try dishes to your tour experience</p>
-
+          <h2 id="food-heading" class="step-title">Food, music and experiences</h2>
+          <p class="step-sub">
+            Choose from recorded local food and audio listings. Prices are estimates where listed.
+          </p>
+          <h3 class="provider-heading">Local food</h3>
           <div class="cards-grid">
             <%= for food <- @foods do %>
-              <% added = food.id in @selected_foods %>
-              <div class={["item-card", added && "item-card--added"]}>
-                <div class="item-emoji">{food.image_url}</div>
+              <% selected = food.id in @selected_foods %>
+              <article class={["item-card", selected && "item-card--added"]}>
+                <%= if food.image_url do %>
+                  <img
+                    src={food.image_url}
+                    alt={food.name}
+                    class="destination-image"
+                    loading="lazy"
+                  />
+                <% end %>
                 <h4 class="item-name">{food.name}</h4>
                 <p class="item-desc">{food.description}</p>
-                <p class="item-desc">{food.price}</p>
+                <p class="item-desc">
+                  {if food.price,
+                    do: money(food.price) <> " recorded price",
+                    else: "Price unavailable"}
+                </p>
                 <button
                   type="button"
                   phx-click="toggle_food"
                   phx-value-food={food.id}
-                  class={["add-btn", added && "add-btn--added"]}
+                  class="add-btn"
                 >
-                  {if added, do: "✓ Added", else: "+ Add"}
+                  {if selected, do: "✓ Selected", else: "+ Select"}
                 </button>
-              </div>
+              </article>
             <% end %>
           </div>
-
-          <div class="btn-row">
-            <button type="button" phx-click="back" class="btn-back">← Back</button>
-            <button type="button" phx-click="next" class="btn-next">Next →</button>
-          </div>
-        </div>
-      <% end %>
-
-      <%!-- ═══════════════════════════════════════════
-         STEP 4 — MUSIC
-    ═══════════════════════════════════════════ --%>
-      <%= if @step == 4 do %>
-        <div class="step-card">
-          <div class="step-icon">🎶</div>
-          <h2 class="step-title">Your Cultural Playlist</h2>
-          <p class="step-sub">Add traditional music to soundtrack your journey</p>
-
+          <h3 class="provider-heading">Music and audio</h3>
           <div class="cards-grid">
             <%= for track <- @music do %>
-              <% added = track.id in @selected_music %>
-              <div class={["item-card", added && "item-card--added"]}>
-                <div class="item-emoji">{track.emoji}</div>
-                <h4 class="item-name">{track.name}</h4>
-                <p class="item-desc">{track.desc}</p>
+              <% selected = track.id in @selected_music %>
+              <article class={["item-card", selected && "item-card--added"]}>
+                <%= if track.cover_image do %>
+                  <img
+                    src={track.cover_image}
+                    alt={track.title}
+                    class="destination-image"
+                    loading="lazy"
+                  />
+                <% end %>
+                <h4 class="item-name">{track.title}</h4>
+                <p class="item-desc">{track.artist} · {track.description}</p>
                 <button
                   type="button"
                   phx-click="toggle_music"
                   phx-value-music={track.id}
-                  class={["add-btn", added && "add-btn--added"]}
+                  class="add-btn"
                 >
-                  {if added, do: "✓ Added", else: "+ Add"}
+                  {if selected, do: "✓ Selected", else: "+ Select"}
                 </button>
-              </div>
+              </article>
             <% end %>
           </div>
-
           <div class="btn-row">
-            <button type="button" phx-click="back" class="btn-back">← Back</button>
-            <button type="button" phx-click="next" class="btn-next">Next →</button>
+            <button type="button" phx-click="back" class="btn-back">← Destinations</button><button
+              type="button"
+              phx-click="next"
+              class="btn-next"
+            >Choose accommodation →</button>
           </div>
-        </div>
+        </section>
       <% end %>
 
-      <%!-- ═══════════════════════════════════════════
-         STEP 5 — STAY
-    ═══════════════════════════════════════════ --%>
       <%= if @step == 5 do %>
-        <div class="step-card">
-          <div class="step-icon">🏨</div>
-          <h2 class="step-title">Where Will You Stay?</h2>
-          <p class="step-sub">Choose your accommodation for this journey</p>
-
+        <section class="step-card" aria-labelledby="stay-heading">
+          <div class="step-icon">🏡</div>
+          <h2 id="stay-heading" class="step-title">Accommodation</h2>
+          <p class="step-sub">
+            Selecting a property adds it to your estimate; it does not create a reservation.
+          </p>
           <div class="hotel-list">
-            <%= for hotel <- @hotels do %>
+            <%= for stay <- @hotels do %>
               <button
                 type="button"
                 phx-click="set_hotel"
-                phx-value-hotel={hotel.id}
-                class={["hotel-card", @hotel == hotel.id && "hotel-card--selected"]}
+                phx-value-hotel={stay.id}
+                class={["hotel-card", @hotel == stay.id && "hotel-card--selected"]}
               >
-                <div class="hotel-icon">{hotel.emoji}</div>
+                <%= if stay.image_url do %>
+                  <img src={stay.image_url} alt={stay.name} class="stay-image" loading="lazy" />
+                <% end %>
                 <div class="hotel-info">
-                  <h4>{hotel.name}</h4>
-                  <div class="hotel-stars">{hotel.stars}</div>
-                  <p class="hotel-meta">{hotel.dist} · {hotel.inc}</p>
+                  <h3>{stay.name}</h3>
+                  <p>{stay.description}</p>
+                  <p class="hotel-meta">{stay.location}</p>
+                  <p class="hotel-meta">Rating: {stay.rating || "Not recorded"}</p>
+                  <p class="hotel-meta">{stay.contact_phone} {stay.contact_email}</p>
                 </div>
                 <div class="hotel-price">
-                  <strong>${hotel.price}</strong>
-                  <span>per night</span>
+                  <strong>
+                    {if stay.price_per_night,
+                      do: money(stay.price_per_night),
+                      else: "Price unavailable"}
+                  </strong><span>per night</span>
                 </div>
               </button>
             <% end %>
+            <%= if @hotels == [] do %>
+              <p>No accommodation listings are available.</p>
+            <% end %>
           </div>
-
+          <button type="button" phx-click="set_hotel" phx-value-hotel="none" class="btn-back">
+            Remove accommodation selection
+          </button>
+          <p class="field-hint">
+            Estimate dates use your trip start and end dates. Availability must be confirmed directly with the property.
+          </p>
           <div class="btn-row">
-            <button type="button" phx-click="back" class="btn-back">← Back</button>
-            <button type="button" phx-click="next" class="btn-next">Next →</button>
+            <button type="button" phx-click="back" class="btn-back">← Food and music</button><button
+              type="button"
+              phx-click="next"
+              class="btn-next"
+            >Review trip →</button>
           </div>
-        </div>
+        </section>
       <% end %>
 
-      <%!-- ═══════════════════════════════════════════
-         STEP 6 — SUMMARY
-         PDF export via wkhtmltopdf → /pdf/itinerary/:token
-    ═══════════════════════════════════════════ --%>
       <%= if @step == 6 do %>
-        <% sel_hotel = hotel_by_id(@hotels, @hotel) %>
-        <% total = estimated_cost(@hotels, @hotel, @duration) %>
-        <% {low, high} = cost_range(total) %>
-
-        <div class="step-card">
+        <section class="step-card" aria-labelledby="review-heading">
           <div class="step-icon">✨</div>
-          <h2 class="step-title">Your Tour Summary</h2>
-          <p class="step-sub">Review your curated Zambia experience</p>
-
+          <h2 id="review-heading" class="step-title">Review your saved trip</h2>
+          <p class="step-sub">
+            Your selections remain editable. Estimates use recorded prices and identify missing data.
+          </p>
           <div class="summary-grid">
             <div class="sum-item">
-              <div class="sum-label">Province</div>
-              <div class="sum-val">📍 {if @province == "", do: "—", else: @province}</div>
+              <div class="sum-label">Trip</div>
+              <div class="sum-val">{@trip.title}</div>
             </div>
             <div class="sum-item">
-              <div class="sum-label">District</div>
-              <div class="sum-val">🏘️ {if @district == "", do: "—", else: @district}</div>
-            </div>
-            <div class="sum-item">
-              <div class="sum-label">Duration</div>
-              <div class="sum-val">📅 {@duration} Days</div>
-            </div>
-            <div class="sum-item">
-              <div class="sum-label">Transport</div>
-              <div class="sum-val">🚗 {String.capitalize(@transport)}</div>
-            </div>
-            <div class="sum-item">
-              <div class="sum-label">Ceremony</div>
+              <div class="sum-label">Starting location</div>
               <div class="sum-val">
-                👑 {if @ceremony == "kuomboka", do: "Kuomboka", else: "Other Ceremony"}
+                {[@trip.starting_district, @trip.starting_province]
+                |> Enum.reject(&is_nil/1)
+                |> Enum.join(", ")}
               </div>
             </div>
             <div class="sum-item">
-              <div class="sum-label">Sites</div>
-              <div class="sum-val">📍 {length(@active_pins)} pinned</div>
+              <div class="sum-label">Dates and duration</div>
+              <div class="sum-val">
+                {if @trip.start_date,
+                  do: Date.to_iso8601(@trip.start_date),
+                  else: "Dates incomplete"} – {if @trip.end_date,
+                  do: Date.to_iso8601(@trip.end_date),
+                  else: "—"} · {@duration} days
+              </div>
+            </div>
+            <div class="sum-item">
+              <div class="sum-label">Travellers</div>
+              <div class="sum-val">{@trip.traveller_count}</div>
+            </div>
+            <div class="sum-item">
+              <div class="sum-label">Transport</div>
+              <div class="sum-val">
+                {Enum.map_join(@trip.transport_segments, ", ", &String.replace(&1.mode, "_", " "))
+                |> case do
+                  "" -> "Not selected"
+                  modes -> modes
+                end}
+              </div>
+            </div>
+            <div class="sum-item">
+              <div class="sum-label">Ceremony/event</div>
+              <div class="sum-val">
+                {if @trip.selected_event, do: @trip.selected_event.title, else: "Not selected"}
+              </div>
             </div>
             <div class="sum-item">
               <div class="sum-label">Accommodation</div>
               <div class="sum-val">
-                🏨 {if sel_hotel, do: sel_hotel.name, else: "Not selected"}
+                {case List.first(@trip.accommodation_selections) do
+                  nil -> "Not selected"
+                  selection -> selection.accommodation.name
+                end}
               </div>
             </div>
             <div class="sum-item">
-              <div class="sum-label">Foods</div>
-              <div class="sum-val">🍽️ {length(@selected_foods)} dishes</div>
-            </div>
-            <div class="sum-item">
-              <div class="sum-label">Music</div>
-              <div class="sum-val">🎵 {length(@selected_music)} tracks</div>
+              <div class="sum-label">Destinations</div>
+              <div class="sum-val">{length(@trip.trip_stops)} manually ordered</div>
             </div>
           </div>
 
-          <%!-- Cost Box --%>
-          <div class="cost-box">
-            <div class="cost-label">Estimated Total Budget</div>
-            <div class="cost-num" id="cost-counter" phx-hook="CountUp" data-target={total}>
-              ${:erlang.integer_to_binary(total)}
-            </div>
-            <div class="cost-range">
-              Range: ${Number.Delimit.number_to_delimited(low, precision: 0)} –
-              ${Number.Delimit.number_to_delimited(high, precision: 0)}
-            </div>
-          </div>
-
-          <%!-- Error notice --%>
-          <%= if @pdf_error do %>
-            <div class="error-box">⚠️ {@pdf_error}</div>
-          <% end %>
-
-          <%!-- Success badge --%>
-          <%= if @pdf_ready do %>
-            <div class="pdf-ready-badge">✅ Your itinerary PDF is ready!</div>
-          <% end %>
-
-          <%!-- Traveller name ──────────────────────────────────── --%>
-          <form phx-change="set_traveller_name" phx-debounce="200" class="traveller-name-field">
-            <label class="traveller-name-label">
-              ✍️ Enter your name for a personalised touch to your itinerary PDF
-              <span class="traveller-name-optional">[personalises the PDF]</span>
-            </label>
-            <input
-              type="text"
-              name="name"
-              value={@traveller_name}
-              placeholder="e.g. Mweembo Kambiwa"
-              maxlength="60"
-              class={[
-                "traveller-name-input",
-                @traveller_name != "" && "traveller-name-input--filled"
-              ]}
-            />
-            <%= if @traveller_name != "" do %>
-              <div class="traveller-name-preview">
-                🎟️ Itinerary prepared for <strong>{@traveller_name}</strong>
+          <h3 class="provider-heading">Estimated budget · {@budget.currency}</h3>
+          <div class="budget-breakdown">
+            <%= for {category, estimate} <- Enum.sort_by(@budget.categories, fn {key, _} -> key end) do %>
+              <div class="budget-line">
+                <span>
+                  {category |> Atom.to_string() |> String.replace("_", " ") |> String.capitalize()}
+                </span><strong>{money(estimate.amount)}</strong>
+                <%= if estimate.missing != [] do %>
+                  <small>{Enum.join(estimate.missing, " ")}</small>
+                <% else %>
+                  <small>Estimate based on currently recorded prices</small>
+                <% end %>
               </div>
             <% end %>
+          </div>
+          <div class="cost-box">
+            <div class="cost-label">Known subtotal · {@budget.currency}</div>
+            <div class="cost-num">{money(@budget.known_total)}</div>
+            <p>
+              {if @budget.total_complete?,
+                do: "Estimate includes all selected priced items.",
+                else: "Incomplete estimate: some prices or selections are unavailable."}
+            </p>
+            <p>
+              Per traveller: {money(@budget.per_traveller)} · Daily average: {if @budget.per_day,
+                do: money(@budget.per_day),
+                else: "Unavailable"}
+            </p>
+          </div>
+
+          <form phx-change="set_traveller_name" class="field">
+            <label for="traveller-name">Traveller name for PDF (optional)</label>
+            <input
+              id="traveller-name"
+              name="name"
+              value={@trip.traveller_name || ""}
+              maxlength="80"
+            />
           </form>
 
-          <%!-- PDF action --%>
-          <%= if @generating_pdf do %>
-            <div class="generating">
-              <div class="spinner"></div>
-              <p>📄 Building your personalized itinerary PDF…</p>
+          <%= if @itinerary do %>
+            <div id="generated-itinerary" class="generated-itinerary">
+              <h3 class="provider-heading">Day-by-day itinerary</h3>
+              <%= for day <- @itinerary.days do %>
+                <article class="itinerary-day">
+                  <h4>
+                    Day {day.number} · {if day.date,
+                      do: Date.to_iso8601(day.date),
+                      else: "Date to be confirmed"}
+                  </h4>
+                  <%= for item <- day.destinations do %>
+                    <div class="itinerary-stop">
+                      <strong>{item.site.name}</strong>
+                      <p>{item.site.description}</p>
+                      <%= if item.route_from_previous do %>
+                        <small>{route_label_from_result(item.route_from_previous)}</small>
+                      <% end %>
+                      <%= if item.notes do %>
+                        <p>{item.notes}</p>
+                      <% end %>
+                    </div>
+                  <% end %>
+                  <%= if day.event do %>
+                    <p>Event: {day.event.title}</p>
+                  <% end %>
+                  <%= if day.food != [] do %>
+                    <p>Food: {Enum.map_join(day.food, ", ", & &1.name)}</p>
+                  <% end %>
+                  <%= if day.accommodation do %>
+                    <p>Stay: {day.accommodation.accommodation.name}</p>
+                  <% end %>
+                  <p>
+                    Average estimated spend: {if day.estimated_daily_budget,
+                      do: money(day.estimated_daily_budget),
+                      else: "Unavailable"}
+                  </p>
+                </article>
+              <% end %>
+              <%= if @itinerary.warnings != [] do %>
+                <aside class="route-disclaimer">
+                  <strong>Planning notes</strong>
+                  <ul>
+                    <%= for warning <- @itinerary.warnings do %>
+                      <li>{warning}</li>
+                    <% end %>
+                  </ul>
+                </aside>
+              <% end %>
             </div>
+            <a
+              id="download-itinerary-pdf"
+              class="btn-generate download-link"
+              href={~p"/trips/#{@trip.id}/itinerary.pdf"}
+            >
+              Download itinerary PDF
+            </a>
           <% else %>
             <button
+              id="generate-itinerary"
               type="button"
-              phx-click="generate_pdf"
+              phx-click="generate_itinerary"
               class="btn-generate"
-              id="pdf-btn"
             >
-              {if @pdf_ready,
-                do: "🔄 Re-Download Itinerary PDF",
-                else: "📥 Preview & Download Itinerary PDF"}
+              Generate itinerary
             </button>
           <% end %>
-
-          <div style="height: 12px;"></div>
           <div class="btn-row">
-            <button type="button" phx-click="back" class="btn-back">← Back</button>
-            <div></div>
+            <button type="button" phx-click="back" class="btn-back">← Accommodation</button><.link
+              navigate={~p"/journey/#{@trip.id}"}
+              class="btn-back"
+            >Return to this saved trip</.link>
           </div>
-        </div>
+        </section>
       <% end %>
     </div>
   </div>

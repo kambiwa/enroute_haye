@@ -17,6 +17,10 @@ defmodule EnrouteHayeWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :trip_guest_access do
+    plug :ensure_trip_guest_access
+  end
+
   scope "/", EnrouteHayeWeb do
     pipe_through :browser
 
@@ -25,10 +29,8 @@ defmodule EnrouteHayeWeb.Router do
     live "/mize", Unauth.Mize, :index
     live "/ncwala", Unauth.Ncwala, :index
     live "/bemba", Unauth.Bemba, :index
-    live "/journey", Unauth.Journey, :index
     live "/audio", Auth.Audio.Index, :index
     live "/uploads", Auth.Uploads.Audio, :index
-    get "/pdf/itinerary/:token", PDFController, :show
   end
 
   # Other scopes may use custom stacks.
@@ -105,10 +107,12 @@ defmodule EnrouteHayeWeb.Router do
   end
 
   scope "/", EnrouteHayeWeb do
-    pipe_through [:browser]
+    pipe_through [:browser, :trip_guest_access]
 
     live_session :current_user,
       on_mount: [{EnrouteHayeWeb.UserAuth, :mount_current_scope}] do
+      live "/journey", Unauth.Journey, :index
+      live "/journey/:trip_id", Unauth.Journey, :index
       live "/users/register", UserLive.Registration, :new
       live "/users/log-in", UserLive.Login, :new
       live "/users/log-in/:token", UserLive.Confirmation, :new
@@ -116,5 +120,33 @@ defmodule EnrouteHayeWeb.Router do
 
     post "/users/log-in", UserSessionController, :create
     delete "/users/log-out", UserSessionController, :delete
+    get "/trips/:trip_id/itinerary.pdf", TripPDFController, :show
+  end
+
+  defp ensure_trip_guest_access(conn, _opts) do
+    cookie_name = "_enroute_haye_trip_access"
+    conn = Plug.Conn.fetch_cookies(conn, signed: [cookie_name])
+
+    token = conn.cookies[cookie_name]
+
+    token =
+      if is_binary(token) and byte_size(token) >= 32,
+        do: token,
+        else: Base.url_encode64(:crypto.strong_rand_bytes(32), padding: false)
+
+    conn =
+      if conn.cookies[cookie_name] == token do
+        conn
+      else
+        Plug.Conn.put_resp_cookie(conn, cookie_name, token,
+          sign: true,
+          http_only: true,
+          same_site: "Lax",
+          max_age: 60 * 60 * 24 * 365,
+          secure: conn.scheme == :https
+        )
+      end
+
+    Plug.Conn.put_session(conn, :trip_guest_access, token)
   end
 end

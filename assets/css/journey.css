@@ -1,28 +1,40 @@
 /* =============================================================
-   journey.css — Kuomboka / EnrouteHaye
-   Palette: White (primary) · Ceremonial Red #CC0000 · Black
-   Inherits --red, --white, --black, --gray-* from app.css :root.
+   journey.css — scoped Enroute Haye trip planner theme
    ============================================================= */
 
 /* ── Root / Local tokens ──────────────────────────────────── */
 .journey-root {
-  max-width: 860px;
+  max-width: 1180px;
   margin: 0 auto;
-  padding: 20px 20px 60px;
+  padding: 36px 24px 72px;
   position: relative;
   z-index: 1;
 
-  --gold:        var(--red, #CC0000);
-  --gold-light:  var(--red-light, #E83333);
-  --deep:        var(--black, #0A0A0A);
-  --burgundy:    var(--red-deep, #A30000);
-  --forest:      var(--black-soft, #1A1A1A);
-  --earth:       var(--black-mid, #2C2C2C);
-  --cream:       var(--off-white, #F8F7F5);
-  --card-bg:     var(--white, #FFFFFF);
-  --text:        var(--black, #0A0A0A);
-  --muted:       var(--gray-400, #8A8780);
-  --border-c:    var(--gray-200, #DDDBD6);
+  --red: #D96D38;
+  --red-light: #E9895F;
+  --red-deep: #B95226;
+  --black: #202329;
+  --black-soft: #30353D;
+  --black-mid: #647080;
+  --off-white: #F5F6F7;
+  --white: #FFFFFF;
+  --gray-200: #E0E3E6;
+  --gray-400: #647080;
+  --gray-500: #647080;
+  --paper: #F5F6F7;
+  --gold: #D96D38;
+  --gold-light: #E9895F;
+  --deep: #202329;
+  --burgundy: #B95226;
+  --forest: #30353D;
+  --earth: #647080;
+  --cream: #F5F6F7;
+  --card-bg: #FFFFFF;
+  --text: #202329;
+  --muted: #647080;
+  --border-c: #E0E3E6;
+  --mint: #BFEDE4;
+  --peach: #F4D5C5;
 }
 
 /* ── Subtle background texture ────────────────────────────── */
@@ -31,8 +43,8 @@
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(ellipse at 15% 15%, rgba(204, 0, 0, 0.04) 0%, transparent 55%),
-    radial-gradient(ellipse at 85% 85%, rgba(0, 0, 0, 0.03) 0%, transparent 55%);
+    radial-gradient(ellipse at 15% 15%, rgba(217, 109, 56, 0.08) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 85%, rgba(191, 237, 228, 0.2) 0%, transparent 55%);
   pointer-events: none;
   z-index: -1;
 }

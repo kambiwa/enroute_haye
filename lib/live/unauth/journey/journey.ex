@@ -1,381 +1,696 @@
 defmodule EnrouteHayeWeb.Unauth.Journey do
   use EnrouteHayeWeb, :live_view
 
-  alias EnrouteHaye.Context.CxtRoad
-  alias EnrouteHaye.Context.CxtAirLine
-  alias EnrouteHaye.Context.CxtFood
-  alias EnrouteHaye.Context.CxtSite
-  alias EnrouteHaye.Context.CxtEvent
+  alias EnrouteHaye.Context.{CxtAccommodation, CxtAudio, CxtEvent, CxtFood, CxtRoad, CxtSite}
+  alias EnrouteHaye.Trips
+  alias EnrouteHaye.Trips.{BudgetCalculator, ItineraryGenerator, RouteEstimator, Trip}
 
-  @steps ~w(basics ceremony map food music stay summary)a
+  @steps ~w(Basics Transport Ceremony Destinations Food\ &\ Music Accommodation Review)a
 
-  @music [
-    %{
-      id: "lwiindi",
-      emoji: "🥁",
-      name: "Liwaye",
-      desc: "Tonga traditional rain ceremony drumming"
-    },
-    %{
-      id: "lozi",
-      emoji: "👑",
-      name: "Lozi Royal Songs",
-      desc: "Sacred songs performed during Kuomboka procession"
-    },
-    %{
-      id: "folk",
-      emoji: "🎵",
-      name: "Ngomalume",
-      desc: "Soulful acoustic melodies from the riverbanks"
-    },
-    %{
-      id: "kalindula",
-      emoji: "🎸",
-      name: "Kalindula Rhythms",
-      desc: "Zambia's iconic 70s bass-heavy pop genre"
-    },
-    %{
-      id: "ngoma",
-      emoji: "🪘",
-      name: "Ngoma Drum Circle",
-      desc: "Ceremonial polyrhythmic percussion"
-    },
-    %{
-      id: "chewa",
-      emoji: "🎺",
-      name: "Chewa Gule Songs",
-      desc: "Mystical music from the masked Gule Wamkulu dance"
-    }
-  ]
+  @impl true
+  def mount(params, session, socket) do
+    guest_token = session["trip_guest_access"] || session[:trip_guest_access]
+    scope = socket.assigns.current_scope
 
-  @hotels [
-    %{
-      id: "royal",
-      emoji: "🏰",
-      name: "Country Lodge",
-      stars: "★★★★★",
-      price: 320,
-      dist: "12km from ceremony",
-      inc: "Breakfast · Pool · Spa"
-    },
-    %{
-      id: "kubu",
-      emoji: "🌿",
-      name: "Royal Dreams",
-      stars: "★★★★",
-      price: 145,
-      dist: "3km from ceremony",
-      inc: "Breakfast · River View"
-    },
-    %{
-      id: "lealui",
-      emoji: "🛖",
-      name: "Lealui Cultural Lodge",
-      stars: "★★★",
-      price: 85,
-      dist: "On-site Kuomboka",
-      inc: "Cultural Immersion · Meals"
-    },
-    %{
-      id: "barotse",
-      emoji: "🌅",
-      name: "Liseli Lodge",
-      stars: "★★★★",
-      price: 210,
-      dist: "8km from ceremony",
-      inc: "All-inclusive · Canoe"
-    }
-  ]
+    result =
+      case params["trip_id"] do
+        nil ->
+          Trips.ensure_draft(scope, guest_token)
 
-  # ── Mount ──────────────────────────────────────────────────────────────────
+        trip_id ->
+          case Trips.get_trip(scope, trip_id, guest_token) do
+            nil -> {:error, :not_found}
+            trip -> {:ok, trip}
+          end
+      end
 
-  def mount(_params, _session, socket) do
-    ceremonies = CxtEvent.list_ceremonies()
-    pins = CxtSite.list_all_sites(%{})
+    case result do
+      {:ok, trip} ->
+        trip = Trips.get_trip(scope, trip.id, guest_token)
+        socket = load_planner(socket, trip, guest_token)
+        {:ok, socket}
 
-    map_pins =
-      Enum.map(pins, fn pin ->
-        %{
-          id: pin.id,
-          lat: pin.latitude,
-          lng: pin.longitude,
-          image_url: pin.image_url,
-          description: pin.description
-        }
-      end)
-
-    socket
-    |> assign(:current_scope, nil)
-    |> assign(:step, 0)
-    |> assign(:steps, @steps)
-
-    # Data
-    |> assign(
-      :foods,
-      CxtFood.list_foods(%{"order_by" => %{"sort_field" => "name", "sort_direction" => "asc"}})
-    )
-    |> assign(:music, @music)
-    |> assign(:hotels, @hotels)
-    |> assign(:pins, pins)
-    |> assign(:map_pins, map_pins)
-    |> assign(:provinces, CxtRoad.list_provinces())
-    |> assign(:ceremonies, ceremonies)
-
-    # Step 0 — Departure
-    |> assign(:province, "")
-    |> assign(:district, "")
-    |> assign(:districts, [])
-    |> assign(:start_date, "")
-    |> assign(:duration, 7)
-    |> assign(:duration_custom, false)
-    |> assign(:transport, "road")
-    |> assign(:road_providers, [])
-    |> assign(:air_providers, [])
-    |> assign(:selected_provider, nil)
-
-    # Step 1 — Ceremony
-    |> assign(:ceremony, default_ceremony_id(ceremonies))
-
-    # Step 2 — Map
-    |> assign(:active_pins, [])
-
-    # Step 3 — Food
-    |> assign(:selected_foods, [])
-
-    # Step 4 — Music
-    |> assign(:selected_music, [])
-
-    # Step 5 — Stay
-    |> assign(:hotel, nil)
-
-    # Step 6 — Summary / PDF
-    |> assign(:traveller_name, "")
-    |> assign(:generating_pdf, false)
-    |> assign(:pdf_ready, false)
-    |> assign(:pdf_error, nil)
-    |> then(&{:ok, &1})
-  end
-
-  # ── Navigation ─────────────────────────────────────────────────────────────
-
-  def handle_event("next", _params, %{assigns: %{step: step, steps: steps}} = socket)
-      when step < length(steps) - 1,
-      do: {:noreply, assign(socket, step: step + 1)}
-
-  def handle_event("back", _params, %{assigns: %{step: step}} = socket)
-      when step > 0,
-      do: {:noreply, assign(socket, step: step - 1)}
-
-  def handle_event("back", _params, socket), do: {:noreply, socket}
-  def handle_event("next", _params, socket), do: {:noreply, socket}
-
-  # ── Step 0 · Province ──────────────────────────────────────────────────────
-
-  def handle_event("set_province", %{"province" => prov}, socket) do
-    {:noreply,
-     assign(socket,
-       province: prov,
-       district: "",
-       districts: CxtRoad.list_districts(prov),
-       road_providers: [],
-       air_providers: [],
-       selected_provider: nil
-     )}
-  end
-
-  # ── Step 0 · District ─────────────────────────────────────────────────────
-
-  def handle_event("set_district", %{"district" => dist}, socket) do
-    socket =
-      socket
-      |> assign(district: dist, selected_provider: nil)
-      |> load_providers(socket.assigns.transport, dist)
-
-    {:noreply, socket}
-  end
-
-  # ── Step 0 · Transport ────────────────────────────────────────────────────
-
-  def handle_event("set_transport", %{"transport" => t}, socket) do
-    socket =
-      socket
-      |> assign(transport: t, selected_provider: nil, road_providers: [], air_providers: [])
-      |> then(fn s ->
-        if s.assigns.district != "",
-          do: load_providers(s, t, s.assigns.district),
-          else: s
-      end)
-
-    {:noreply, socket}
-  end
-
-  # ── Step 0 · Provider selection ───────────────────────────────────────────
-
-  def handle_event("set_provider", %{"provider" => id}, socket),
-    do: {:noreply, assign(socket, selected_provider: id)}
-
-  # ── Step 0 · Date ─────────────────────────────────────────────────────────
-
-  def handle_event("set_date", %{"date" => date}, socket),
-    do: {:noreply, assign(socket, start_date: date)}
-
-  # ── Step 0 · Duration (slider) ────────────────────────────────────────────
-
-  def handle_event("set_duration", %{"duration" => d}, socket),
-    do: {:noreply, assign(socket, duration: String.to_integer(d), duration_custom: false)}
-
-  # ── Step 0 · Duration (custom input) ─────────────────────────────────────
-
-  def handle_event("set_duration_custom", %{"duration" => d}, socket) do
-    case Integer.parse(d) do
-      {n, ""} when n >= 1 and n <= 365 ->
-        {:noreply, assign(socket, duration: n, duration_custom: true)}
-
-      _ ->
-        {:noreply, socket}
+      {:error, _reason} ->
+        {:ok,
+         socket
+         |> put_flash(
+           :error,
+           "That saved trip could not be found or you do not have access to it."
+         )
+         |> push_navigate(to: ~p"/journey")}
     end
   end
 
-  # ── Step 1 · Ceremony ──────────────────────────────────────────────────────
-
-  def handle_event("set_ceremony", %{"ceremony" => c}, socket),
-    do: {:noreply, assign(socket, ceremony: String.to_integer(c))}
-
-  # ── Step 2 · Map pins ─────────────────────────────────────────────────────
-
-  def handle_event("toggle_pin", %{"pin" => pin_id}, socket) do
-    pin_id = String.to_integer(pin_id)
-
-    pins =
-      if pin_id in socket.assigns.active_pins,
-        do: List.delete(socket.assigns.active_pins, pin_id),
-        else: [pin_id | socket.assigns.active_pins]
-
-    {:noreply, assign(socket, active_pins: pins)}
+  @impl true
+  def handle_event("next", _params, socket) do
+    case validate_step(socket.assigns.step, socket.assigns) do
+      :ok -> {:noreply, assign(socket, step: min(socket.assigns.step + 1, 6))}
+      {:error, message} -> {:noreply, put_flash(socket, :error, message)}
+    end
   end
 
-  # ── Step 3 · Food ─────────────────────────────────────────────────────────
+  def handle_event("back", _params, socket),
+    do: {:noreply, assign(socket, step: max(socket.assigns.step - 1, 0))}
 
-  def handle_event("toggle_food", %{"food" => food_id}, socket) do
-    food_id = String.to_integer(food_id)
-
-    foods =
-      if food_id in socket.assigns.selected_foods,
-        do: List.delete(socket.assigns.selected_foods, food_id),
-        else: [food_id | socket.assigns.selected_foods]
-
-    {:noreply, assign(socket, selected_foods: foods)}
+  def handle_event("save_draft", _params, socket) do
+    {:noreply,
+     put_flash(socket, :info, "Your trip draft is saved. You can return using this browser.")}
   end
 
-  # ── Step 4 · Music ────────────────────────────────────────────────────────
-
-  def handle_event("toggle_music", %{"music" => music_id}, socket) do
-    music =
-      if music_id in socket.assigns.selected_music,
-        do: List.delete(socket.assigns.selected_music, music_id),
-        else: [music_id | socket.assigns.selected_music]
-
-    {:noreply, assign(socket, selected_music: music)}
+  def handle_event("update_trip_details", %{"trip" => attrs}, socket) do
+    attrs = normalize_trip_attrs(attrs)
+    update_trip(socket, attrs)
   end
 
-  # ── Step 5 · Hotel ────────────────────────────────────────────────────────
+  def handle_event("set_province", %{"province" => province}, socket) do
+    socket =
+      case Trips.update_trip(
+             socket.assigns.current_scope,
+             socket.assigns.trip.id,
+             socket.assigns.guest_token,
+             %{
+               starting_province: province,
+               starting_district: nil
+             }
+           ) do
+        {:ok, trip} ->
+          socket
+          |> assign(
+            trip:
+              Trips.get_trip(socket.assigns.current_scope, trip.id, socket.assigns.guest_token)
+          )
+          |> assign(province: province, district: "", districts: CxtRoad.list_districts(province))
+          |> clear_providers()
 
-  def handle_event("set_hotel", %{"hotel" => hotel_id}, socket),
-    do: {:noreply, assign(socket, hotel: hotel_id)}
+        {:error, _} ->
+          put_flash(socket, :error, "Could not save the starting province.")
+      end
 
-  # ── Step 6 · Traveller name ───────────────────────────────────────────────
+    {:noreply, socket}
+  end
 
-  def handle_event("set_traveller_name", %{"name" => name}, socket),
-    do: {:noreply, assign(socket, traveller_name: name)}
+  def handle_event("set_district", %{"district" => district}, socket) do
+    case Trips.update_trip(
+           socket.assigns.current_scope,
+           socket.assigns.trip.id,
+           socket.assigns.guest_token,
+           %{
+             starting_district: district
+           }
+         ) do
+      {:ok, trip} ->
+        socket =
+          socket
+          |> assign(
+            trip:
+              Trips.get_trip(socket.assigns.current_scope, trip.id, socket.assigns.guest_token)
+          )
+          |> assign(district: district, selected_provider: nil)
+          |> load_providers(socket.assigns.transport, district)
 
-  # ── Step 6 · Generate PDF ─────────────────────────────────────────────────
+        {:noreply, socket}
+
+      {:error, _} ->
+        {:noreply, put_flash(socket, :error, "Could not save the starting district.")}
+    end
+  end
+
+  def handle_event(
+        "set_destination_location",
+        %{"province" => province, "district" => district},
+        socket
+      ) do
+    update_trip(socket, %{destination_province: province, destination_district: district})
+  end
+
+  def handle_event("set_transport", %{"transport" => mode}, socket) do
+    segments = if mode == "mixed", do: [], else: [%{mode: mode}]
+
+    case Trips.save_transport_segments(
+           socket.assigns.current_scope,
+           socket.assigns.trip.id,
+           socket.assigns.guest_token,
+           segments
+         ) do
+      {:ok, _} ->
+        socket =
+          socket
+          |> assign(
+            transport: mode,
+            selected_provider: nil,
+            road_providers: [],
+            air_providers: []
+          )
+          |> refresh_trip()
+          |> then(fn s ->
+            if s.assigns.district != "", do: load_providers(s, mode, s.assigns.district), else: s
+          end)
+
+        {:noreply, socket}
+
+      {:error, _reason} ->
+        {:noreply, put_flash(socket, :error, "Could not save transport selection.")}
+    end
+  end
+
+  def handle_event("set_transport_estimate", %{"amount" => amount}, socket) do
+    case Decimal.parse(amount) do
+      {value, ""} ->
+        if Decimal.compare(value, Decimal.new(0)) != :lt do
+          mode =
+            if socket.assigns.transport == "solo",
+              do: "private_vehicle",
+              else: socket.assigns.transport
+
+          segment = %{
+            mode: mode,
+            estimated_cost: value,
+            notes: "Visitor entered transport estimate"
+          }
+
+          case Trips.save_transport_segments(
+                 socket.assigns.current_scope,
+                 socket.assigns.trip.id,
+                 socket.assigns.guest_token,
+                 [segment]
+               ) do
+            {:ok, _} ->
+              {:noreply, refresh_trip(socket)}
+
+            {:error, _} ->
+              {:noreply, put_flash(socket, :error, "Could not save transport estimate.")}
+          end
+        else
+          {:noreply, put_flash(socket, :error, "Enter a valid non-negative transport estimate.")}
+        end
+
+      _ ->
+        {:noreply, put_flash(socket, :error, "Enter a valid non-negative transport estimate.")}
+    end
+  end
+
+  def handle_event("set_provider", %{"provider" => id, "kind" => kind}, socket) do
+    provider_id = String.to_integer(id)
+
+    mode =
+      if kind == "air",
+        do: "air",
+        else: if(socket.assigns.transport == "bus", do: "bus", else: "road")
+
+    existing =
+      if socket.assigns.transport == "mixed", do: socket.assigns.trip.transport_segments, else: []
+
+    existing =
+      Enum.reject(existing, fn segment ->
+        if kind == "air", do: not is_nil(segment.airline_id), else: not is_nil(segment.road_id)
+      end)
+
+    segment =
+      if kind == "air",
+        do: %{mode: mode, airline_id: provider_id},
+        else: %{mode: mode, road_id: provider_id}
+
+    case Trips.save_transport_segments(
+           socket.assigns.current_scope,
+           socket.assigns.trip.id,
+           socket.assigns.guest_token,
+           existing |> Enum.map(&segment_attrs/1) |> Kernel.++([segment])
+         ) do
+      {:ok, _} ->
+        {:noreply,
+         socket
+         |> assign(selected_provider: id)
+         |> refresh_trip()}
+
+      {:error, _} ->
+        {:noreply, put_flash(socket, :error, "Could not save transport provider.")}
+    end
+  end
+
+  def handle_event("set_ceremony", %{"ceremony" => "none"}, socket), do: save_event(socket, nil)
+
+  def handle_event("set_ceremony", %{"ceremony" => id}, socket) do
+    case Integer.parse(id) do
+      {event_id, ""} -> save_event(socket, event_id)
+      _ -> {:noreply, put_flash(socket, :error, "Choose a valid event.")}
+    end
+  end
+
+  def handle_event("toggle_pin", %{"pin" => raw_id}, socket) do
+    id = String.to_integer(raw_id)
+
+    result =
+      if id in socket.assigns.active_pins do
+        Trips.remove_destination(
+          socket.assigns.current_scope,
+          socket.assigns.trip.id,
+          socket.assigns.guest_token,
+          id
+        )
+      else
+        Trips.add_destination(
+          socket.assigns.current_scope,
+          socket.assigns.trip.id,
+          socket.assigns.guest_token,
+          id
+        )
+      end
+
+    case result do
+      {:ok, _} ->
+        {:noreply, socket |> refresh_trip() |> push_map_update()}
+
+      {:error, reason} ->
+        {:noreply,
+         put_flash(socket, :error, "Could not update destination selection: #{inspect(reason)}")}
+    end
+  end
+
+  def handle_event("reorder_destinations", %{"ids" => ids}, socket) do
+    case Trips.reorder_destinations(
+           socket.assigns.current_scope,
+           socket.assigns.trip.id,
+           socket.assigns.guest_token,
+           ids
+         ) do
+      {:ok, _} ->
+        {:noreply, socket |> refresh_trip() |> push_map_update() |> refresh_itinerary()}
+
+      {:error, _} ->
+        {:noreply, put_flash(socket, :error, "Destination order could not be saved.")}
+    end
+  end
+
+  def handle_event("assign_destination_day", %{"site_id" => id, "day" => day}, socket) do
+    case Integer.parse(day) do
+      {day_number, ""} ->
+        case Trips.assign_destination_day(
+               socket.assigns.current_scope,
+               socket.assigns.trip.id,
+               socket.assigns.guest_token,
+               id,
+               day_number
+             ) do
+          {:ok, _} ->
+            {:noreply, socket |> refresh_trip() |> refresh_itinerary()}
+
+          {:error, _} ->
+            {:noreply, put_flash(socket, :error, "Could not assign that destination day.")}
+        end
+
+      _ ->
+        {:noreply, put_flash(socket, :error, "Enter a valid itinerary day.")}
+    end
+  end
+
+  def handle_event("update_destination_notes", %{"site_id" => id, "notes" => notes}, socket) do
+    case Trips.update_destination_notes(
+           socket.assigns.current_scope,
+           socket.assigns.trip.id,
+           socket.assigns.guest_token,
+           id,
+           notes
+         ) do
+      {:ok, _} -> {:noreply, refresh_trip(socket)}
+      {:error, _} -> {:noreply, put_flash(socket, :error, "Could not save destination notes.")}
+    end
+  end
+
+  def handle_event("filter_sites", %{"search" => search, "category" => category}, socket) do
+    {:noreply, assign(socket, site_search: search, site_category: category)}
+  end
+
+  def handle_event("toggle_food", %{"food" => raw_id}, socket) do
+    id = String.to_integer(raw_id)
+
+    selected =
+      if id in socket.assigns.selected_foods,
+        do: List.delete(socket.assigns.selected_foods, id),
+        else: socket.assigns.selected_foods ++ [id]
+
+    case Trips.save_food_selections(
+           socket.assigns.current_scope,
+           socket.assigns.trip.id,
+           socket.assigns.guest_token,
+           selected
+         ) do
+      {:ok, _} -> {:noreply, socket |> assign(selected_foods: selected) |> refresh_trip()}
+      {:error, _} -> {:noreply, put_flash(socket, :error, "Could not save food selections.")}
+    end
+  end
+
+  def handle_event("toggle_music", %{"music" => raw_id}, socket) do
+    id = String.to_integer(raw_id)
+
+    selected =
+      if id in socket.assigns.selected_music,
+        do: List.delete(socket.assigns.selected_music, id),
+        else: socket.assigns.selected_music ++ [id]
+
+    case Trips.save_audio_selections(
+           socket.assigns.current_scope,
+           socket.assigns.trip.id,
+           socket.assigns.guest_token,
+           selected
+         ) do
+      {:ok, _} -> {:noreply, socket |> assign(selected_music: selected) |> refresh_trip()}
+      {:error, _} -> {:noreply, put_flash(socket, :error, "Could not save music selections.")}
+    end
+  end
+
+  def handle_event("set_hotel", %{"hotel" => "none"}, socket) do
+    case Trips.clear_accommodation(
+           socket.assigns.current_scope,
+           socket.assigns.trip.id,
+           socket.assigns.guest_token
+         ) do
+      :ok -> {:noreply, socket |> assign(hotel: nil) |> refresh_trip()}
+      {:error, _} -> {:noreply, put_flash(socket, :error, "Could not clear accommodation.")}
+    end
+  end
+
+  def handle_event("set_hotel", %{"hotel" => hotel_id}, socket) do
+    attrs = %{check_in: socket.assigns.trip.start_date, check_out: socket.assigns.trip.end_date}
+
+    case Trips.select_accommodation(
+           socket.assigns.current_scope,
+           socket.assigns.trip.id,
+           socket.assigns.guest_token,
+           hotel_id,
+           attrs
+         ) do
+      {:ok, _} ->
+        {:noreply, socket |> assign(hotel: String.to_integer(hotel_id)) |> refresh_trip()}
+
+      {:error, _} ->
+        {:noreply, put_flash(socket, :error, "Could not save accommodation selection.")}
+    end
+  end
+
+  def handle_event("set_traveller_name", %{"name" => name}, socket) do
+    update_trip(socket, %{traveller_name: String.slice(name, 0, 80)})
+  end
+
+  def handle_event("generate_itinerary", _params, socket) do
+    trip =
+      Trips.get_trip(
+        socket.assigns.current_scope,
+        socket.assigns.trip.id,
+        socket.assigns.guest_token
+      )
+
+    itinerary = ItineraryGenerator.generate(trip)
+    {:noreply, assign(socket, itinerary: itinerary, budget: itinerary.budget)}
+  end
 
   def handle_event("generate_pdf", _params, socket) do
-    send(self(), :do_generate_pdf)
-    {:noreply, assign(socket, generating_pdf: true, pdf_ready: false, pdf_error: nil)}
+    trip =
+      Trips.get_trip(
+        socket.assigns.current_scope,
+        socket.assigns.trip.id,
+        socket.assigns.guest_token
+      )
+
+    itinerary = ItineraryGenerator.generate(trip)
+    {:noreply, assign(socket, itinerary: itinerary, budget: itinerary.budget)}
   end
 
-  def handle_info(:do_generate_pdf, socket) do
-    assigns = socket.assigns
-    hotel = hotel_by_id(assigns.hotels, assigns.hotel)
-    total = estimated_cost(assigns.hotels, assigns.hotel, assigns.duration)
+  def handle_event(_event, _params, socket), do: {:noreply, socket}
 
-    payload = %{
-      province: assigns.province,
-      district: assigns.district,
-      duration: assigns.duration,
-      transport: assigns.transport,
-      start_date: assigns.start_date,
-      selected_provider: assigns.selected_provider,
-      ceremony: assigns.ceremony,
-      active_pins: assigns.active_pins,
-      selected_foods: assigns.selected_foods,
-      selected_music: assigns.selected_music,
-      hotel_name: if(hotel, do: hotel.name, else: nil),
-      hotel_price: if(hotel, do: hotel.price, else: 120),
-      total_cost: total,
-      foods_all: Enum.map(assigns.foods, &Map.take(&1, [:id, :name])),
-      music_all: Enum.map(assigns.music, &Map.take(&1, [:id, :name])),
-      traveller_name: if(assigns.traveller_name == "", do: nil, else: assigns.traveller_name)
-    }
-
-    token = EnrouteHaye.PDFStore.put(payload)
-
-    {:noreply,
-     socket
-     |> assign(generating_pdf: false, pdf_ready: true)
-     |> push_navigate(to: "/pdf/itinerary/#{token}")}
-  end
-
-  defp default_ceremony_id([%{id: id} | _]), do: id
-  defp default_ceremony_id([]), do: nil
-
-  # ── Private: load transport providers ────────────────────────────────────
-
-  defp load_providers(socket, "air", district) do
-    assign(socket,
-      air_providers: CxtAirLine.list_airlines_from(district),
-      road_providers: []
-    )
-  end
-
-  defp load_providers(socket, "mixed", district) do
-    assign(socket,
-      air_providers: CxtAirLine.list_airlines_from(district),
-      road_providers: CxtRoad.list_roads_from(district)
-    )
-  end
-
-  defp load_providers(socket, transport, district)
-       when transport in ~w(road bus solo) do
-    assign(socket,
-      road_providers: CxtRoad.list_roads_from(district),
-      air_providers: []
-    )
-  end
-
-  defp load_providers(socket, _transport, _district), do: socket
-
-  # ── Public helpers (used in template) ────────────────────────────────────
-
-  def step_label(step), do: step |> Atom.to_string() |> String.capitalize()
+  def step_label(step),
+    do: Atom.to_string(step) |> String.replace("_", " ") |> String.capitalize()
 
   def progress_pct(step, steps), do: round(step / (length(steps) - 1) * 100)
 
-  def hotel_by_id(hotels, id), do: Enum.find(hotels, &(&1.id == id))
+  def duration(%Trip{start_date: %Date{} = start_date, end_date: %Date{} = end_date}),
+    do: max(Date.diff(end_date, start_date) + 1, 1)
 
-  def estimated_cost(hotels, hotel_id, duration) do
-    hotel = Enum.find(hotels, &(&1.id == hotel_id))
-    per_night = if hotel, do: hotel.price, else: 120
-    per_night * duration + 350
+  def duration(%Trip{duration_days: days}) when is_integer(days), do: days
+  def duration(_), do: 7
+
+  def filtered_sites(sites, search, category) do
+    sites
+    |> Enum.filter(fn site -> category == "" or site.category == category end)
+    |> Enum.filter(fn site ->
+      search == "" or
+        Enum.any?(
+          [site.name, site.description, site.location],
+          &(is_binary(&1) and String.contains?(String.downcase(&1), String.downcase(search)))
+        )
+    end)
   end
 
-  def cost_range(base) do
-    low = round(base * 0.9)
-    high = round(base * 1.2 + 50)
-    {low, high}
+  def money(%Decimal{} = value),
+    do: "ZMW " <> Number.Delimit.number_to_delimited(Decimal.to_float(value), precision: 2)
+
+  def money(value) when is_integer(value),
+    do: "ZMW " <> Number.Delimit.number_to_delimited(value, precision: 2)
+
+  def money(_), do: "Not available"
+
+  def route_label(from, to), do: route_label_from_result(RouteEstimator.between(from, to))
+  def route_label_from_result(%{direct_distance_km: nil}), do: "Direct distance unavailable"
+
+  def route_label_from_result(%{direct_distance_km: km}),
+    do: "About #{km} km direct · travel time unavailable"
+
+  def format_time(nil), do: "Time unavailable"
+  def format_time(%NaiveDateTime{} = time), do: Calendar.strftime(time, "%H:%M")
+
+  defp load_planner(socket, trip, guest_token) do
+    ceremonies = CxtEvent.list_ceremonies()
+    sites = CxtSite.list_all_sites()
+
+    map_pins =
+      Enum.map(sites, fn site ->
+        %{
+          id: site.id,
+          lat: site.latitude,
+          lng: site.longitude,
+          image_url: site.image_url,
+          description: site.description,
+          name: site.name
+        }
+      end)
+
+    district = trip.starting_district || ""
+
+    transport =
+      trip.transport_segments
+      |> case do
+        [segment] -> segment.mode
+        [] -> "road"
+        _ -> "mixed"
+      end
+
+    socket
+    |> assign(:current_scope, socket.assigns.current_scope)
+    |> assign(:guest_token, guest_token)
+    |> assign(:trip, trip)
+    |> assign(:trip_id, trip.id)
+    |> assign(:trip_form, to_form(Trip.changeset(trip, %{}), as: :trip))
+    |> assign(:destination_form, to_form(%{}))
+    |> assign(:destination_districts, CxtRoad.list_districts(trip.destination_province))
+    |> assign(:step, 0)
+    |> assign(:steps, @steps)
+    |> assign(:foods, CxtFood.list_all_foods())
+    |> assign(:music, CxtAudio.list_all_audio())
+    |> assign(:hotels, CxtAccommodation.list_accommodations())
+    |> assign(:pins, sites)
+    |> assign(
+      :site_categories,
+      sites |> Enum.map(& &1.category) |> Enum.reject(&is_nil/1) |> Enum.uniq() |> Enum.sort()
+    )
+    |> assign(:map_pins, map_pins)
+    |> assign(:provinces, CxtRoad.list_provinces())
+    |> assign(:districts, CxtRoad.list_districts(district))
+    |> assign(:ceremonies, ceremonies)
+    |> assign(:province, trip.starting_province || "")
+    |> assign(:district, district)
+    |> assign(:transport, transport)
+    |> assign(:road_providers, [])
+    |> assign(:air_providers, [])
+    |> assign(:selected_provider, selected_provider(trip.transport_segments))
+    |> assign(:ceremony, trip.selected_event_id)
+    |> assign(:active_pins, Enum.map(trip.trip_stops, & &1.site_id))
+    |> assign(:selected_foods, Enum.map(trip.food_selections, & &1.food_id))
+    |> assign(:selected_music, Enum.map(trip.audio_selections, & &1.audio_id))
+    |> assign(
+      :hotel,
+      List.first(trip.accommodation_selections) &&
+        List.first(trip.accommodation_selections).accommodation_id
+    )
+    |> assign(:duration, duration(trip))
+    |> assign(:site_search, "")
+    |> assign(:site_category, "")
+    |> assign(:budget, BudgetCalculator.calculate(trip))
+    |> assign(:itinerary, nil)
+    |> assign(:pdf_error, nil)
+    |> assign(:pdf_ready, false)
+    |> assign(:generating_pdf, false)
+    |> assign(:draft_saved, true)
   end
 
-  def format_time(nil), do: "—"
-  def format_time(%NaiveDateTime{} = dt), do: Calendar.strftime(dt, "%H:%M")
+  defp update_trip(socket, attrs) do
+    case Trips.update_trip(
+           socket.assigns.current_scope,
+           socket.assigns.trip.id,
+           socket.assigns.guest_token,
+           attrs
+         ) do
+      {:ok, _trip} ->
+        {:noreply, socket |> refresh_trip() |> assign(:draft_saved, true)}
+
+      {:error, changeset} ->
+        {:noreply,
+         socket
+         |> assign(:trip_form, to_form(changeset, as: :trip))
+         |> put_flash(:error, "Please correct the trip details.")}
+    end
+  end
+
+  defp normalize_trip_attrs(attrs) do
+    attrs =
+      Map.take(
+        attrs,
+        ~w(title description start_date end_date starting_province starting_district destination_province destination_district traveller_count duration_days budget_estimate traveller_name)
+      )
+
+    with start <- Date.from_iso8601(attrs["start_date"] || ""),
+         {days, ""} <- Integer.parse(attrs["duration_days"] || "") do
+      case start do
+        {:ok, start_date} ->
+          Map.put(attrs, "end_date", Date.add(start_date, days - 1) |> Date.to_iso8601())
+
+        _ ->
+          attrs
+      end
+    else
+      _ -> attrs
+    end
+  end
+
+  defp refresh_trip(socket) do
+    trip =
+      Trips.get_trip(
+        socket.assigns.current_scope,
+        socket.assigns.trip.id,
+        socket.assigns.guest_token
+      )
+
+    socket
+    |> assign(:trip, trip)
+    |> assign(:trip_form, to_form(Trip.changeset(trip, %{}), as: :trip))
+    |> assign(:destination_districts, CxtRoad.list_districts(trip.destination_province))
+    |> assign(:province, trip.starting_province || "")
+    |> assign(:district, trip.starting_district || "")
+    |> assign(:districts, CxtRoad.list_districts(trip.starting_province))
+    |> assign(:active_pins, Enum.map(trip.trip_stops, & &1.site_id))
+    |> assign(:selected_foods, Enum.map(trip.food_selections, & &1.food_id))
+    |> assign(:selected_music, Enum.map(trip.audio_selections, & &1.audio_id))
+    |> assign(:ceremony, trip.selected_event_id)
+    |> assign(
+      :hotel,
+      List.first(trip.accommodation_selections) &&
+        List.first(trip.accommodation_selections).accommodation_id
+    )
+    |> assign(:duration, duration(trip))
+    |> assign(:budget, BudgetCalculator.calculate(trip))
+    |> assign(:draft_saved, true)
+  end
+
+  defp refresh_itinerary(socket) do
+    assign(socket, :itinerary, ItineraryGenerator.generate(socket.assigns.trip))
+  end
+
+  defp push_map_update(socket) do
+    ordered_sites = Enum.map(socket.assigns.trip.trip_stops, & &1.site_id)
+
+    push_event(socket, "pins_updated", %{
+      pins: socket.assigns.map_pins,
+      active_pins: ordered_sites,
+      sequence: ordered_sites
+    })
+  end
+
+  defp save_event(socket, event_id) do
+    case Trips.update_trip(
+           socket.assigns.current_scope,
+           socket.assigns.trip.id,
+           socket.assigns.guest_token,
+           %{selected_event_id: event_id}
+         ) do
+      {:ok, _} -> {:noreply, socket |> assign(ceremony: event_id) |> refresh_trip()}
+      {:error, _} -> {:noreply, put_flash(socket, :error, "Could not save event selection.")}
+    end
+  end
+
+  defp load_providers(socket, "air", district),
+    do:
+      assign(socket,
+        air_providers: EnrouteHaye.Context.CxtAirLine.list_airlines_from(district),
+        road_providers: []
+      )
+
+  defp load_providers(socket, "mixed", district),
+    do:
+      assign(socket,
+        air_providers: EnrouteHaye.Context.CxtAirLine.list_airlines_from(district),
+        road_providers: CxtRoad.list_roads_from(district)
+      )
+
+  defp load_providers(socket, mode, district) when mode in ["road", "bus"],
+    do: assign(socket, road_providers: CxtRoad.list_roads_from(district), air_providers: [])
+
+  defp load_providers(socket, _mode, _district),
+    do: assign(socket, road_providers: [], air_providers: [])
+
+  defp clear_providers(socket),
+    do: assign(socket, road_providers: [], air_providers: [], selected_provider: nil)
+
+  defp selected_provider(segments) do
+    case Enum.find(segments, &(&1.road_id || &1.airline_id)) do
+      nil -> nil
+      segment -> to_string(segment.road_id || segment.airline_id)
+    end
+  end
+
+  defp segment_attrs(segment) do
+    %{
+      mode: segment.mode,
+      road_id: segment.road_id,
+      airline_id: segment.airline_id,
+      estimated_cost: segment.estimated_cost,
+      notes: segment.notes
+    }
+  end
+
+  defp validate_step(0, assigns) do
+    trip = assigns.trip
+
+    cond do
+      is_nil(trip.title) or String.trim(trip.title) == "" ->
+        {:error, "Add a title for your trip before continuing."}
+
+      is_nil(trip.starting_province) or is_nil(trip.starting_district) ->
+        {:error, "Choose a starting province and district."}
+
+      is_nil(trip.start_date) or is_nil(trip.end_date) ->
+        {:error, "Choose both trip dates before continuing."}
+
+      Date.compare(trip.end_date, trip.start_date) == :lt ->
+        {:error, "The end date cannot be before the start date."}
+
+      true ->
+        :ok
+    end
+  end
+
+  defp validate_step(2, assigns) do
+    if assigns.active_pins == [],
+      do: {:error, "Add at least one destination to continue."},
+      else: :ok
+  end
+
+  defp validate_step(_step, _assigns), do: :ok
 end

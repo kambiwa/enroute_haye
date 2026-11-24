@@ -68,6 +68,41 @@ export const StepSlide = {
   },
 };
 
+/** Lets visitors explicitly drag selected stops into their preferred order. */
+export const DestinationSort = {
+  mounted() {
+    this.el.addEventListener("dragstart", (event) => {
+      const item = event.target.closest("[data-stop-id]")
+      if (!item) return
+      event.dataTransfer.effectAllowed = "move"
+      event.dataTransfer.setData("text/plain", item.dataset.stopId)
+      item.classList.add("is-dragging")
+    })
+
+    this.el.addEventListener("dragend", (event) => {
+      event.target.closest("[data-stop-id]")?.classList.remove("is-dragging")
+    })
+
+    this.el.addEventListener("dragover", (event) => {
+      if (event.target.closest("[data-stop-id]")) event.preventDefault()
+    })
+
+    this.el.addEventListener("drop", (event) => {
+      event.preventDefault()
+      const fromId = event.dataTransfer.getData("text/plain")
+      const target = event.target.closest("[data-stop-id]")
+      if (!fromId || !target || fromId === target.dataset.stopId) return
+
+      const ids = [...this.el.querySelectorAll("[data-stop-id]")].map((node) => node.dataset.stopId)
+      const from = ids.indexOf(fromId)
+      const to = ids.indexOf(target.dataset.stopId)
+      if (from < 0 || to < 0) return
+      ids.splice(to, 0, ids.splice(from, 1)[0])
+      this.pushEvent("reorder_destinations", { ids })
+    })
+  }
+}
+
 // ── Registration helper ────────────────────────────────────────────────────
 // In your app.js, do:
 //

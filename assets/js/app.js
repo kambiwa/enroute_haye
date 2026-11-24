@@ -9,7 +9,7 @@ import { Socket } from "phoenix"
 import { LiveSocket } from "phoenix_live_view"
 import { hooks as colocatedHooks } from "phoenix-colocated/enroute_haye"
 import topbar from "../vendor/topbar"
-import { CountUp, CopyItinerary, StepSlide } from "./hooks/journey"
+import { CountUp, CopyItinerary, StepSlide, DestinationSort } from "./hooks/journey"
 import BookingsChart from "./hooks/bookings_chart"
 import { ScrollNav, Reveal } from "./hooks/landing"
 import maplibregl from "maplibre-gl"
@@ -200,18 +200,19 @@ const ZambiaMap = {
     });
 
     // Listen for pin updates pushed from the server
-    this.handleEvent('pins_updated', ({ pins, active_pins }) => {
-      this.updatePins(pins, active_pins);
+    this.handleEvent('pins_updated', ({ pins, active_pins, sequence }) => {
+      this.renderMarkers(pins, active_pins, sequence);
     });
   },
 
   addPins() {
     const pins = JSON.parse(this.el.dataset.pins || '[]');
     const activePins = JSON.parse(this.el.dataset.activePins || '[]');
-    this.renderMarkers(pins, activePins);
+    const sequence = JSON.parse(this.el.dataset.sequence || '[]');
+    this.renderMarkers(pins, activePins, sequence);
   },
 
-  renderMarkers(pins, activePins) {
+  renderMarkers(pins, activePins, sequence = activePins) {
     // Remove old markers
     if (this._markers) this._markers.forEach(m => m.remove());
     this._markers = [];
@@ -222,8 +223,9 @@ const ZambiaMap = {
 
       const el = document.createElement('div');
       el.className = 'map-marker' + (isActive ? ' map-marker--active' : '');
-      el.innerHTML = pin.image_url; // your emoji
-      el.title = pin.description;
+      const sequenceNumber = sequence.indexOf(pin.id);
+      el.textContent = sequenceNumber >= 0 ? String(sequenceNumber + 1) : "•";
+      el.title = sequenceNumber >= 0 ? `${sequenceNumber + 1}. ${pin.name}` : pin.name;
 
       el.addEventListener('click', () => {
         this.pushEvent('toggle_pin', { pin: pin.id });
@@ -242,7 +244,8 @@ const ZambiaMap = {
     // Re-render markers whenever LiveView re-renders this component
     const pins = JSON.parse(this.el.dataset.pins || '[]');
     const activePins = JSON.parse(this.el.dataset.activePins || '[]');
-    this.renderMarkers(pins, activePins);
+    const sequence = JSON.parse(this.el.dataset.sequence || '[]');
+    this.renderMarkers(pins, activePins, sequence);
   },
 
   destroyed() {
@@ -353,6 +356,7 @@ const liveSocket = new LiveSocket("/live", Socket, {
     CountUp,
     CopyItinerary,
     StepSlide,
+    DestinationSort,
     BookingsChart,
     TrackPlay,   // ← Audio Manager track play buttons
     ScrollNav,   // ← Enroute Home landing page
