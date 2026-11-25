@@ -47,7 +47,12 @@ defmodule EnrouteHaye.Trips do
 
     cond do
       user_id && guest_hash ->
-        case Repo.get_by(Trip, guest_token_hash: guest_hash, user_id: nil) do
+        case Repo.one(
+         from t in Trip,
+                where:
+                  t.guest_token_hash == ^guest_hash and
+                    is_nil(t.user_id)
+            ) do
           %Trip{} = trip ->
             trip
             |> Ecto.Changeset.change(user_id: user_id, guest_token_hash: nil)
@@ -61,7 +66,12 @@ defmodule EnrouteHaye.Trips do
         find_or_create_user_draft(user_id, attrs)
 
       guest_hash ->
-        case Repo.get_by(Trip, guest_token_hash: guest_hash, user_id: nil) do
+        case Repo.one(
+          from t in Trip,
+            where:
+              t.guest_token_hash == ^guest_hash and
+                is_nil(t.user_id)
+        )do
           %Trip{} = trip -> {:ok, trip}
           nil -> create_draft(nil, guest_token, attrs)
         end

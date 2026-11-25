@@ -7,6 +7,10 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
 
   @steps ~w(Basics Transport Ceremony Destinations Food\ &\ Music Accommodation Review)a
 
+  # Step indices, so validation can't drift out of sync with the template.
+  @step_basics 0
+  @step_destinations 3
+
   @impl true
   def mount(params, session, socket) do
     guest_token = session["trip_guest_access"] || session[:trip_guest_access]
@@ -44,13 +48,19 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
   @impl true
   def handle_event("next", _params, socket) do
     case validate_step(socket.assigns.step, socket.assigns) do
-      :ok -> {:noreply, assign(socket, step: min(socket.assigns.step + 1, 6))}
-      {:error, message} -> {:noreply, put_flash(socket, :error, message)}
+      :ok ->
+        next_step = min(socket.assigns.step + 1, length(@steps) - 1)
+        {:noreply, socket |> maybe_reload_ceremonies(next_step) |> assign(step: next_step)}
+
+      {:error, message} ->
+        {:noreply, put_flash(socket, :error, message)}
     end
   end
 
-  def handle_event("back", _params, socket),
-    do: {:noreply, assign(socket, step: max(socket.assigns.step - 1, 0))}
+  def handle_event("back", _params, socket) do
+    prev_step = max(socket.assigns.step - 1, 0)
+    {:noreply, socket |> maybe_reload_ceremonies(prev_step) |> assign(step: prev_step)}
+  end
 
   def handle_event("save_draft", _params, socket) do
     {:noreply,
@@ -458,7 +468,6 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
   def format_time(%NaiveDateTime{} = time), do: Calendar.strftime(time, "%H:%M")
 
   defp load_planner(socket, trip, guest_token) do
-    ceremonies = CxtEvent.list_ceremonies()
     sites = CxtSite.list_all_sites()
 
     map_pins =
@@ -491,7 +500,7 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
     |> assign(:trip_form, to_form(Trip.changeset(trip, %{}), as: :trip))
     |> assign(:destination_form, to_form(%{}))
     |> assign(:destination_districts, CxtRoad.list_districts(trip.destination_province))
-    |> assign(:step, 0)
+    |> assign(:step, @step_basics)
     |> assign(:steps, @steps)
     |> assign(:foods, CxtFood.list_all_foods())
     |> assign(:music, CxtAudio.list_all_audio())
@@ -503,13 +512,15 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
     )
     |> assign(:map_pins, map_pins)
     |> assign(:provinces, CxtRoad.list_provinces())
-    |> assign(:districts, CxtRoad.list_districts(district))
-    |> assign(:ceremonies, ceremonies)
+    # Districts belong to a province, so look them up by the starting province.
+    |> assign(:districts, CxtRoad.list_districts(trip.starting_province))
+    |> assign(:ceremonies, CxtEvent.list_ceremonies())
     |> assign(:province, trip.starting_province || "")
     |> assign(:district, district)
     |> assign(:transport, transport)
     |> assign(:road_providers, [])
     |> assign(:air_providers, [])
+    |> load_providers(transport, district)
     |> assign(:selected_provider, selected_provider(trip.transport_segments))
     |> assign(:ceremony, trip.selected_event_id)
     |> assign(:active_pins, Enum.map(trip.trip_stops, & &1.site_id))
@@ -529,6 +540,14 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
     |> assign(:pdf_ready, false)
     |> assign(:generating_pdf, false)
     |> assign(:draft_saved, true)
+  end
+
+  # Re-query ceremonies whenever the visitor lands on the Ceremony step, so events
+  # added after the page was opened show up without a full reload.
+  defp maybe_reload_ceremonies(socket, step) do
+    if Enum.at(@steps, step) == :Ceremony,
+      do: assign(socket, :ceremonies, CxtEvent.list_ceremonies()),
+      else: socket
   end
 
   defp update_trip(socket, attrs) do
@@ -556,15 +575,9 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
         ~w(title description start_date end_date starting_province starting_district destination_province destination_district traveller_count duration_days budget_estimate traveller_name)
       )
 
-    with start <- Date.from_iso8601(attrs["start_date"] || ""),
-         {days, ""} <- Integer.parse(attrs["duration_days"] || "") do
-      case start do
-        {:ok, start_date} ->
-          Map.put(attrs, "end_date", Date.add(start_date, days - 1) |> Date.to_iso8601())
-
-        _ ->
-          attrs
-      end
+    with {:ok, start_date} <- Date.from_iso8601(attrs["start_date"] || ""),
+         {days, ""} when days > 0 <- Integer.parse(attrs["duration_days"] || "") do
+      Map.put(attrs, "end_date", Date.add(start_date, days - 1) |> Date.to_iso8601())
     else
       _ -> attrs
     end
@@ -625,6 +638,9 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
     end
   end
 
+  defp load_providers(socket, _mode, ""),
+    do: assign(socket, road_providers: [], air_providers: [])
+
   defp load_providers(socket, "air", district),
     do:
       assign(socket,
@@ -665,7 +681,7 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
     }
   end
 
-  defp validate_step(0, assigns) do
+  defp validate_step(@step_basics, assigns) do
     trip = assigns.trip
 
     cond do
@@ -686,7 +702,9 @@ defmodule EnrouteHayeWeb.Unauth.Journey do
     end
   end
 
-  defp validate_step(2, assigns) do
+  # Destinations is step 3 (Basics 0, Transport 1, Ceremony 2, Destinations 3).
+  # This was previously on step 2, which blocked leaving the Ceremony step.
+  defp validate_step(@step_destinations, assigns) do
     if assigns.active_pins == [],
       do: {:error, "Add at least one destination to continue."},
       else: :ok
